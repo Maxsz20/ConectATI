@@ -1,0 +1,14 @@
+services:
+  web:
+    build: ./web
+    ports:
+      - "8000:80"
+    volumes:
+      - ./web:/app
+    depends_on:
+      - db
+
+  db:
+    build: ./db
+    volumes:
+      - ./data:/db
