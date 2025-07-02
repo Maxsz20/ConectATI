@@ -1,0 +1,1 @@
+Red social académica para estudiantes de ATI. Busca fortalecer la comunicación, el apoyo y la colaboración mediante publicaciones, mensajes, personalización del perfil y un entorno seguro y adaptativo.
