@@ -1,3 +1,10 @@
+:root {
+  --color-fondo: #E5E7EB;
+  --color-iconos: #8E9BFF;
+  --color-bordes: #ccc;
+  --lavanda-translucido: rgba(188, 190, 255, 0.4);
+}
+
 /* Reset y estructura base */
 * {
   margin: 0;
@@ -7,7 +14,7 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f2f3fc;
+  background-color: var(--color-fondo);
   display: flex;
 }
 
@@ -15,7 +22,7 @@ body {
 aside {
   width: 440px;
   display: flex;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--color-bordes);
   flex-direction: column;
   justify-content: space-between;
   padding: 1.5rem 1rem;
@@ -30,16 +37,15 @@ aside .logo-conectati {
   font-weight: bold;
   font-size: 3rem; /* Controla tamaño general */
   color: #212022;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 }
 
 aside .logo-circulo {
   width: 1em;
   height: 1em;
   border-radius: 50%;
-  background: linear-gradient(-135deg, #a9a7f2 50%, #addbfd 50%);
+  background: linear-gradient(-135deg, #addbfd 50%, #a9a7f2 50%);
 }
-
 
 .menu {
   display: flex;
@@ -48,21 +54,33 @@ aside .logo-circulo {
 }
 
 .menu a {
-  text-decoration: none;
-  color: #3f3d56;
-  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  font-weight: 700;
+  text-decoration: none;
   font-size: 1.5rem;
+  color: #3f3d56;
+  margin-left: 0.3rem; 
+  gap: 0.8rem;        
 }
 
-.menu i {
-  color: #9b94f3;
+.menu .icono {
+  min-width: 28px;
+  display: flex;
+  justify-content: center;
 }
+
+.menu .icono i {
+  color: var(--color-iconos);
+}
+
+.menu .texto {
+  display: inline-block;
+}
+
 
 .perfil {
-  background: #dfe4ff;
+  background-color: var(--lavanda-translucido);
   padding: 1rem;
   text-align: center;
   border-radius: 10px;
@@ -86,9 +104,8 @@ aside .logo-circulo {
 /* Encabezados */
 .fila-encabezados {
   display: flex;
-  height: 60px;
-  background-color: #f8f8fc;
-  border-bottom: 1px solid #d0d0d0;
+  height: 80px;
+  border-bottom: 1px solid var(--color-bordes);
 }
 
 .encabezado-lista {
@@ -96,7 +113,7 @@ aside .logo-circulo {
   display: flex;
   align-items: center;
   padding: 0 1rem;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--color-bordes);
 }
 
 .encabezado-lista h2 {
@@ -141,9 +158,8 @@ aside .logo-circulo {
 /* Lista lateral */
 .chat-list {
   width: 450px;
-  background-color: #f7f8fe;
   padding: 1rem;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--color-bordes);
 }
 
 .chat-user {
@@ -187,7 +203,6 @@ aside .logo-circulo {
 /* Conversación */
 .conversacion {
   flex: 1;
-  background-color: #f5f4fb;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -229,7 +244,7 @@ aside .logo-circulo {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background-color: #e3e1fc;
+  background-color: var(--lavanda-translucido);
   padding: 0.8rem 1.2rem;
   border-radius: 999px; /* Totalmente redondeado */
   margin: 1rem;

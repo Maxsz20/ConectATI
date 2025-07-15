@@ -11,131 +11,183 @@
   <!-- Sidebar izquierdo -->
   <aside>
     <div>
-      <div class="logo">ConectATI</div>
+      <div class="logo-conectati">
+        <div class="logo-circulo"></div>
+        <span>ConectATI</span>
+      </div>
       <div class="menu">
-        <a href="#"><i class="fas fa-home"></i>Inicio</a>
-        <a href="#"><i class="fas fa-bell"></i>Notificaciones</a>
-        <a href="#"><i class="fas fa-user-friends"></i>Amistades</a>
-        <a href="#"><i class="fas fa-envelope"></i>Mensajes</a>
-        <a href="#"><i class="fas fa-cog"></i>Configuración</a>
+        <a href="#">
+          <span class="icono"><i class="fas fa-home"></i></span>
+          <span class="texto">Inicio</span>
+        </a>
+        <a href="#">
+          <span class="icono"><i class="fas fa-bell"></i></span>
+          <span class="texto">Notificaciones</span>
+        </a>
+        <a href="#">
+          <span class="icono"><i class="fas fa-user-friends"></i></span>
+          <span class="texto">Amistades</span>
+        </a>
+        <a href="/chat.html">
+          <span class="icono"><i class="fas fa-envelope"></i></span>
+          <span class="texto">Mensajes</span>
+        </a>
+        <a href="#">
+          <span class="icono"><i class="fas fa-cog"></i></span>
+          <span class="texto">Configuración</span>
+        </a>
       </div>
     </div>
     <div class="perfil">
-      <img src="https://i.imgur.com/1X6zHfg.png" alt="Daniel Rojas" />
+      <img src="https://i.pravatar.cc/150?img=12" alt="Daniel Rojas" />
       <div><strong>Daniel Rojas</strong></div>
       <small>@danroj</small>
     </div>
   </aside>
 
   <!-- Contenido principal -->
-  <main>
-    <!-- Columna central -->
-    <section class="notificaciones">
+<main>
+  <!-- Sección central -->
+  <section class="notificaciones">
+    <div class="encabezado-central">
       <h2>Notificaciones</h2>
-
-      <div class="grupo">
-        <h3>Hoy</h3>
-        <div class="item-notif">
-          <i class="fas fa-heart like"></i>
-          <img src="https://i.imgur.com/1X6zHfg.png" alt="Ana" />
-          <div class="contenido">
-            <strong>@anag</strong> le gustan 2 de tus posts
-            <div class="meta">Hace 2 horas</div>
-          </div>
-        </div>
-        <div class="item-notif">
-          <i class="fas fa-heart like"></i>
-          <img src="https://i.imgur.com/1X6zHfg.png" alt="Carlos" />
-          <div class="contenido">
-            <strong>@carlosm</strong> le gusta 1 de tus posts
-            <div class="meta">Hace 3 horas</div>
-          </div>
+    </div>
+    <!-- Contenido de notificaciones -->
+    <div class="grupo">
+      <h3>Hoy</h3>
+      <div class="item-notif">
+        <i class="fas fa-star star"></i>
+        <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
+        <div class="contenido">
+          <strong>@anag</strong> le gustan 2 de tus posts
+          <div class="meta">Hace 2 horas</div>
         </div>
       </div>
-
-      <div class="grupo">
-        <h3>Ayer</h3>
-        <div class="item-notif">
-          <i class="fas fa-reply"></i>
-          <img src="https://i.imgur.com/1X6zHfg.png" alt="danroj" />
-          <div class="contenido">
-            <strong>@danroj</strong> respondió tu comentario
-            <div class="meta">Ayer</div>
-          </div>
-        </div>
-        <div class="item-notif">
-          <i class="fas fa-heart like"></i>
-          <img src="https://i.imgur.com/1X6zHfg.png" alt="valenng" />
-          <div class="contenido">
-            <strong>@valenng</strong> le gusta tu comentario
-            <div class="meta">Ayer</div>
-          </div>
-        </div>
-        <div class="item-notif">
-          <i class="fas fa-heart like"></i>
-          <img src="https://i.imgur.com/1X6zHfg.png" alt="juanp" />
-          <div class="contenido">
-            <strong>@juanp</strong> le gusta 1 de tus posts
-            <div class="meta">Ayer</div>
-          </div>
+      <div class="item-notif">
+        <i class="fas fa-heart like"></i>
+        <img src="https://i.pravatar.cc/150?img=8" alt="Carlos" />
+        <div class="contenido">
+          <strong>@carlosm</strong> le gusta 1 de tus posts
+          <div class="meta">Hace 3 horas</div>
         </div>
       </div>
+    </div>
 
-      <div class="grupo">
-        <h3>Últimos 7 días</h3>
-        <div class="item-notif">
-          <i class="fas fa-star star"></i>
-          <img src="https://i.imgur.com/1X6zHfg.png" alt="jorges" />
-          <div class="contenido">
-            <strong>@jorges</strong> respondió tu comentario
-            <div class="meta">Hace 3 días</div>
-          </div>
-        </div>
-        <div class="item-notif">
-          <i class="fas fa-star star"></i>
-          <img src="https://i.imgur.com/1X6zHfg.png" alt="dania" />
-          <div class="contenido">
-            <strong>@dania</strong> respondió tu comentario
-            <div class="meta">Hace 5 días</div>
-          </div>
+    <div class="grupo">
+      <h3>Ayer</h3>
+      <div class="item-notif">
+        <i class="fas fa-reply reply"></i>
+        <img src="https://i.pravatar.cc/150?img=12" alt="danroj" />
+        <div class="contenido">
+          <strong>@danroj</strong> respondió tu comentario
+          <div class="meta">Ayer</div>
         </div>
       </div>
-    </section>
-
-    <!-- Columna derecha -->
-    <div class="panel-lateral">
-      <h3>Mensajes</h3>
-      <div class="mensaje-preview">
-        <div class="mensaje-info">
-          <img src="https://i.imgur.com/1X6zHfg.png" alt="Ana" />
-          <span>@anag</span>
-        </div>
-        <i class="fas fa-envelope"></i>
-      </div>
-
-      <h3>Solicitudes de Mensajes</h3>
-      <div class="solicitud-preview">
-        <div class="mensaje-info">
-          <img src="https://i.imgur.com/1X6zHfg.png" alt="Carlos" />
-          <span>@carlosm</span>
-        </div>
-        <div class="acciones">
-          <i class="fas fa-check aceptar" title="Aceptar"></i>
-          <i class="fas fa-times rechazar" title="Rechazar"></i>
+      <div class="item-notif">
+        <i class="fas fa-heart like"></i>
+        <img src="https://i.pravatar.cc/150?img=21" alt="valenng" />
+        <div class="contenido">
+          <strong>@valenng</strong> le gusta tu comentario
+          <div class="meta">Ayer</div>
         </div>
       </div>
-
-      <div class="solicitud-preview">
-        <div class="mensaje-info">
-          <img src="https://i.imgur.com/1X6zHfg.png" alt="Ana" />
-          <span>@anag</span>
-        </div>
-        <div class="acciones">
-          <i class="fas fa-check aceptar" title="Aceptar"></i>
-          <i class="fas fa-times rechazar" title="Rechazar"></i>
+      <div class="item-notif">
+        <i class="fas fa-heart like"></i>
+        <img src="https://i.pravatar.cc/150?img=6" alt="juanp" />
+        <div class="contenido">
+          <strong>@juanp</strong> le gusta 1 de tus posts
+          <div class="meta">Ayer</div>
         </div>
       </div>
-    </aside>
-  </main>
+    </div>
+
+    <div class="grupo">
+      <h3>Últimos 7 días</h3>
+      <div class="item-notif">
+        <i class="fas fa-star star"></i>
+        <img src="https://i.pravatar.cc/150?img=15" alt="jorges" />
+        <div class="contenido">
+          <strong>@jorges</strong> respondió tu comentario
+          <div class="meta">Hace 3 días</div>
+        </div>
+      </div>
+      <div class="item-notif">
+        <i class="fas fa-star star"></i>
+        <img src="https://i.pravatar.cc/150?img=47" alt="dania" />
+        <div class="contenido">
+          <strong>@dania</strong> respondió tu comentario
+          <div class="meta">Hace 5 días</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Panel lateral derecho -->
+  <div class="panel-lateral">
+    <div class="encabezado-lateral">
+      <div class="buscador">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar..." />
+      </div>
+    </div>
+
+    <h3>Mensajes</h3>
+    <div class="mensaje-preview">
+      <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+      <div class="mensaje-info">
+        <div class="usuario">
+          <span class="nombre">Ana García</span>
+          <span>@anag · 4h</span>
+        </div>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+      <i class="fas fa-envelope"></i>
+    </div>
+
+    <div class="mensaje-preview">
+      <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+      <div class="mensaje-info">
+        <div class="usuario">
+          <span class="nombre">Ana García</span>
+          <span>@anag · 4h</span>
+        </div>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+      <i class="fas fa-envelope"></i>
+    </div>
+
+    <h3>Solicitudes de mensajes</h3>
+    <div class="solicitud-preview">
+      <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
+      <div class="mensaje-info">
+        <div class="usuario">
+          <span class="nombre">Carlos Mendoza</span>
+          <span>@carlosm · 3h</span>
+        </div>
+        <p>¿Podemos hablar por aquí?</p>
+      </div>
+      <div class="acciones">
+        <i class="fas fa-check aceptar" title="Aceptar"></i>
+        <i class="fas fa-times rechazar" title="Rechazar"></i>
+      </div>
+    </div>
+
+    <div class="solicitud-preview">
+      <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+      <div class="mensaje-info">
+        <div class="usuario">
+          <span class="nombre">Ana García</span>
+          <span>@anag · 4h</span>
+        </div>
+        <p>¿Podemos hablar por aquí?</p>
+      </div>
+      <div class="acciones">
+        <i class="fas fa-check aceptar" title="Aceptar"></i>
+        <i class="fas fa-times rechazar" title="Rechazar"></i>
+      </div>
+    </div>
+
+  </div>
+</main>
 </body>
 </html>

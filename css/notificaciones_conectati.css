@@ -1,3 +1,10 @@
+:root {
+  --color-fondo: #E5E7EB;
+  --color-iconos: #8E9BFF;
+  --color-bordes: #ccc;
+  --lavanda-translucido: rgba(188, 190, 255, 0.4);
+}
+
 /* Reset y base */
 * {
   margin: 0;
@@ -7,15 +14,15 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f2f3fc;
+  background-color: var(--color-fondo);
   display: flex;
 }
 
-/* Sidebar izquierdo */
+/* Sidebar */
 aside {
   width: 440px;
-  background-color: #e6e9fb;
   display: flex;
+  border-right: 1px solid var(--color-bordes);
   flex-direction: column;
   justify-content: space-between;
   padding: 1.5rem 1rem;
@@ -23,11 +30,21 @@ aside {
   position: fixed;
 }
 
-aside .logo {
+aside .logo-conectati {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   font-weight: bold;
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  text-align: center;
+  font-size: 3rem;
+  color: #212022;
+  margin-bottom: 4rem;
+}
+
+aside .logo-circulo {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background: linear-gradient(-135deg, #addbfd 50%, #a9a7f2 50%);
 }
 
 .menu {
@@ -37,33 +54,44 @@ aside .logo {
 }
 
 .menu a {
-  text-decoration: none;
-  color: #3f3d56;
-  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  font-weight: 700;
+  text-decoration: none;
   font-size: 1.5rem;
+  color: #3f3d56;
+  margin-left: 0.3rem;
+  gap: 0.8rem;
 }
 
-.menu i {
-  color: #9b94f3;
+.menu .icono {
+  min-width: 28px;
+  display: flex;
+  justify-content: center;
+}
+
+.menu .icono i {
+  color: var(--color-iconos);
+}
+
+.menu .texto {
+  display: inline-block;
 }
 
 .perfil {
-  background: #dfe4ff;
+  background-color: var(--lavanda-translucido);
   padding: 1rem;
   text-align: center;
   border-radius: 10px;
 }
 
 .perfil img {
-  width: 40px;
+  width: 50px;
   border-radius: 50%;
   margin-bottom: 0.5rem;
 }
 
-/* MAIN: estructura horizontal */
+/* MAIN */
 main {
   margin-left: 440px;
   display: flex;
@@ -71,35 +99,37 @@ main {
   width: calc(100% - 440px);
 }
 
-
-/* Sección Central: Notificaciones */
-/* Centro de notificaciones */
+/* CENTRO */
 .notificaciones {
   flex: 2.5;
-  background-color: #f7f8fe;
-  padding: 2rem;
-  overflow-y: auto;
-  border-right: 1px solid #ccc;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid var(--color-bordes);
+  overflow-y: auto;
 }
 
-.notificaciones h2 {
-  font-size: 1.7rem;
-  font-weight: bold;
+.encabezado-central {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid var(--color-bordes);
+}
+
+.encabezado-central h2 {
+  font-size: 1.6rem;
   color: #3f3d56;
-  margin-bottom: 1.5rem;
 }
 
-.grupo {
-  margin-bottom: 2rem;
+.notificaciones .grupo {
+  padding: 1.5rem 2rem;
 }
 
-.grupo h3 {
-  font-size: 1rem;
+.notificaciones .grupo h3 {
+  font-size: 1.1rem;
   font-weight: bold;
-  color: #666;
-  margin-bottom: 0.7rem;
+  color: #7a7a7a;
+  margin-bottom: 0.6rem;
   border-bottom: 1px solid #ddd;
   padding-bottom: 0.3rem;
 }
@@ -107,9 +137,9 @@ main {
 .item-notif {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+  gap: 0.8rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .item-notif img {
@@ -121,41 +151,65 @@ main {
 .item-notif .contenido {
   flex: 1;
   font-size: 0.95rem;
-  color: #444;
+  color: #333;
 }
 
 .item-notif .contenido strong {
-  color: #333;
+  font-weight: 600;
+  color: #212121;
 }
 
 .item-notif .meta {
   font-size: 0.8rem;
   color: #888;
+  margin-top: 0.1rem;
 }
 
 .item-notif i {
   font-size: 1rem;
-  margin-right: 0.3rem;
+  margin-right: 0.2rem;
 }
 
-.item-notif .like { color: #e070f5; }
-.item-notif .star { color: #f2c94c; }
+.item-notif .like {
+  color: #c67be8;
+}
 
-/* Panel derecho */
+.item-notif .star {
+  color: #f5c100;
+}
+
+.item-notif .reply {
+  color: #6c63ff;
+}
+
+/* PANEL DERECHO */
 .panel-lateral {
-  flex: 1.5;
-  background: #fff;
-  padding: 1.5rem;
-  overflow-y: auto;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  border-left: 1px solid var(--color-bordes);
+  overflow-y: auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.encabezado-lateral {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid var(--color-bordes);
+  margin: -1.5rem -1.5rem 1rem -1.5rem;
+  box-sizing: border-box;
 }
 
 .panel-lateral h3 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: #3f3d56;
-  margin-bottom: 1rem;
+  margin: 1rem 0 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #eee;
 }
 
 .mensaje-preview,
@@ -163,33 +217,54 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
 }
 
 .mensaje-preview img,
 .solicitud-preview img {
-  width: 34px;
-  height: 34px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  margin-right: 0.6rem;
+  flex-shrink: 0;
 }
 
 .mensaje-info {
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  flex-direction: column;
   font-size: 0.9rem;
   color: #444;
+  flex-grow: 1;
 }
 
-.acciones {
-  display: flex;
-  gap: 0.5rem;
+.mensaje-info .nombre {
+  font-weight: 600;
+  color: #212121;
 }
 
-.acciones i {
+.mensaje-info .usuario-tiempo {
+  color: #666;
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+}
+
+.mensaje-info .texto-preview {
+  font-size: 0.9rem;
+  color: #333;
+  line-height: 1.3;
+}
+
+.mensaje-preview i,
+.solicitud-preview i {
+  font-size: 1rem;
   cursor: pointer;
-  font-size: 1.1rem;
+}
+
+.solicitud-preview .acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-left: auto;
 }
 
 .acciones .aceptar {
@@ -197,5 +272,39 @@ main {
 }
 
 .acciones .rechazar {
-  color: #f57171;
+  color: #f44336;
+}
+
+.acciones i:hover {
+  opacity: 0.8;
+}
+
+/* Buscador */
+.buscador {
+  background-color: var(--lavanda-translucido);
+  border-radius: 20px;
+  padding: 0.4rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  height: 50%;
+  max-width: none;
+}
+
+.buscador i {
+  color: #888;
+}
+
+.buscador input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.9rem;
+  color: #4b4b4b;
+  width: 100%;
+}
+
+.buscador input::placeholder {
+  color: #888;
 }
