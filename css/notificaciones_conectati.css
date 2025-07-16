@@ -216,6 +216,7 @@ aside .logo-circulo {
   padding: 0.6rem 0;
   border-bottom: 1px solid #e0e0e0;
   position: relative; /* clave para posicionar el ícono */
+  border-bottom: 1px solid var(--color-bordes);
 }
 
 .item-notif .icono-envuelto {
@@ -307,6 +308,7 @@ aside .logo-circulo {
   margin: 1rem 0 0.6rem;
   padding-bottom: 0.4rem;
   border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-bordes);
 }
 
 .mensaje-preview,
@@ -316,6 +318,7 @@ aside .logo-circulo {
   justify-content: space-between;
   margin-bottom: 1.5rem;
   gap: 1rem;
+  border-bottom: 1px solid var(--color-bordes);
 }
 
 .mensaje-preview img,
