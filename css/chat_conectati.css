@@ -259,8 +259,8 @@ aside .logo-circulo {
 .chat-mensajes {
   flex: 1;
   display: flex;
-  flex-direction: column-reverse; /* Apila desde abajo */
-  justify-content: flex-start;     /* Los nuevos mensajes quedan abajo */
+  flex-direction: column-reverse;
+  justify-content: flex-start;  
   padding: 1.5rem;
   gap: 1.2rem;
   overflow-y: auto;
@@ -295,7 +295,7 @@ aside .logo-circulo {
   gap: 1rem;
   background-color: var(--lavanda-translucido);
   padding: 0.8rem 1.2rem;
-  border-radius: 999px; /* Totalmente redondeado */
+  border-radius: 999px;
   margin: 1rem;
   position: relative;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);

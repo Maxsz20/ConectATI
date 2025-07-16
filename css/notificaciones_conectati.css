@@ -189,6 +189,8 @@ aside .logo-circulo {
 .contenedor-info {
   display: flex;
   flex: 1;
+  height: calc(100vh - 80px);
+  overflow: hidden;
 }
 
 .notificaciones {
@@ -413,6 +415,12 @@ aside .logo-circulo {
   color: #888;
 }
 
+.notificaciones::-webkit-scrollbar,
+.panel-lateral::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
 /* HEADER MOBILE */
 .header-mobile {
   display: none;
@@ -518,6 +526,7 @@ aside .logo-circulo {
   .area-info {
     margin: 70px 0 60px 0;
     width: 100%;
+    overflow-y: auto;
   }
 
   .contenedor-info {
