@@ -87,13 +87,21 @@ aside .logo-circulo {
 }
 
 .cerrar-sesion {
-  text-align: center;
-  font-weight: bold;
-  font-size: 0.85rem;
+  background-color: transparent;
+  border: 2px solid var(--color-iconos);
   color: #212121;
-  margin-bottom: 0.4rem;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
+.cerrar-sesion:hover {
+  background-color: var(--lavanda-translucido);
+  color: var(--color-iconos);
+}
 .perfil-detalle {
   background-color: var(--lavanda-translucido);
   padding: 0.6rem 1rem;
@@ -179,8 +187,8 @@ aside .logo-circulo {
 }
 
 .encabezado-chat img {
-  width: 45px;
-  height: 45px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
 }
 
@@ -217,8 +225,8 @@ aside .logo-circulo {
 }
 
 .chat-user-info img {
-  width: 32px;
-  height: 32px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
 }
 
