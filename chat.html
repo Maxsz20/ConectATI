@@ -85,6 +85,16 @@
       <h2>Mensajes</h2>
     </div>
 
+    <!-- Encabezado del chat solo para mobile -->
+    <div class="encabezado-chat-mobile" style="display: none;">
+      <i class="fas fa-arrow-left btn-volver-chat"></i>
+      <img id="chat-avatar" src="" alt="Avatar usuario" />
+      <div class="nombre-chat-info">
+        <strong id="chat-nombre">Nombre</strong>
+        <small id="chat-usuario">@usuario</small>
+      </div>
+    </div>
+
     <!-- Lista y conversación -->
     <div class="contenedor-mensajes">
       <!-- Lista lateral -->
@@ -132,6 +142,22 @@
           <div class="mensaje enviado">
             ¡Empecemos!
           </div>
+          <div class="mensaje recibido">
+            ¿Qué deberíamos hacer?
+          </div>
+          <div class="mensaje enviado">
+            ¡Empecemos!
+          </div>
+          <div class="mensaje recibido">
+            ¿Qué deberíamos hacer?
+          </div>
+          <div class="mensaje enviado">
+            ¡Empecemos!
+          </div>
+          <div class="mensaje recibido">
+            ¿Qué deberíamos hacer?
+          </div> 
+                
         </div>
         <div class="chat-input">
           <i class="fas fa-camera"></i>
@@ -151,4 +177,95 @@
     <a href="/chat.html"><i class="fas fa-envelope"></i></a>
   </div>
 </body>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const isMobile = () => window.innerWidth <= 768;
+
+    const chatItems = document.querySelectorAll(".chat-user");
+    const chatList = document.querySelector(".chat-list");
+    const conversacion = document.querySelector(".conversacion");
+    const encabezadoLista = document.querySelector(".encabezado-lista");
+    const tituloMobile = document.querySelector(".titulo-mobile");
+    const headerMobile = document.querySelector(".header-mobile");
+    const chatInput = document.querySelector(".chat-input");
+    const menuMobile = document.querySelector(".menu-mobile");
+    const encabezadoChatMobile = document.querySelector(".encabezado-chat-mobile");
+    const avatarMobile = document.getElementById("chat-avatar");
+    const nombreMobile = document.getElementById("chat-nombre");
+    const usuarioMobile = document.getElementById("chat-usuario");
+
+    // Volver atrás
+    const btnVolver = encabezadoChatMobile.querySelector(".btn-volver-chat");
+    btnVolver.addEventListener("click", () => {
+      chatList.style.display = "block";
+      conversacion.style.display = "none";
+      encabezadoChatMobile.style.display = "none";
+      encabezadoLista.style.display = "flex";
+      headerMobile.style.display = "flex";
+      tituloMobile.style.display = "block";
+      chatInput.style.display = "none";
+      menuMobile.style.display = "flex";
+    });
+
+    // Click en chat
+    chatItems.forEach(item => {
+      item.addEventListener("click", () => {
+        if (!isMobile()) return;
+
+        const img = item.querySelector("img");
+        const nameSpan = item.querySelector("span");
+        const usuario = item.querySelector("small");
+
+        avatarMobile.src = img.src;
+        avatarMobile.alt = img.alt;
+        nombreMobile.textContent = nameSpan.childNodes[0].nodeValue.trim();
+        usuarioMobile.textContent = usuario.childNodes[0].nodeValue.trim();
+
+
+        chatList.style.display = "none";
+        conversacion.style.display = "flex";
+        encabezadoLista.style.display = "none";
+        encabezadoChatMobile.style.display = "flex";
+        headerMobile.style.display = "none";
+        tituloMobile.style.display = "none";
+        menuMobile.style.display = "none";
+        chatInput.style.display = "flex";
+      });
+    });
+
+    // Reset on resize
+    window.addEventListener("resize", () => {
+      if (!isMobile()) {
+        chatList.style.display = "";
+        conversacion.style.display = "";
+        encabezadoLista.style.display = "";
+        encabezadoChatMobile.style.display = "none";
+        headerMobile.style.display = "";
+        tituloMobile.style.display = "";
+        chatInput.style.display = "";
+        menuMobile.style.display = "";
+      }
+    });
+  });
+
+  function scrollToBottom() {
+    const chatMensajes = document.querySelector('.chat-mensajes');
+    if (chatMensajes) {
+      chatMensajes.scrollTop = chatMensajes.scrollHeight;
+    }
+  }
+
+  // Ejecuta al cargar
+  window.addEventListener('load', scrollToBottom);
+
+  // También cada vez que se abra un chat
+  const chatItems = document.querySelectorAll(".chat-user");
+  chatItems.forEach(item => {
+    item.addEventListener("click", () => {
+      setTimeout(scrollToBottom, 100); // Espera leve para asegurar que el contenido esté visible
+    });
+  });
+</script>
+
+
 </html>

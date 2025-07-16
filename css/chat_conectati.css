@@ -187,8 +187,8 @@ aside .logo-circulo {
 }
 
 .encabezado-chat img {
-  width: 55px;
-  height: 55px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
 }
 
@@ -258,9 +258,10 @@ aside .logo-circulo {
 
 .chat-mensajes {
   flex: 1;
-  padding: 1.5rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse; /* Apila desde abajo */
+  justify-content: flex-start;     /* Los nuevos mensajes quedan abajo */
+  padding: 1.5rem;
   gap: 1.2rem;
   overflow-y: auto;
 }
@@ -409,6 +410,55 @@ aside .logo-circulo {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+  .encabezado-chat-mobile {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background-color: var(--color-fondo);
+    border-bottom: 1px solid var(--color-bordes);
+    padding: 0 1rem;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .encabezado-chat-mobile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+  .encabezado-chat-mobile .nombre-chat-info{
+    font-size: 1.4rem;
+  }
+
+  .encabezado-chat-mobile .btn-volver-chat {
+    font-size: 1.4rem;
+    color: var(--color-iconos);
+    cursor: pointer;
+  }
+
+  .chat-input {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 1001;
+    background-color: var(--lavanda-translucido);
+    display: none;
+    border-top: 1px solid var(--color-bordes);
+    margin-bottom: 0.5rem;
+  }
+
+  .chat-mensajes {
+    margin-bottom: 65px;
+    padding-bottom: 66px;
+  }
+
   aside,
   .conversacion,
   .fila-encabezados {
@@ -418,6 +468,7 @@ aside .logo-circulo {
   .header-mobile,
   .menu-mobile {
     display: flex;
+    z-index: 1002;
   }
 
   .area-mensajes {
@@ -427,7 +478,16 @@ aside .logo-circulo {
 
   .chat-list {
     flex-direction: column;
-    width: 100%;
+    width: 100%; 
+  }
+  .chat-user{
+    font-size: 1.3rem;
+  }
+  .chat-user-info span{
+    font-size: 1.3rem;
+  }
+  .chat-user-info small{
+    font-size: 1rem;
   }
   .titulo-mobile {
     display: block;
