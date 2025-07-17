@@ -262,6 +262,7 @@ aside .logo-circulo {
 
 .post-principal .acciones {
   display: flex;
+  justify-content: flex-end ;
   gap: 1rem;
   font-size: 0.95rem;
   color: #666;
@@ -273,7 +274,8 @@ aside .logo-circulo {
 }
 
 .post-principal .meta {
-  font-size: 0.80em;
+  font-size: 0.90em;
+  text-align: right;
   color: #666;
 }
 
@@ -374,6 +376,7 @@ aside .logo-circulo {
 
 .comentario .acciones {
   display: flex;
+  justify-content: flex-end;
   gap: 1rem;
   font-size: 0.95rem;
   color: #666;
@@ -381,6 +384,13 @@ aside .logo-circulo {
 
 .comentario .acciones i {
   margin-right: 0.3rem;
+}
+
+.comentario .meta {
+  font-size: 0.90em;
+  text-align: right;
+  margin-bottom: 1rem;
+  color: #666;
 }
 
 /* Scroll oculto */
