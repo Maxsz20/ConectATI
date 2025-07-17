@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ConectATI - Registro</title>
   <link rel="icon" href="/images/logo.png" type="image/png" />
-  <link rel="stylesheet" href="/css/loginrechange.css"/>
+  <link rel="stylesheet" href="/css/login_register_clave.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
 
   <div class="container">
     <h1>ConectATI</h1>
-    <form class="form">
+    <form class="form" onsubmit="redirigirLogin(event)">
       <input type="text" placeholder="Nombre" required />
       <input type="email" placeholder="Correo" required />
       <input type="text" placeholder="Usuario" required />
@@ -31,7 +31,9 @@
         <i class="fas fa-eye-slash" id="togglePassword" onclick="togglePassword('password', 'togglePassword')"></i>
       </div>
 
+  
       <button type="submit">Registrarse</button>
+    
     </form>
   </div>
 
@@ -48,6 +50,11 @@
         icon.classList.remove("fa-eye");
         icon.classList.add("fa-eye-slash");
       }
+    }
+    function redirigirLogin(event) {
+      event.preventDefault(); // Evita recargar la página
+      // Aquí podrías hacer validaciones antes si quieres
+      window.location.href = "/iniciar_sesion.html"; // Redirige a iniciar sesión
     }
   </script>
 </body>
