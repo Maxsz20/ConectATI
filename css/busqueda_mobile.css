@@ -3,6 +3,7 @@
   --color-iconos: #8E9BFF;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
   --color-texto: #212121;
+
 }
 @media (max-width: 876px) {
     * {

@@ -197,7 +197,8 @@ aside .logo-circulo {
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem; /* separación vertical mayor */
+  align-items: center;
+  gap: 2rem;
   width: 55%;
 }
 
@@ -205,68 +206,76 @@ aside .logo-circulo {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 10rem; /* menos separación horizontal */
+  gap: 10rem;
+  position: relative;
+  z-index: 1; 
 }
 
-.grupo-opcion label {
-  min-width: 150px;
-  font-weight: 600;
-  color: #2c2c2c;
-  font-size: 1.4rem;
+/* PICKERS PERSONALIZADOS */
+.selector-toggle {
+  position: relative;
+  display: inline-block;
 }
 
-/* Estilo del select visualmente igual que el diseño */
-.custom-select {
+
+.btn-privacidad {
+  background-color: var(--color-iconos);
+  color: white;
+  font-weight: bold;
+  border-radius: 2rem;
+  padding: 0.4rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem;
+  width: auto;
+}
+
+.menu-privacidad {
+  top: 100%; /* Aparece justo debajo */
+  left: 0;
   background-color: var(--color-iconos);
-  border-radius: 2rem;
-  padding: 0.4rem 1rem;
-  color: white;
-  font-weight: bold;
-  font-size: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0.4rem 0;
+  margin-top: 0.4rem; /* pequeña separación */
+  z-index: 9999;
+  display: none;
+  min-width: 110px;
+}
+
+.menu-privacidad li {
+  padding: 0.6rem 1rem;
   cursor: pointer;
-  position: relative;
-  width: 170px;
-}
-
-.custom-select select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  border: none;
-  background: transparent;
-  color: white;
-  font-weight: bold;
-  font-size: 1rem;
-  width: 100%;
-  padding: 0.4rem 1rem 0.4rem 0;
-  border-radius: 2rem;
-  cursor: pointer;
-  z-index: 2;
-  position: relative;
-}
-
-.custom-select select:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--lavanda-translucido);
-}
-
-.custom-select i {
-  position: absolute;
-  right: 0.8rem;
-  pointer-events: none;
   font-size: 1rem;
   color: white;
-  z-index: 1;
 }
 
-.custom-select select option {
-  background-color: var(--color-iconos);
-  color: white;
-  border-radius: 2rem;
-  font-size: 1rem;
+.menu-privacidad li:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.selector-toggle:has(input:checked) .menu-privacidad {
+  display: block;
+}
+
+/* MOBILE ajustes */
+@media (max-width: 876px) {
+  .selector-toggle {
+    width: 150px;
+  }
+
+  .btn-privacidad {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .menu-privacidad li {
+    font-size: 0.95rem;
+  }
 }
 
 /* PANEL DERECHO */

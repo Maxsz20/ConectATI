@@ -491,6 +491,7 @@ aside .logo-circulo {
 /* Botón flotante para mobile */
 .boton-publicar-mobile {
   display: none;
+  border: none;
   position: fixed;
   bottom: 80px;
   right: 20px;

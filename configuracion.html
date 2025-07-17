@@ -67,50 +67,65 @@
       <!-- Centro -->
        <section class="configuracion">
             <div class="grupo-opcion">
-                <label for="tema">Tema</label>
-                <div class="custom-select">
-                    <select id="tema">
-                        <option>Claro</option>
-                        <option>Oscuro</option>
-                    </select>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
+              <label>Tema</label>
+              <div class="selector-toggle">
+                <input type="checkbox" id="toggleTema" hidden />
+                <label for="toggleTema" class="btn-privacidad">
+                  <span id="valorTema">Claro</span>
+                  <i class="fas fa-chevron-down"></i>
+                </label>
+                <ul class="menu-privacidad">
+                  <li onclick="cambiarOpcion('valorTema', 'Claro', 'toggleTema')">Claro</li>
+                  <li onclick="cambiarOpcion('valorTema', 'Oscuro', 'toggleTema')">Oscuro</li>
+                </ul>
+              </div>
             </div>
 
             <div class="grupo-opcion">
-                <label for="idioma">Idioma</label>
-                <div class="custom-select">
-                <select id="idioma">
-                    <option>ES</option>
-                    <option>EN</option>
-                </select>
-                <i class="fas fa-chevron-down"></i>
-                </div>
+              <label>Idioma</label>
+              <div class="selector-toggle">
+                <input type="checkbox" id="toggleIdioma" hidden />
+                <label for="toggleIdioma" class="btn-privacidad">
+                  <span id="valorIdioma">ES</span>
+                  <i class="fas fa-chevron-down"></i>
+                </label>
+                <ul class="menu-privacidad">
+                  <li onclick="cambiarOpcion('valorIdioma', 'ES', 'toggleIdioma')">ES</li>
+                  <li onclick="cambiarOpcion('valorIdioma', 'EN', 'toggleIdioma')">EN</li>
+                </ul>
+              </div>
             </div>
 
             <div class="grupo-opcion">
-                <label for="privacidad">Privacidad</label>
-                <div class="custom-select">
-                <select id="privacidad">
-                    <option>Privado</option>
-                    <option>Público</option>
-                </select>
-                <i class="fas fa-chevron-down"></i>
-                </div>
+              <label>Privacidad</label>
+              <div class="selector-toggle">
+                <input type="checkbox" id="togglePrivacidad" hidden />
+                <label for="togglePrivacidad" class="btn-privacidad">
+                  <span id="valorPrivacidad">Privado</span>
+                  <i class="fas fa-chevron-down"></i>
+                </label>
+                <ul class="menu-privacidad">
+                  <li onclick="cambiarOpcion('valorPrivacidad', 'Privado', 'togglePrivacidad')">Privado</li>
+                  <li onclick="cambiarOpcion('valorPrivacidad', 'Público', 'togglePrivacidad')">Público</li>
+                </ul>
+              </div>
             </div>
 
             <div class="grupo-opcion">
-                <label for="notificaciones">Notificaciones</label>
-                <div class="custom-select">
-                <select id="notificaciones">
-                    <option>Sí</option>
-                    <option>No</option>
-                </select>
-                <i class="fas fa-chevron-down"></i>
-                </div>
+              <label>Notificaciones</label>
+              <div class="selector-toggle">
+                <input type="checkbox" id="toggleNotificaciones" hidden />
+                <label for="toggleNotificaciones" class="btn-privacidad">
+                  <span id="valorNotificaciones">Sí</span>
+                  <i class="fas fa-chevron-down"></i>
+                </label>
+                <ul class="menu-privacidad">
+                  <li onclick="cambiarOpcion('valorNotificaciones', 'Sí', 'toggleNotificaciones')">Sí</li>
+                  <li onclick="cambiarOpcion('valorNotificaciones', 'No', 'toggleNotificaciones')">No</li>
+                </ul>
+              </div>
             </div>
-            </section>
-
+       </section>
       <!-- Panel derecho -->
       <div class="panel-lateral">
 
@@ -186,23 +201,10 @@
   </div>
 </body>
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".custom-select i").forEach(icono => {
-      icono.addEventListener("click", (e) => {
-        const selectId = icono.getAttribute("data-target");
-        const selectElement = document.getElementById(selectId);
-        if (selectElement) {
-          selectElement.focus();
-          // Truco: abrir el menú desplegable (no es 100% cross-browser pero mejora UX)
-          const event = new MouseEvent("mousedown", {
-            bubbles: true,
-            cancelable: true,
-            view: window
-          });
-          selectElement.dispatchEvent(event);
-        }
-      });
-    });
-  });
+  function cambiarOpcion(spanID, valor, toggleID) {
+    document.getElementById(spanID).textContent = valor;
+    document.getElementById(toggleID).checked = false;
+  }
 </script>
+
 </html>
