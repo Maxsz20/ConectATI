@@ -40,11 +40,11 @@
           <span class="icono"><i class="fas fa-user-friends"></i></span>
           <span class="texto">Amistades</span>
         </a>
-        <a href="#">
+        <a href="/chat.html">
           <span class="icono"><i class="fas fa-envelope"></i></span>
           <span class="texto">Mensajes</span>
         </a>
-        <a href="#">
+        <a href="/configuracion.html">
           <span class="icono"><i class="fas fa-cog"></i></span>
           <span class="texto">Configuración</span>
         </a>
@@ -194,6 +194,9 @@
     const nombreMobile = document.getElementById("chat-nombre");
     const usuarioMobile = document.getElementById("chat-usuario");
 
+    const avatarDesktop = document.querySelector(".encabezado-chat img");
+    const nombreDesktop = document.querySelector(".encabezado-chat strong");
+
     // Volver atrás
     const btnVolver = encabezadoChatMobile.querySelector(".btn-volver-chat");
     btnVolver.addEventListener("click", () => {
@@ -207,29 +210,37 @@
       menuMobile.style.display = "flex";
     });
 
-    // Click en chat
+    // Click en cualquier chat
     chatItems.forEach(item => {
       item.addEventListener("click", () => {
-        if (!isMobile()) return;
-
         const img = item.querySelector("img");
         const nameSpan = item.querySelector("span");
         const usuario = item.querySelector("small");
 
+        const nombreTexto = nameSpan.childNodes[0].nodeValue.trim();
+        const usuarioTexto = usuario.childNodes[0].nodeValue.trim();
+
+        // 👉 Actualizar encabezado mobile
         avatarMobile.src = img.src;
         avatarMobile.alt = img.alt;
-        nombreMobile.textContent = nameSpan.childNodes[0].nodeValue.trim();
-        usuarioMobile.textContent = usuario.childNodes[0].nodeValue.trim();
+        nombreMobile.textContent = nombreTexto;
+        usuarioMobile.textContent = usuarioTexto;
 
+        // 👉 Actualizar encabezado desktop
+        avatarDesktop.src = img.src;
+        avatarDesktop.alt = img.alt;
+        nombreDesktop.textContent = nombreTexto;
 
-        chatList.style.display = "none";
-        conversacion.style.display = "flex";
-        encabezadoLista.style.display = "none";
-        encabezadoChatMobile.style.display = "flex";
-        headerMobile.style.display = "none";
-        tituloMobile.style.display = "none";
-        menuMobile.style.display = "none";
-        chatInput.style.display = "flex";
+        if (isMobile()) {
+          chatList.style.display = "none";
+          conversacion.style.display = "flex";
+          encabezadoLista.style.display = "none";
+          encabezadoChatMobile.style.display = "flex";
+          headerMobile.style.display = "none";
+          tituloMobile.style.display = "none";
+          menuMobile.style.display = "none";
+          chatInput.style.display = "flex";
+        }
       });
     });
 
