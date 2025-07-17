@@ -520,6 +520,45 @@ aside .logo-circulo {
   margin: 0;
 }
 
+/* Botón flotante para mobile */
+.boton-publicar-mobile {
+  display: none;
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 1500;
+}
+
+.boton-publicar-mobile .burbuja {
+  background-color: var(--color-iconos);
+  color: white;
+  padding: 0.8rem 1.8rem;
+  border-radius: 14px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.boton-publicar-mobile .icono {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  background-color: #4DA6FF;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
 /* MENÚ MOBILE */
 .menu-mobile {
   display: none;
@@ -552,6 +591,9 @@ aside .logo-circulo {
 
   .header-mobile,
   .menu-mobile {
+    display: flex;
+  }
+  .boton-publicar-mobile {
     display: flex;
   }
 

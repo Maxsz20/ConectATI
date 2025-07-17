@@ -200,6 +200,15 @@
       </div>
     </div>
   </div>
+
+  <!-- Botón Publicar (solo mobile) -->
+  <div class="boton-publicar-mobile">
+    <div class="burbuja">
+      <span class="texto">Publicar</span>
+      <div class="icono"><i class="fas fa-plus"></i></div>
+    </div>
+  </div>
+
   <!-- Menú mobile -->
   <div class="menu-mobile">
     <a href="/index.html"><i class="fas fa-home"></i></a>
@@ -224,7 +233,8 @@
     const avatarMobile = document.getElementById("chat-avatar");
     const nombreMobile = document.getElementById("chat-nombre");
     const usuarioMobile = document.getElementById("chat-usuario");
-
+    const botonPublicar = document.querySelector(".boton-publicar-mobile");
+    const columnaCentral = document.querySelector(".columna-central");
     const avatarDesktop = document.querySelector(".encabezado-chat img");
     const nombreDesktop = document.querySelector(".encabezado-chat strong");
 
@@ -239,6 +249,8 @@
       tituloMobile.style.display = "block";
       chatInput.style.display = "none";
       menuMobile.style.display = "flex";
+      botonPublicar.style.display = "flex";
+      columnaCentral.style.display = "block";
     });
 
     // Click en cualquier chat
@@ -271,6 +283,8 @@
           tituloMobile.style.display = "none";
           menuMobile.style.display = "none";
           chatInput.style.display = "flex";
+          botonPublicar.style.display = "none";
+          columnaCentral.style.display = "none";
         }
       });
     });
@@ -286,6 +300,8 @@
         tituloMobile.style.display = "";
         chatInput.style.display = "";
         menuMobile.style.display = "";
+        botonPublicar.style.display = "";
+        columnaCentral.style.display = "";
       }
     });
   });
