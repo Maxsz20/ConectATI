@@ -75,9 +75,9 @@ WSGI_APPLICATION = 'project_conectati.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'database': {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/db/ConectATI_db.db',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
