@@ -535,6 +535,8 @@ aside .logo-circulo {
     width: 100%;
     padding: 2rem 1.5rem;
     gap: 1.8rem;
+    justify-content: center;
+    align-items: center;
   }
   .custom-select {
     width: 150px;
