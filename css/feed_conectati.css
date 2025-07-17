@@ -195,7 +195,6 @@ aside .logo-circulo {
 /* Sección central de publicación */
 .feed {
   padding: 2rem;
-  gap: 2rem;
   width: 60%;
 }
 
@@ -436,7 +435,6 @@ aside .logo-circulo {
     z-index: 10000;
   }
 
-
   .contenido-modal {
     position: absolute;
     top: 8vh;
@@ -542,7 +540,6 @@ aside .logo-circulo {
     color: #212121;
     padding: 0;
   }
-
 
   .respuesta-input textarea::placeholder {
     color: #aaa;
@@ -846,6 +843,9 @@ aside .logo-circulo {
   .header-mobile,
   .menu-mobile {
     display: flex;
+  }
+  .modal-respuesta {
+    display: none;
   }
 
   .boton-publicar-mobile {
