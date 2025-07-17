@@ -1,11 +1,18 @@
-:root {
-  --color-fondo: #E5E7EB;
-  --color-iconos: #8E9BFF;
-  --lavanda-translucido: rgba(188, 190, 255, 0.4);
-  --color-texto: #212121;
 
+@media (min-width: 877px) {
+  body {
+    display: none;
+  }
 }
+
 @media (max-width: 876px) {
+  :root {
+    --color-fondo: #E5E7EB;
+    --color-iconos: #8E9BFF;
+    --lavanda-translucido: rgba(188, 190, 255, 0.4);
+    --color-texto: #212121;
+
+  }
     * {
     margin: 0;
     padding: 0;
