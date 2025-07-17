@@ -203,11 +203,6 @@ aside .logo-circulo {
 }
 
 /* Lista lateral */
-.chat-list {
-  width: 35%;
-  padding: 1rem;
-  border-right: 1px solid var(--color-bordes);
-}
 
 .chat-user {
   display: flex;
@@ -232,13 +227,13 @@ aside .logo-circulo {
 }
 
 .chat-user-info span {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   font-weight: 500;
 }
 
 .chat-user-info small {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   color: #666;
 }
 
@@ -321,6 +316,101 @@ aside .logo-circulo {
 .chat-input i:hover {
   color: #4a4a4a;
 }
+
+.columna-central {
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--color-bordes);
+  overflow: hidden;
+  height: 100%;
+}
+
+.chat-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+/* Solicitudes de mensajes */
+.solicitudes-chat {
+  height: 50vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-bordes);
+}
+
+.solicitudes-chat h3 {
+  position: sticky;
+  top: 0;
+  background-color: var(--color-fondo);
+  padding: 0.6rem 0.4rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #212121;
+  z-index: 10;
+}
+
+.item-solicitud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--color-bordes);
+  gap: 0.8rem;
+}
+
+.item-solicitud img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.item-solicitud .contenido {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.item-solicitud strong {
+  display: block;
+  font-size: 1.1rem;
+  color: #000;
+}
+
+.item-solicitud .nombre {
+  font-weight: normal;
+  color: #444;
+}
+
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.acciones .aceptar {
+  color: #5793fb;
+  cursor: pointer;
+}
+
+.acciones .rechazar {
+  color: #f44336;
+  cursor: pointer;
+}
+
+.acciones i:hover {
+  opacity: 0.8;
+}
+
+/* Ocultar scroll si se desea */
+.chat-list::-webkit-scrollbar,
+.solicitudes-chat::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 
 /* HEADER MOBILE */
 .header-mobile {
@@ -475,6 +565,10 @@ aside .logo-circulo {
     margin: 70px 0 60px 0;
     width: 100%;
   }
+  .columna-central {
+    width: 100%;
+    border-right: none;
+  }
 
   .chat-list {
     flex-direction: column;
@@ -488,6 +582,9 @@ aside .logo-circulo {
   }
   .chat-user-info small{
     font-size: 1rem;
+  }
+  .acciones{
+    font-size: 1.4rem;
   }
   .titulo-mobile {
     display: block;
