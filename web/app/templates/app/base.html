@@ -13,7 +13,7 @@
 <body>
   <!-- Header mobile -->
   <div class="header-mobile">
-    <a href="{% url 'perfil' %}">
+    <a href="/perfil.html">
       <img src="https://i.pravatar.cc/150?img=47" alt="Perfil" />
     </a>
     <h1>
@@ -21,8 +21,8 @@
       ConectATI
     </h1>
     <div class="acciones">
-      <a href="{% url 'notificaciones' %}"><i class="fas fa-bell"></i></a>
-      <a href="{% url 'configuracion' %}"><i class="fas fa-cog"></i></a>
+      <a href="/notificaciones.html"><i class="fas fa-bell"></i></a>
+      <a href="/configuracion.html"><i class="fas fa-cog"></i></a>
     </div>
   </div>
 
@@ -34,35 +34,28 @@
         <span>ConectATI</span>
       </div>
       <div class="menu">
-        <a href="{% url 'feed' %}"><span class="icono"><i class="fas fa-home"></i></span><span class="texto">Inicio</span></a>
-        <a href="{% url 'notificaciones' %}"><span class="icono"><i class="fas fa-bell"></i></span><span class="texto">Notificaciones</span></a>
-        <a href="{% url 'amistades' %}"><span class="icono"><i class="fas fa-user-friends"></i></span><span class="texto">Amistades</span></a>
-        <a href="{% url 'chat' %}"><span class="icono"><i class="fas fa-envelope"></i></span><span class="texto">Mensajes</span></a>
-        <a href="{% url 'configuracion' %}"><span class="icono"><i class="fas fa-cog"></i></span><span class="texto">Configuración</span></a>
+        <a href="/feed.html"><span class="icono"><i class="fas fa-home"></i></span><span class="texto">Inicio</span></a>
+        <a href="/notificaciones.html"><span class="icono"><i class="fas fa-bell"></i></span><span class="texto">Notificaciones</span></a>
+        <a href="/amistades.html"><span class="icono"><i class="fas fa-user-friends"></i></span><span class="texto">Amistades</span></a>
+        <a href="/chat.html"><span class="icono"><i class="fas fa-envelope"></i></span><span class="texto">Mensajes</span></a>
+        <a href="/configuracion.html"><span class="icono"><i class="fas fa-cog"></i></span><span class="texto">Configuración</span></a>
       </div>
     </div>
 
     <div class="perfil-contenedor">
-      {% if user.is_authenticated %}
-        <form action="{% url 'logout' %}" method="post">
-          {% csrf_token %}
-          <button class="cerrar-sesion">Cerrar Sesión</button>
-        </form>
-        <a href="{% url 'perfil' %}" class="perfil-detalle-a" style="text-decoration: none;">
-          <div class="perfil-detalle">
-            <img src="https://i.pravatar.cc/150?img={{ user.id|default:47 }}" alt="{{ user.first_name }}" />
-            <div class="info">
-              <div class="nombre">
-                <strong>{{ user.first_name }} {{ user.last_name }}</strong>
-                <span class="puntos">●●●</span>
-              </div>
-              <small>@{{ user.username }}</small>
+      <a href="/iniciar_sesion.html" class="cerrar-sesion">Cerrar Sesión</a>
+      <a href="/perfil.html" class="perfil-detalle-a" style="text-decoration: none;">
+        <div class="perfil-detalle">
+          <img src="https://i.pravatar.cc/150?img=47" alt="Daniel" />
+          <div class="info">
+            <div class="nombre">
+              <strong>Daniel Rojas</strong>
+              <span class="puntos">●●●</span>
             </div>
+            <small>@danroj</small>
           </div>
-        </a>
-      {% else %}
-        <a href="{% url 'login' %}" class="cerrar-sesion">Iniciar sesión</a>
-      {% endif %}
+        </div>
+      </a>
     </div>
   </aside>
 
@@ -77,7 +70,6 @@
         <div class="buscador">
           <i class="fas fa-search"></i>
           <input type="text" id="inputBusqueda" placeholder="Buscar..." />
-          <!-- Dropdown de resultados debajo del input -->
           <div class="dropdown-resultados oculto" id="dropdownBuscador">
             <div class="header-dropdown">
               <span>Recientes</span>
@@ -112,16 +104,15 @@
     {% endblock %}
 
     {% block contenido %}
-    <!-- Aquí va el contenido principal de cada vista -->
     {% endblock %}
   </div>
 
   <!-- Menú mobile -->
   <div class="menu-mobile">
-    <a href="{% url 'feed' %}"><i class="fas fa-home"></i></a>
-    <a href="{% url 'busqueda' %}"><i class="fas fa-search"></i></a>
-    <a href="{% url 'amistades' %}"><i class="fas fa-user-friends"></i></a>
-    <a href="{% url 'chat' %}"><i class="fas fa-envelope"></i></a>
+    <a href="/feed.html"><i class="fas fa-home"></i></a>
+    <a href="/busqueda_mobile.html"><i class="fas fa-search"></i></a>
+    <a href="/amistades.html"><i class="fas fa-user-friends"></i></a>
+    <a href="/chat.html"><i class="fas fa-envelope"></i></a>
   </div>
 
   <script>

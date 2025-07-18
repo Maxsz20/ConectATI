@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "app/base.html" %}
 {% load static %}
 
 {% block title %}Amistades{% endblock %}
@@ -11,7 +11,6 @@
 
 {% block contenido %}
 <div class="contenedor-info">
-  <!-- Lista de amigos -->
   <div class="columna-central">
     <section class="lista-amigos">
       {% for i in "12345" %}
@@ -26,7 +25,6 @@
       {% endfor %}
     </section>
 
-    <!-- Solicitudes -->
     <section class="solicitudes">
       <h3>Solicitudes de Amistad</h3>
       {% for i in "12345" %}
@@ -45,11 +43,10 @@
     </section>
   </div>
 
-  <!-- Panel lateral derecho -->
   <div class="panel-lateral">
     <h3>Mensajes</h3>
     {% for i in "12" %}
-    <a href="{% url 'chat' %}">
+    <a href="#">
       <div class="mensaje-preview">
         <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
         <div class="mensaje-info">
@@ -76,7 +73,7 @@
         <p>¿Podemos hablar por aquí?</p>
       </div>
       <div class="acciones">
-        <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
+        <a href="#"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
         <i class="fas fa-times rechazar" title="Rechazar"></i>
       </div>
     </div>
