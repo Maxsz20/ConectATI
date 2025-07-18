@@ -13,7 +13,7 @@
 <body>
   <!-- Header mobile -->
   <div class="header-mobile">
-    <a href="/perfil.html">
+    <a href="{% url 'profile' %}">
       <img src="https://i.pravatar.cc/150?img=47" alt="Perfil" />
     </a>
     <h1>
@@ -21,8 +21,8 @@
       ConectATI
     </h1>
     <div class="acciones">
-      <a href="/notificaciones.html"><i class="fas fa-bell"></i></a>
-      <a href="/configuracion.html"><i class="fas fa-cog"></i></a>
+      <a href="{% url 'notifications' %}"><i class="fas fa-bell"></i></a>
+      <a href="{% url 'settings' %}"><i class="fas fa-cog"></i></a>
     </div>
   </div>
 
@@ -114,10 +114,10 @@
 
   <!-- Menú mobile -->
   <div class="menu-mobile">
-    <a href="/feed.html"><i class="fas fa-home"></i></a>
-    <a href="/busqueda_mobile.html"><i class="fas fa-search"></i></a>
-    <a href="/amistades.html"><i class="fas fa-user-friends"></i></a>
-    <a href="/chat.html"><i class="fas fa-envelope"></i></a>
+    <a href="{% url 'feed' %}"><i class="fas fa-home"></i></a>
+    <a href="{% url 'search' %}"><i class="fas fa-search"></i></a>
+    <a href="{% url 'friends' %}"><i class="fas fa-user-friends"></i></a>
+    <a href="{% url 'chat' %}"><i class="fas fa-envelope"></i></a>
   </div>
 
   <script>
