@@ -13,13 +13,10 @@ def RegisterView(request):
 def ForgottenPassView(request):
     return render(request, 'app/forgotten_password.html', {})
 
-def PerfilView(request):
+def ProfileView(request):
     return render(request, 'app/perfil.html', {
         'no_area_info': True
     })
-
-def ProfileView(request):
-    return render(request, 'app/perfil.html', {})
 
 def FeedView(request):
     return render(request, 'app/feed.html', {})
