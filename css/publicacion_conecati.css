@@ -293,9 +293,13 @@ aside .logo-circulo {
 .form-respuesta {
   display: flex;
   align-items: center;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   gap: 1rem;
   margin-bottom: 2rem;
-  
+  flex-wrap: nowrap;
+  overflow: hidden; 
 }
 
 .form-respuesta img {
@@ -305,7 +309,8 @@ aside .logo-circulo {
 }
 
 .form-respuesta input {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0; /* ⚠️ importante para que pueda encogerse */
   padding: 0.6rem 1rem;
   border: 1px solid var(--color-bordes);
   background-color: var(--lavanda-translucido);
@@ -313,14 +318,17 @@ aside .logo-circulo {
   font-size: 0.95rem;
 }
 
+
 .btn-responder {
+  padding: 0.6rem 0.3rem;
+  font-size: 0.9rem;
+  border-radius: 20px;
+  border: none;
   background-color: var(--color-iconos);
   color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-weight: bold;
   cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap; 
 }
 
 /* Comentarios */
@@ -832,7 +840,6 @@ aside .logo-circulo {
     padding: 1rem;
     width: 100%;
   }
-
   .post-principal,
   .comentario .contenido {
     padding: 1rem;
@@ -851,7 +858,8 @@ aside .logo-circulo {
     font-size: 0.95rem;
   }
   .titulo-mobile {
-    display: block;
+    display: flex;
+    justify-content: center;
   }
   .imagen-post {
     max-height: 250px;
