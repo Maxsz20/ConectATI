@@ -739,7 +739,7 @@ a, a:visited {
 }
 
 .dropdown-resultados .usuario-busqueda:hover {
-  background-color: #f5f5f5;
+  background-color: var(--lavanda-translucido);
 }
 
 .dropdown-resultados .usuario-busqueda img {
