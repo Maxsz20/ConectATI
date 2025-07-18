@@ -34,26 +34,11 @@
         <span>ConectATI</span>
       </div>
       <div class="menu">
-        <a href="{% url 'feed' %}">
-          <span class="icono"><i class="fas fa-home"></i></span>
-          <span class="texto">Inicio</span>
-        </a>
-        <a href="{% url 'notificaciones' %}">
-          <span class="icono"><i class="fas fa-bell"></i></span>
-          <span class="texto">Notificaciones</span>
-        </a>
-        <a href="{% url 'amistades' %}">
-          <span class="icono"><i class="fas fa-user-friends"></i></span>
-          <span class="texto">Amistades</span>
-        </a>
-        <a href="{% url 'chat' %}">
-          <span class="icono"><i class="fas fa-envelope"></i></span>
-          <span class="texto">Mensajes</span>
-        </a>
-        <a href="{% url 'configuracion' %}">
-          <span class="icono"><i class="fas fa-cog"></i></span>
-          <span class="texto">Configuración</span>
-        </a>
+        <a href="{% url 'feed' %}"><span class="icono"><i class="fas fa-home"></i></span><span class="texto">Inicio</span></a>
+        <a href="{% url 'notificaciones' %}"><span class="icono"><i class="fas fa-bell"></i></span><span class="texto">Notificaciones</span></a>
+        <a href="{% url 'amistades' %}"><span class="icono"><i class="fas fa-user-friends"></i></span><span class="texto">Amistades</span></a>
+        <a href="{% url 'chat' %}"><span class="icono"><i class="fas fa-envelope"></i></span><span class="texto">Mensajes</span></a>
+        <a href="{% url 'configuracion' %}"><span class="icono"><i class="fas fa-cog"></i></span><span class="texto">Configuración</span></a>
       </div>
     </div>
 
@@ -63,16 +48,18 @@
           {% csrf_token %}
           <button class="cerrar-sesion">Cerrar Sesión</button>
         </form>
-        <div class="perfil-detalle">
-          <img src="https://i.pravatar.cc/150?img={{ user.id|default:47 }}" alt="{{ user.first_name }}" />
-          <div class="info">
-            <div class="nombre">
-              <strong>{{ user.first_name }} {{ user.last_name }}</strong>
-              <span class="puntos">●●●</span>
+        <a href="{% url 'perfil' %}" class="perfil-detalle-a" style="text-decoration: none;">
+          <div class="perfil-detalle">
+            <img src="https://i.pravatar.cc/150?img={{ user.id|default:47 }}" alt="{{ user.first_name }}" />
+            <div class="info">
+              <div class="nombre">
+                <strong>{{ user.first_name }} {{ user.last_name }}</strong>
+                <span class="puntos">●●●</span>
+              </div>
+              <small>@{{ user.username }}</small>
             </div>
-            <small>@{{ user.username }}</small>
           </div>
-        </div>
+        </a>
       {% else %}
         <a href="{% url 'login' %}" class="cerrar-sesion">Iniciar sesión</a>
       {% endif %}
@@ -81,6 +68,41 @@
 
   <!-- Contenedor principal -->
   <div class="area-info">
+
+    <!-- Encabezado desktop -->
+    <div class="fila-encabezados">
+      <div class="encabezado-lista">
+        <h2>{% block titulo_pagina %}{% endblock %}</h2>
+      </div>
+      <div class="encabezado-chat">
+        <div class="buscador">
+          <i class="fas fa-search"></i>
+          <input type="text" id="inputBusqueda" placeholder="Buscar..." />
+          <div class="dropdown-resultados oculto" id="dropdownBuscador">
+            <div class="header-dropdown">
+              <span>Recientes</span>
+              <a href="{% url 'busqueda' %}">Ver todo</a>
+            </div>
+
+            <!-- Aquí podrías hacer un {% for usuario in resultados %} en el futuro -->
+            <div class="usuario-busqueda">
+              <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
+              <div class="info">
+                <strong>@anag</strong>
+                <small>Ana García · 2 nuevos posts</small>
+              </div>
+              <i class="fas fa-times"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Encabezado mobile -->
+    <div class="titulo-mobile">
+      <h2>{% block titulo_pagina_mobile %}{% endblock %}</h2>
+    </div>
+
     {% block contenido %}
     <!-- Aquí va el contenido de cada vista -->
     {% endblock %}
@@ -93,6 +115,23 @@
     <a href="{% url 'amistades' %}"><i class="fas fa-user-friends"></i></a>
     <a href="{% url 'chat' %}"><i class="fas fa-envelope"></i></a>
   </div>
+
+  <script>
+    const input = document.getElementById('inputBusqueda');
+    const dropdown = document.getElementById('dropdownBuscador');
+
+    if (input && dropdown) {
+      input.addEventListener('focus', () => {
+        dropdown.classList.remove('oculto');
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!document.querySelector('.buscador').contains(e.target)) {
+          dropdown.classList.add('oculto');
+        }
+      });
+    }
+  </script>
 
   {% block extra_js %}{% endblock %}
 </body>
