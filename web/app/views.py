@@ -11,4 +11,4 @@ def RegisterView(request):
     return render(request, 'app/registrarse.html', {})
 
 def ForgottenPassView(request):
-    return render(request, 'app/changepassword.html', {})
+    return render(request, 'app/forgotten_password.html', {})
