@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ConectATI - Iniciar Sesión</title>
+  <link rel="icon" href="/images/logo.png" type="image/png">
+  <link rel="stylesheet" href="/css/login_register_clave.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Triángulos decorativos -->
+  <div class="triangulo-blanco"></div>
+  <div class="triangulo-azul"></div>
+  <div class="triangulo-morado"></div>
+
+  <!-- Contenedor principal -->
+  <div class="container">
+    <h1>ConectATI</h1>
+    <form class="form">
+      <input type="text" placeholder="Correo o Usuario" required />
+
+      <div class="password-container">
+        <input type="password" placeholder="Contraseña" id="password" required />
+        <i class="fas fa-eye-slash toggle" id="togglePassword" onclick="togglePassword('password', 'togglePassword')"></i>
+      </div>
+      
+      <div class="forgot-password">
+        <a href="forgotten_password.html">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <button type="submit">Iniciar Sesión</button>
+
+      <div class="register-message">
+        ¿Aún no eres usuario? <a href="registrarse.html">Regístrate</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Script para mostrar/ocultar contraseña -->
+  <script>
+    function togglePassword(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      }
+    }
+  </script>
+
+</body>
+</html>
