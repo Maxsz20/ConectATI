@@ -14,6 +14,12 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY . /app
+COPY django.conf /etc/apache2/sites-available/django.conf
+RUN a2ensite django.conf && a2dissite 000-default.conf
+
+RUN python manage.py collectstatic --noinput
+
 # Exponer el puerto 80
 EXPOSE 80
 

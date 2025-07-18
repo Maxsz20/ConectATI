@@ -4,7 +4,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ./web:/app
+      #- ./web:/app
       - ./db:/db
     depends_on:
       - db
