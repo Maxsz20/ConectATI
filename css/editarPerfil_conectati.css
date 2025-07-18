@@ -73,6 +73,11 @@ aside .logo-conectati {
   margin-bottom: 4rem;
 }
 
+a, a:visited {
+  color: #333; /* o el color que uses normalmente */
+  text-decoration: none; /* opcional */
+}
+
 .menu {
   display: flex;
   flex-direction: column;
@@ -111,7 +116,7 @@ aside .logo-conectati {
 .cerrar-sesion {
   background-color: transparent;
   border: 2px solid var(--color-iconos);
-  color: var(--color-texto-oscuro);
+  color: #212121;
   padding: 0.4rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -124,8 +129,11 @@ aside .logo-conectati {
   background-color: var(--lavanda-translucido);
   color: var(--color-iconos);
 }
-
-
+.perfil-detalle-a{
+  text-decoration: none;
+  color: inherit;
+  width: 70%;
+}
 
 .perfil-detalle {
   background-color: var(--lavanda-translucido);
@@ -134,12 +142,8 @@ aside .logo-conectati {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  width: auto; 
+  width: 100%;
 }
-
-
-
-
 
 .perfil-detalle img {
   width: 40px;
