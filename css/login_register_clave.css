@@ -21,27 +21,23 @@ body {
   height: 100%;
 }
 
-/* Fondo blanco: triangulo izquierdo */
 .triangulo-blanco {
   background-color: #DFE1E5;
   clip-path: polygon(0 0, 50% 50%, 0 100%);
   z-index: 1;
 }
 
-/* Fondo azul: triangulo derecho superior */
 .triangulo-azul {
   background-color: #A2D4F4;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 50%);
   z-index: 2;
 }
 
-/* Fondo morado: triangulo abajo */
 .triangulo-morado {
   background-color: #A698F2;
   clip-path: polygon(0 100%, 100% 100%, 50% 50%);
   z-index: 3;
 }
-
 
 .container {
   position: relative;
@@ -58,7 +54,6 @@ body {
   align-items: center;
 }
 
-
 h1 {
   text-align: center;
   margin-bottom: 25px;
@@ -70,18 +65,20 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 0 5px; /* <- agrega espacio a los lados */
+  padding: 0 5px;
 }
 
+/* ✅ Input unificado para todos los campos */
 input[type="text"],
 input[type="email"],
 input[type="password"] {
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: #c8d8e4;
-  font-size: 14px;
   width: 100%;
+  padding: 12px 44px 12px 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #c8d8e4;
+  font-size: 1rem;
+  box-sizing: border-box;
 }
 
 .password-container {
@@ -91,29 +88,22 @@ input[type="password"] {
 
 .password-container input {
   width: 100%;
-  padding: 12px 44px 12px 12px; /* deja espacio a la derecha para el ícono */
+  padding: 12px 44px 12px 12px;
   border: 1px solid #ccc;
   border-radius: 10px;
+  background-color: #c8d8e4;
   font-size: 1rem;
   box-sizing: border-box;
 }
 
-.password-container i {
+.password-container .toggle {
   position: absolute;
-  right: 14px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  cursor: pointer;
   color: #888;
   font-size: 1.1rem;
-}
-.toggle {
-  position: absolute;
-  right: 10px;
-  top: 9px;
   cursor: pointer;
-  font-size: 16px;
-  user-select: none;
 }
 
 button {
@@ -133,7 +123,6 @@ button:hover {
   background-color: #7a88e6;
 }
 
-
 .forgot-password {
   width: 100%;
   text-align: right;
@@ -150,6 +139,32 @@ button:hover {
   text-decoration: underline;
 }
 
+.register-message {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.register-message a {
+  color: #8E9BFF;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.register-message a:hover {
+  text-decoration: underline;
+}
+
+.texto-explicativo {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #333;
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   body {
     height: 100vh;
@@ -194,10 +209,6 @@ button:hover {
     font-size: 2rem;
     margin-bottom: 1.5rem;
     text-align: center;
-  }
-
-  .toggle {
-    top: 12px;
   }
 
   .forgot-password a {

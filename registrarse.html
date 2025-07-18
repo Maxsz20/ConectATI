@@ -17,45 +17,60 @@
   <div class="container">
     <h1>ConectATI</h1>
     <form class="form" onsubmit="redirigirLogin(event)">
-      <input type="text" placeholder="Nombre" required />
-      <input type="email" placeholder="Correo" required />
-      <input type="text" placeholder="Usuario" required />
+  <input type="text" placeholder="Nombre" required />
+  <input type="email" placeholder="Correo" required />
+  <input type="text" placeholder="Usuario" required />
 
-      <div class="password-container">
-        <input type="password" id="password" placeholder="Contraseña" required />
-        <i class="fas fa-eye-slash" id="togglePassword" onclick="togglePassword('password', 'togglePassword')"></i>
-      </div>
+  <div class="password-container">
+    <input type="password" id="password" placeholder="Contraseña" required />
+    <i class="fas fa-eye-slash toggle" id="togglePassword" onclick="togglePassword('password', 'togglePassword')"></i>
+  </div>
 
-      <div class="password-container">
-        <input type="password" id="confirm" placeholder="Contraseña" required />
-        <i class="fas fa-eye-slash" id="togglePassword" onclick="togglePassword('password', 'togglePassword')"></i>
-      </div>
+  <div class="password-container">
+    <input type="password" id="confirm" placeholder="Confirmar contraseña" required />
+    <i class="fas fa-eye-slash toggle" id="toggleConfirm" onclick="togglePassword('confirm', 'toggleConfirm')"></i>
+  </div>
 
-  
-      <button type="submit">Registrarse</button>
-    
-    </form>
+  <button type="submit">Registrarse</button>
+</form>
+
   </div>
 
   <script>
-    function togglePassword(inputId, iconId) {
-      const input = document.getElementById(inputId);
-      const icon = document.getElementById(iconId);
-      if (input.type === "password") {
-        input.type = "text";
-        icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye");
-      } else {
-        input.type = "password";
-        icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash");
-      }
+  function togglePassword(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    if (input.type === "password") {
+      input.type = "text";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+    } else {
+      input.type = "password";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
     }
-    function redirigirLogin(event) {
-      event.preventDefault(); // Evita recargar la página
-      // Aquí podrías hacer validaciones antes si quieres
-      window.location.href = "/iniciar_sesion.html"; // Redirige a iniciar sesión
+  }
+
+  function redirigirLogin(event) {
+    event.preventDefault();
+
+    const pass = document.getElementById("password").value;
+    const confirm = document.getElementById("confirm").value;
+
+    if (pass === "" || confirm === "") {
+      alert("Por favor, completa ambos campos de contraseña.");
+      return;
     }
-  </script>
+
+    if (pass !== confirm) {
+      alert("Las contraseñas no coinciden.");
+      return;
+    }
+
+    alert("Registro exitoso.");
+    window.location.href = "/iniciar_sesion.html";
+  }
+</script>
+
 </body>
 </html>
