@@ -43,8 +43,8 @@
     </div>
 
     <div class="perfil-contenedor">
-      <a href="/iniciar_sesion.html" class="cerrar-sesion">Cerrar Sesión</a>
-      <a href={% url "profile" %} class="perfil-detalle-a" style="text-decoration: none;">
+      <a href="{% url 'login' %}" class="cerrar-sesion">Cerrar Sesión</a>
+      <a href="{% url 'profile' %}" class="perfil-detalle-a" style="text-decoration: none;">
         <div class="perfil-detalle">
           <img src="https://i.pravatar.cc/150?img=47" alt="Daniel" />
           <div class="info">
