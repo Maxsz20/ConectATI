@@ -12,3 +12,8 @@ def RegisterView(request):
 
 def ForgottenPassView(request):
     return render(request, 'app/forgotten_password.html', {})
+
+def PerfilView(request):
+    return render(request, 'app/perfil.html', {
+        'no_area_info': True
+    })

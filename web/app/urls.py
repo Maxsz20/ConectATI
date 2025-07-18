@@ -15,6 +15,6 @@ urlpatterns = [
 #    path('configuracion/', views.configuracion, name='configuracion'),
 #    path('publicar/', views.publicar, name='publicar'),
 #    path('busqueda/', views.busqueda, name='busqueda'),
-#    path('perfil/', views.perfil, name='perfil'),
+    path('perfil/', views.PerfilView, name='perfil'),
 #    path('logout/', views.logout_view, name='logout'),
 ]

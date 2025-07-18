@@ -36,7 +36,7 @@
       <div class="menu">
         <a href="/feed.html"><span class="icono"><i class="fas fa-home"></i></span><span class="texto">Inicio</span></a>
         <a href="/notificaciones.html"><span class="icono"><i class="fas fa-bell"></i></span><span class="texto">Notificaciones</span></a>
-        <a href="/amistades.html"><span class="icono"><i class="fas fa-user-friends"></i></span><span class="texto">Amistades</span></a>
+        <a href={% url "amistades" %}><span class="icono"><i class="fas fa-user-friends"></i></span><span class="texto">Amistades</span></a>
         <a href="/chat.html"><span class="icono"><i class="fas fa-envelope"></i></span><span class="texto">Mensajes</span></a>
         <a href="/configuracion.html"><span class="icono"><i class="fas fa-cog"></i></span><span class="texto">Configuración</span></a>
       </div>
@@ -44,7 +44,7 @@
 
     <div class="perfil-contenedor">
       <a href="/iniciar_sesion.html" class="cerrar-sesion">Cerrar Sesión</a>
-      <a href="/perfil.html" class="perfil-detalle-a" style="text-decoration: none;">
+      <a href={% url "perfil" %} class="perfil-detalle-a" style="text-decoration: none;">
         <div class="perfil-detalle">
           <img src="https://i.pravatar.cc/150?img=47" alt="Daniel" />
           <div class="info">
@@ -60,52 +60,57 @@
   </aside>
 
   <!-- Contenedor principal -->
-  <div class="area-info">
-    {% block encabezado_unificado %}
-    <div class="fila-encabezados">
-      <div class="encabezado-lista">
-        <h2>{% block titulo_pagina %}{% endblock %}</h2>
-      </div>
-      <div class="encabezado-chat">
-        <div class="buscador">
-          <i class="fas fa-search"></i>
-          <input type="text" id="inputBusqueda" placeholder="Buscar..." />
-          <div class="dropdown-resultados oculto" id="dropdownBuscador">
-            <div class="header-dropdown">
-              <span>Recientes</span>
-              <a href="#">Ver todo</a>
-            </div>
-
-            <div class="usuario-busqueda">
-              <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
-              <div class="info">
-                <strong>@anag</strong>
-                <small>Ana García · 2 nuevos posts</small>
+  {% if no_area_info %}
+    {% block contenido %}
+    {% endblock %}
+  {% else %}
+    <div class="area-info">
+      {% block encabezado_unificado %}
+      <div class="fila-encabezados">
+        <div class="encabezado-lista">
+          <h2>{% block titulo_pagina %}{% endblock %}</h2>
+        </div>
+        <div class="encabezado-chat">
+          <div class="buscador">
+            <i class="fas fa-search"></i>
+            <input type="text" id="inputBusqueda" placeholder="Buscar..." />
+            <div class="dropdown-resultados oculto" id="dropdownBuscador">
+              <div class="header-dropdown">
+                <span>Recientes</span>
+                <a href="#">Ver todo</a>
               </div>
-              <i class="fas fa-times"></i>
-            </div>
 
-            <div class="usuario-busqueda">
-              <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" />
-              <div class="info">
-                <strong>@carlosm</strong>
-                <small>Carlos Mendoza</small>
+              <div class="usuario-busqueda">
+                <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
+                <div class="info">
+                  <strong>@anag</strong>
+                  <small>Ana García · 2 nuevos posts</small>
+                </div>
+                <i class="fas fa-times"></i>
               </div>
-              <i class="fas fa-times"></i>
+
+              <div class="usuario-busqueda">
+                <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" />
+                <div class="info">
+                  <strong>@carlosm</strong>
+                  <small>Carlos Mendoza</small>
+                </div>
+                <i class="fas fa-times"></i>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="titulo-mobile">
-      <h2>{% block titulo_pagina_mobile %}{% endblock %}</h2>
-    </div>
-    {% endblock %}
+      <div class="titulo-mobile">
+        <h2>{% block titulo_pagina_mobile %}{% endblock %}</h2>
+      </div>
+      {% endblock %}
 
-    {% block contenido %}
-    {% endblock %}
-  </div>
+      {% block contenido2 %}
+      {% endblock %}
+    </div>
+  {% endif %}
 
   <!-- Menú mobile -->
   <div class="menu-mobile">
