@@ -14,6 +14,6 @@ urlpatterns = [
 #    path('busqueda/', views.busqueda, name='busqueda'),
 #    path('perfil/', views.perfil, name='perfil'),
 #    path('logout/', views.logout_view, name='logout'),
-#    path('login/', views.login_view, name='login'),
+    path('login/', views.LoginView, name='login'),
 #    path('registro/', views.registro, name='registro'),
 ]
