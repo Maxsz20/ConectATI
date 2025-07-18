@@ -30,6 +30,9 @@ def SettingsView(request):
 
 def PostView(request):
     return render(request, 'app/publicar.html', {})
+    
+def PostMobileView(request):
+    return render(request, 'app/publicar_mobile.html', {})
 
 def SearchView(request):
     return render(request, 'app/busqueda.html', {})
