@@ -614,12 +614,10 @@ aside .logo-circulo {
   padding: 0 2rem;
 }
 
-
 /* Ocultar scroll si se desea */
-.chat-list::-webkit-scrollbar,
-.solicitudes-chat::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+.area-perfil::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
 }
 
 .meta {

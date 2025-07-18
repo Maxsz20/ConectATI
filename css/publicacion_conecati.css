@@ -678,7 +678,6 @@ aside .logo-circulo {
     z-index: 10000;
   }
 
-
   .contenido-modal {
     position: absolute;
     top: 8vh;
@@ -694,7 +693,6 @@ aside .logo-circulo {
     flex-direction: column;
     gap: 1.5rem;
   }
-
 
   .barra-superior-modal {
     display: flex;
