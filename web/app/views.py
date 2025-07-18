@@ -18,11 +18,6 @@ def PerfilView(request):
         'no_area_info': True
     })
 
-def PerfilView(request):
-    return render(request, 'app/perfil.html', {
-        'no_area_info': True
-    })
-
 def ProfileView(request):
     return render(request, 'app/perfil.html', {})
 
