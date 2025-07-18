@@ -24,6 +24,11 @@ def ProfileView(request):
         'no_area_info': True
     })
 
+def EditProfileView(request):
+    return render(request, 'app/editarPerfil.html', {
+        'no_area_info': True
+    })
+
 def FeedView(request):
     return render(request, 'app/feed.html', {})
 

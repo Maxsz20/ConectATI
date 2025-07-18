@@ -18,5 +18,6 @@ urlpatterns = [
     path('app/post/', views.PostView, name='post'),
     path('app/search/', views.SearchView, name='search'),
     path('app/profile/', views.ProfileView, name='profile'),
+    path('app/editprofile/', views.EditProfileView, name='editprofile'),
     path('app/post_mobile/', views.PostMobileView, name='post_mobile'),
 ]
