@@ -112,6 +112,18 @@
     </div>
   {% endif %}
 
+  {% block boton_mobile %}
+  <!-- Por defecto, se muestra. Las vistas pueden sobrescribirlo o vaciarlo -->
+  <a href="{% url 'post_mobile' %}">
+    <div class="boton-publicar-mobile">
+      <div class="burbuja">
+        <span class="texto">Publicar</span>
+        <div class="icono"><i class="fas fa-plus"></i></div>
+      </div>
+    </div>
+  </a>
+  {% endblock %}
+
   <!-- Menú mobile -->
   <div class="menu-mobile">
     <a href="{% url 'feed' %}"><i class="fas fa-home"></i></a>
