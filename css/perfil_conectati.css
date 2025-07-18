@@ -807,3 +807,26 @@ a, a:visited {
   }
 
 }
+
+
+
+
+
+
+.perfil-detalle {
+  background-color: var(--lavanda-translucido);
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: auto; 
+}
+
+
+
+.perfil-detalle-link {
+  text-decoration: none; /* Elimina el subrayado predeterminado del enlace */
+  color: inherit; /* Hereda el color del texto de sus hijos o de su contenedor */
+  display: block; /* Ocupa todo el ancho disponible para que toda el área sea clicable */
+}
