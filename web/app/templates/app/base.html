@@ -120,6 +120,9 @@
     <a href="{% url 'chat' %}"><i class="fas fa-envelope"></i></a>
   </div>
 
+  {% block extra_body_content%}
+  {% endblock %}
+
   <script>
     const input = document.getElementById('inputBusqueda');
     const dropdown = document.getElementById('dropdownBuscador');

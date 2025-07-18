@@ -7,47 +7,11 @@
     <link rel="stylesheet" href="{% static 'css/notificaciones_conectati.css' %}" />
 {% endblock %}
 
-{% block encabezado_unificado %}
-    <div class="encabezado-lista">
-        <h2>Notificaciones</h2>
-    </div>
-    <div class="encabezado-chat"> {# This div is named 'encabezado-chat' in your original, but functions as a right header #}
-        <div class="buscador">
-            <i class="fas fa-search"></i>
-            <input type="text" id="inputBusqueda" placeholder="Buscar..." />
-            <div class="dropdown-resultados oculto" id="dropdownBuscador">
-                <div class="header-dropdown">
-                    <span>Recientes</span>
-                    <a href="#">Ver todo</a> {# Consider adding a URL here, e.g., {% url 'app:search_results' %} #}
-                </div>
-
-                <div class="usuario-busqueda">
-                    <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
-                    <div class="info">
-                        <strong>@anag</strong>
-                        <small>Ana García · 2 nuevos posts</small>
-                    </div>
-                    <i class="fas fa-times"></i>
-                </div>
-
-                <div class="usuario-busqueda">
-                    <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" />
-                    <div class="info">
-                        <strong>@carlosm</strong>
-                        <small>Carlos Mendoza</small>
-                    </div>
-                    <i class="fas fa-times"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
-{% block titulo_mobile %}
-    <h2>Notificaciones</h2>
-{% endblock %}
+{% block titulo_pagina %}Notificaciones{% endblock %}
+{% block titulo_pagina_mobile %}Notificaciones{% endblock %}
 
 {% block contenido2 %}
+<div class="contenedor-info">
     <section class="notificaciones">
         <div class="grupo">
             <h3>Hoy</h3>
@@ -133,9 +97,7 @@
             </div>
         </div>
     </section>
-{% endblock %}
-
-{% block panel_lateral %}
+    {% block panel_lateral %}
     <div class="panel-lateral">
         <h3>Mensajes</h3>
         <a href="{% url 'chat' %}">
@@ -197,6 +159,9 @@
             </div>
         </div>
     </div>
+    {% endblock %}
+
+</div> 
 {% endblock %}
 
 {% block extra_js %}
