@@ -817,18 +817,15 @@ aside .logo-circulo {
   .modal-respuesta {
     display: none !important;
   }
-
   .header-mobile,
   .menu-mobile {
     display: flex;
   }
-
   .area-info {
     margin: 70px 0 60px 0;
     width: 100%;
     overflow-y: auto;
   }
-
   .contenedor-info {
     flex-direction: column;
     width: 100%;
