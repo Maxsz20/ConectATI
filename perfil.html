@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ConectATI - Perfil</title>
-  <link rel="stylesheet" href="/css/perfil_conectati.css" />
   <link rel="icon" href="/images/logo.png" type="image/png" />
+  <title>ConectATI - Perfil</title>
+  <link rel="stylesheet" href="/ConectATI/css/perfil_conectati.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
@@ -52,16 +52,18 @@
 
     <div class="perfil-contenedor">
       <button class="cerrar-sesion">Cerrar Sesión</button>
-      <div class="perfil-detalle">
-        <img src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
-        <div class="info">
-          <div class="nombre">
-            <strong>Daniela Rojas</strong>
-            <span class="puntos">●●●</span>
+      <a href="perfil.html" class="perfil-detalle-link">
+        <div class="perfil-detalle">
+          <img src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
+          <div class="info">
+            <div class="nombre">
+              <strong>Daniela Rojas</strong>
+              <span class="puntos">●●●</span>
+            </div>
+            <small>@danroj</small>
           </div>
-          <small>@danroj</small>
         </div>
-      </div>
+      </a>
     </div>
   </aside>
 
@@ -81,11 +83,10 @@
             <p class="usuario">@danroj</p>
             <p class="bio">Desarrollador de software en ConectATI. Apasionado por la tecnología y el aprendizaje continuo.</p>
           </div>
-          <button class="editar-perfil">Editar perfil</button>
+            <button class="editar-perfil" onclick="window.location.href='/ConectATI/editarPerfil.html'">Editar perfil</button>
         </div>
 
-      
-        <!-- Franja lavanda -->
+      <!-- Franja lavanda -->
         <div class="barra-inferior">
           <span><strong>50</strong> Amigos</span>
         </div>
