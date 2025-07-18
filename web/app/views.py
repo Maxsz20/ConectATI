@@ -43,6 +43,9 @@ def PostView(request):
 def PostMobileView(request):
     return render(request, 'app/publicar_mobile.html', {'no_area_info': True})
 
+def ReplyMobileView(request):
+    return render(request, 'app/responder_mobile.html', {'no_area_info': True})
+
 def SearchView(request):
     return render(request, 'app/busqueda.html', {})
 

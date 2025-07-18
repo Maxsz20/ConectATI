@@ -4,78 +4,99 @@
 {% block title %}EditarPerfil{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/editarPerfil_conectati.css' %}">
+<link rel="stylesheet" href="{% static 'css/editarPerfil_conectati.css' %}">
 {% endblock %}
 
 
 
 {% block contenido %}
-  
-    
-      <main class="perfil-editar">
-        <div class="perfil-container">
-          <a href="/app/profile" class="volver-atras-link">
-            
-              <i class="fas fa-chevron-left"></i>
-            </button>
-          </a>
-          <div class="perfil-foto-editable">
-            <img src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" id="profileImage" />
-            <div class="overlay-foto">
-              <i class="fas fa-pencil-alt icono-editar"></i>
-            </div>
-          </div>
 
-          <div id="editPhotoModal" class="modal">
-            <div class="modal-content">
-              <span class="close-button">&times;</span>
-              <h2>Editar foto de perfil</h2>
-              <input type="file" id="newProfilePhotoInput" accept="image/*">
-              <button id="uploadPhotoButton">Subir foto</button>
-              <button id="removePhotoButton">Eliminar foto</button>
-            </div>
-          </div>
 
-          <form class="perfil-formulario">
-            <label>
-              <span class="label-text">Nombre:</span>
-              <input type="text" value="Daniela Rojas" />
-            </label>
+  <main class="perfil-editar">
+    <div class="perfil-container">
+      <a href="/app/profile" class="volver-atras-link">
 
-            <label>
-              <span class="label-text">Usuario:</span>
-              <input type="text" value="@danroj" />
-            </label>
-
-            <label>
-              <span class="label-text">Descripción:</span>
-              <textarea>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</textarea>
-            </label>
-
-            <label>
-              <span class="label-text">Locación:</span>
-              <input type="text" value="Caracas, Venezuela" />
-            </label>
-
-            <label>
-              <span class="label-text">Cumpleaños:</span>
-              <input type="date" value="1999-02-10" />
-            </label>
-
-            <label>
-              <span class="label-text">Género:</span>
-              <select>
-                <option>Masculino</option>
-                <option selected>Femenino</option>
-                <option>Otro</option>
-              </select>
-            </label>
-
-              <button type="submit" class="btn-guardar" onclick="location.href='/app/profile'; return false;">Guardar</button>
-            
-          </form>
+        <i class="fas fa-chevron-left"></i>
+        </button>
+      </a>
+      <div class="perfil-foto-editable">
+        <img src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" id="profileImage" />
+        <div class="overlay-foto">
+          <i class="fas fa-pencil-alt icono-editar"></i>
         </div>
-      </main>
+      </div>
 
-    
-{% endblock %} 
+      <div id="editPhotoModal" class="modal">
+        <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <h2>Editar foto de perfil</h2>
+          <input type="file" id="newProfilePhotoInput" accept="image/*">
+          <button id="uploadPhotoButton">Subir foto</button>
+          <button id="removePhotoButton">Eliminar foto</button>
+        </div>
+      </div>
+
+      <form class="perfil-formulario">
+        <label>
+          <span class="label-text">Nombre:</span>
+          <input type="text" value="Daniela Rojas" />
+        </label>
+
+        <label>
+          <span class="label-text">Usuario:</span>
+          <input type="text" value="@danroj" />
+        </label>
+
+        <label>
+          <span class="label-text">Descripción:</span>
+          <textarea>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</textarea>
+        </label>
+
+        <label>
+          <span class="label-text">Locación:</span>
+          <input type="text" value="Caracas, Venezuela" />
+        </label>
+
+        <label>
+          <span class="label-text">Cumpleaños:</span>
+          <input type="date" value="1999-02-10" />
+        </label>
+
+        <label>
+          <span class="label-text">Género:</span>
+          <select>
+            <option>Masculino</option>
+            <option selected>Femenino</option>
+            <option>Otro</option>
+          </select>
+        </label>
+
+        <button type="submit" class="btn-guardar" onclick="location.href='/app/profile'; return false;">Guardar</button>
+
+      </form>
+    </div>
+  </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const editPencilIcon = document.querySelector('.overlay-foto .icono-editar');
+      const editPhotoModal = document.getElementById('editPhotoModal');
+      const closeButton = document.querySelector('.modal .close-button');
+
+      editPencilIcon.addEventListener('click', (event) => {
+        event.stopPropagation();
+        editPhotoModal.style.display = 'flex';
+      });
+
+      closeButton.addEventListener('click', () => {
+        editPhotoModal.style.display = 'none';
+      });
+
+      window.addEventListener('click', (event) => {
+        if (event.target === editPhotoModal) {
+          editPhotoModal.style.display = 'none';
+        }
+      });
+    });
+  </script>
+
+{% endblock %}
