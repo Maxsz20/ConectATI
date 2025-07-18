@@ -17,6 +17,7 @@ urlpatterns = [
     path('app/settings/', views.SettingsView, name='settings'),
     path('app/post/', views.PostView, name='post'),
     path('app/search/', views.SearchView, name='search'),
+    path('app/search_mobile/', views.SearchMobileView, name='search_mobile'),
     path('app/profile/', views.ProfileView, name='profile'),
     path('app/editprofile/', views.EditProfileView, name='editprofile'),
     path('app/post_mobile/', views.PostMobileView, name='post_mobile'),

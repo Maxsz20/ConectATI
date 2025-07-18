@@ -517,13 +517,15 @@ a, a:visited {
   font-size: 1.4rem;
   text-decoration: none;
 }
+.boton-publicar-mobile{
+    display: none;
+}
+
 
 /* --- Responsive Design (Media Queries) --- */
-@media (min-width: 800px) {
-  .boton-publicar-mobile{
-    display: none;
-  }
-}
+
+  
+
 
 @media (max-width: 768px) {
   /* Ocultar elementos de escritorio */

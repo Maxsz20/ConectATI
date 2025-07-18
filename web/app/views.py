@@ -20,14 +20,10 @@ def ChangePassView(request):
     return render(request, 'app/change_password.html', {})
 
 def ProfileView(request):
-    return render(request, 'app/perfil.html', {
-        'no_area_info': True
-    })
+    return render(request, 'app/perfil.html', {'no_area_info': True})
 
 def EditProfileView(request):
-    return render(request, 'app/editarPerfil.html', {
-        'no_area_info': True
-    })
+    return render(request, 'app/editarPerfil.html', {'no_area_info': True})
 
 def FeedView(request):
     return render(request, 'app/feed.html', {})
@@ -45,7 +41,10 @@ def PostView(request):
     return render(request, 'app/publicacion.html', {})
     
 def PostMobileView(request):
-    return render(request, 'app/publicar_mobile.html', {})
+    return render(request, 'app/publicar_mobile.html', {'no_area_info': True})
 
 def SearchView(request):
     return render(request, 'app/busqueda.html', {})
+
+def SearchMobileView(request):
+    return render(request, 'app/busqueda_mobile.html', {'no_area_info': True})
