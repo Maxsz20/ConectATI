@@ -17,3 +17,29 @@ def PerfilView(request):
     return render(request, 'app/perfil.html', {
         'no_area_info': True
     })
+
+def PerfilView(request):
+    return render(request, 'app/perfil.html', {
+        'no_area_info': True
+    })
+
+def ProfileView(request):
+    return render(request, 'app/perfil.html', {})
+
+def FeedView(request):
+    return render(request, 'app/feed.html', {})
+
+def NotifyView(request):
+    return render(request, 'app/notificaciones.html', {})
+
+def ChatView(request):
+    return render(request, 'app/chat.html', {})
+
+def SettingsView(request):
+    return render(request, 'app/configuracion.html', {})
+
+def PostView(request):
+    return render(request, 'app/publicar.html', {})
+
+def SearchView(request):
+    return render(request, 'app/busqueda.html', {})
