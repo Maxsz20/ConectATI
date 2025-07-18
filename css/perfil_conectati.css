@@ -50,6 +50,12 @@ aside .logo-circulo {
   background: linear-gradient(-135deg, #addbfd 50%, #a9a7f2 50%);
 }
 
+a, a:visited {
+  color: #333; /* o el color que uses normalmente */
+  text-decoration: none; /* opcional */
+}
+
+
 .menu {
   display: flex;
   flex-direction: column;
@@ -105,6 +111,12 @@ aside .logo-circulo {
   background-color: var(--lavanda-translucido);
   color: var(--color-iconos);
 }
+.perfil-detalle-a{
+  text-decoration: none;
+  color: inherit;
+  width: 70%;
+}
+
 .perfil-detalle {
   background-color: var(--lavanda-translucido);
   padding: 0.6rem 1rem;
@@ -112,7 +124,7 @@ aside .logo-circulo {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  width: 70%;
+  width: 100%;
 }
 
 .perfil-detalle img {

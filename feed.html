@@ -80,9 +80,34 @@
             </div>
             <div class="encabezado-chat">
                 <div class="buscador">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Buscar..." />
-                </div>
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="inputBusqueda" placeholder="Buscar..." />
+                    <!-- Dropdown de resultados debajo del input -->
+                    <div class="dropdown-resultados oculto" id="dropdownBuscador">
+                        <div class="header-dropdown">
+                        <span>Recientes</span>
+                        <a href="#">Ver todo</a>
+                        </div>
+
+                        <div class="usuario-busqueda">
+                        <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
+                        <div class="info">
+                            <strong>@anag</strong>
+                            <small>Ana García · 2 nuevos posts</small>
+                        </div>
+                        <i class="fas fa-times"></i>
+                        </div>
+
+                        <div class="usuario-busqueda">
+                        <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" />
+                        <div class="info">
+                            <strong>@carlosm</strong>
+                            <small>Carlos Mendoza</small>
+                        </div>
+                        <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                    </div>
             </div>
         </div>
 
@@ -362,5 +387,18 @@
     document.getElementById("valorPrivacidad").textContent = valor;
     document.getElementById("togglePrivacidad").checked = false;
     }
+
+    const input = document.getElementById('inputBusqueda');
+    const dropdown = document.getElementById('dropdownBuscador');
+
+    input.addEventListener('focus', () => {
+        dropdown.classList.remove('oculto');
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!document.querySelector('.buscador').contains(e.target)) {
+        dropdown.classList.add('oculto');
+        }
+    });
 </script>
 </html>
