@@ -6,3 +6,9 @@ def FriendView(request):
 
 def LoginView(request):
     return render(request, 'app/iniciar_sesion.html', {})
+
+def RegisterView(request):
+    return render(request, 'app/registrarse.html', {})
+
+def ForgottenPassView(request):
+    return render(request, 'app/changepassword.html', {})

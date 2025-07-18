@@ -5,6 +5,9 @@ from . import views
 
 urlpatterns = [
 #    path('', views.index, name='index'),
+    path('login/', views.LoginView, name='login'),
+    path('register/', views.RegisterView, name='registro'),
+    path('forgotten_password/', views.ForgottenPassView, name = 'contraseña_olvidada'),
 #    path('feed/', views.feed, name='feed'),
 #    path('notificaciones/', views.notificaciones, name='notificaciones'),
     path('amistades/', views.FriendView, name='amistades'),
@@ -14,6 +17,4 @@ urlpatterns = [
 #    path('busqueda/', views.busqueda, name='busqueda'),
 #    path('perfil/', views.perfil, name='perfil'),
 #    path('logout/', views.logout_view, name='logout'),
-    path('login/', views.LoginView, name='login'),
-#    path('registro/', views.registro, name='registro'),
 ]
