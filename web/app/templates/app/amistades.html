@@ -1,29 +1,17 @@
-{% extends "app/base.html" %}
+{% extends "base.html" %}
 {% load static %}
-{% block title %}ConectATI - Amistades{% endblock %}
 
+{% block title %}Amistades{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/amistades_conectati.css' %}">
 {% endblock %}
 
-{% block content %}
-<div class="fila-encabezados">
-  <div class="encabezado-lista">
-    <h2>Amistades</h2>
-  </div>
-  <div class="encabezado-chat">
-    <div class="buscador">
-      <i class="fas fa-search"></i>
-      <input type="text" placeholder="Buscar..." />
-    </div>
-  </div>
-</div>
+{% block titulo_pagina %}Amistades{% endblock %}
+{% block titulo_pagina_mobile %}Amistades{% endblock %}
 
-<div class="titulo-mobile">
-  <h2>Amistades</h2>
-</div>
-
+{% block contenido %}
 <div class="contenedor-info">
+  <!-- Lista de amigos -->
   <div class="columna-central">
     <section class="lista-amigos">
       {% for i in "12345" %}
@@ -38,6 +26,7 @@
       {% endfor %}
     </section>
 
+    <!-- Solicitudes -->
     <section class="solicitudes">
       <h3>Solicitudes de Amistad</h3>
       {% for i in "12345" %}
@@ -56,6 +45,7 @@
     </section>
   </div>
 
+  <!-- Panel lateral derecho -->
   <div class="panel-lateral">
     <h3>Mensajes</h3>
     {% for i in "12" %}
