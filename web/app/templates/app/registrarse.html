@@ -55,7 +55,7 @@
     function redirigirLogin(event) {
       event.preventDefault(); // Evita recargar la página
       // Aquí podrías hacer validaciones antes si quieres
-      window.location.href = "/iniciar_sesion.html"; // Redirige a iniciar sesión
+      window.location.href = "{% url 'login' %}"; // Redirige a iniciar sesión
     }
   </script>
 </body>

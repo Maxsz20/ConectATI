@@ -13,6 +13,12 @@ def RegisterView(request):
 def ForgottenPassView(request):
     return render(request, 'app/forgotten_password.html', {})
 
+def CheckCodeView(request):
+    return render(request, 'app/check_code.html', {})
+
+def ChangePassView(request):
+    return render(request, 'app/change_password.html', {})
+
 def ProfileView(request):
     return render(request, 'app/perfil.html', {
         'no_area_info': True
@@ -31,7 +37,7 @@ def SettingsView(request):
     return render(request, 'app/configuracion.html', {})
 
 def PostView(request):
-    return render(request, 'app/publicar.html', {})
+    return render(request, 'app/publicacion.html', {})
     
 def PostMobileView(request):
     return render(request, 'app/publicar_mobile.html', {})

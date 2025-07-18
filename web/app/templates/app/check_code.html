@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Recuperar Contraseña</title>
+  <title>Verificar Código</title>
   <link rel="stylesheet" href="{% static 'css/login_register_clave.css' %}"/>
   <link rel="icon" href="{% static 'images/logo.png' %}" type="image/png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -16,25 +16,26 @@
   <div class="triangulo-morado"></div>
 
   <div class="container">
-    <h1>Recuperar Contraseña</h1>
-    <p class="texto-explicativo">Por favor, introduce tu correo para poder restablecer tu contraseña.</p>
+    <h1>Verifica tu código</h1>
+    <p class="texto-explicativo">Por favor, introduce el código que recibiste por correo electrónico.</p>
 
-    <form class="form" onsubmit="enviarCorreo(event)">
-      <input type="email" id="email" placeholder="Ingresa tu correo" required />
-      <button type="submit">Enviar código</button>
+    <form class="form" onsubmit="validarCodigo(event)">
+      <input type="text" id="codigo" placeholder="Código recibido" required />
+      <button type="submit">Confirmar</button>
     </form>
   </div>
 
   <script>
-    function enviarCorreo(event) {
+    function validarCodigo(event) {
       event.preventDefault();
-      const correo = document.getElementById("email").value;
+      const codigo = document.getElementById("codigo").value;
 
-      if (!correo) {
-        alert("Por favor, introduce tu correo.");
+      if (!codigo) {
+        alert("Por favor, ingresa el código.");
         return;
       }
-      window.location.href = "{% url 'check_code' %}"; // Asegúrate de que este archivo exista y esté en la misma carpeta
+
+      window.location.href = "{% url 'change_password' %}"; // Asegúrate de que este archivo exista y esté en la misma carpeta
     }
   </script>
 </body>

@@ -1,0 +1,284 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}Inicio{% endblock %} 
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/feed_conectati.css' %}" /> {# Specific CSS for the feed page #}
+{% endblock %}
+
+{% block titulo_pagina %}Feed{% endblock %}
+{% block titulo_pagina_mobile %}Feed{% endblock %}
+
+{% block contenido2 %} {# This is where the main unique content of your feed page goes #}
+    <div class="contenedor-info">
+        <section class="feed">
+            <div class="crear-post">
+                <div class="top-line">
+                    <img src="https://i.pravatar.cc/150?img=47" alt="Usuario" class="profile-pic">
+                    <div class="selector-toggle">
+                        <input type="checkbox" id="togglePrivacidad" hidden>
+                        <label for="togglePrivacidad" class="btn-privacidad">
+                            <span id="valorPrivacidad">Público</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </label>
+                        <ul class="menu-privacidad">
+                            <li onclick="seleccionarPrivacidad('Público')">Público</li>
+                            <li onclick="seleccionarPrivacidad('Privado')">Privado</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="post-input">
+                    <textarea placeholder="¿Qué estás pensando?" rows="1"></textarea>
+                </div>
+
+                <div class="bottom-line">
+                    <div class="iconos">
+                        <i class="fas fa-camera"></i>
+                        <i class="fas fa-image"></i>
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <button class="btn-postear">Postear</button>
+                </div>
+            </div>
+
+            <article class="post-container">
+                <a href="{% url 'post' %}" style="text-decoration: none;"> {# Use URL tag #}
+                    <div class="usuario">
+                        <img src="https://i.pravatar.cc/150?img=47" alt="Daniel Rojas" class="profile-pic">
+                        <div class="datos">
+                            <strong>Daniel Rojas</strong>
+                            <span>@@danroj · 2h</span>
+                        </div>
+                    </div>
+                    <p class="contenido-post">Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+                </a>
+                <div class="acciones">
+                    <span><i class="far fa-star"></i> 12</span>
+                    <span><i class="far fa-comment comentario-btn" data-usuario="@carlosm"></i> 30</span>
+                </div>
+                <div class="meta">3:15 PM · 16/06/2025</div>
+            </article>
+
+            <article class="post-container">
+                <a href="{% url 'post' %}" style="text-decoration: none;"> {# Use URL tag #}
+                    <div class="usuario">
+                        <img src="https://i.pravatar.cc/150?img=20" alt="Carlos Mendoza" />
+                        <div class="datos">
+                            <strong>Carlos Mendoza</strong>
+                            <span>@carlosm</span>
+                        </div>
+                    </div>
+                    <p class="contenido-post">Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+                    <img class="imagen-post" src="{% static 'images/gato.jfif' %}" alt="Imagen de la publicación"> {# Use static tag #}
+                </a>
+                <div class="acciones">
+                    <span><i class="far fa-star"></i> 12</span>
+                    <span><i class="far fa-comment comentario-btn" data-usuario="@carlosm"></i> 3</span>
+                </div>
+                <div class="meta">3:15 PM · 16/06/2025</div>
+            </article>
+
+            <article class="post-container">
+                <a href="{% url 'post' %}" style="text-decoration: none;"></a> {# Use URL tag #}
+                <div class="usuario">
+                    <img src="https://i.pravatar.cc/150?img=20" alt="Carlos Mendoza" />
+                    <div class="datos">
+                        <strong>Carlos Mendoza</strong>
+                        <span>@carlosm</span>
+                    </div>
+                </div>
+                <p class="contenido-post">Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+                <img class="imagen-post" src="{% static 'images/gato.jfif' %}" alt="Imagen de la publicación"> {# Use static tag #}
+                <a href="#" style="text-decoration: none;"></a> {# Use URL tag #}
+                <div class="acciones">
+                    <span><i class="far fa-star"></i> 15</span>
+                    <span><i class="far fa-comment comentario-btn" data-usuario="@carlosm"></i> 24</span>
+                </div>
+                <div class="meta">3:15 PM · 16/06/2025</div>
+            </article>
+        </section>
+
+        <div class="panel-lateral">
+            <h3>Mensajes</h3>
+            <a href="{% url 'chat' %}"> {# Use URL tag #}
+                <div class="mensaje-preview">
+                    <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+                    <div class="mensaje-info">
+                        <div class="usuario">
+                            <span class="nombre">Ana García</span>
+                            <span>@anag · 4h</span>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </div>
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </a>
+
+            <a href="{% url 'chat' %}"> {# Use URL tag #}
+                <div class="mensaje-preview">
+                    <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+                    <div class="mensaje-info">
+                        <div class="usuario">
+                            <span class="nombre">Ana García</span>
+                            <span>@anag · 4h</span>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </div>
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </a>
+
+            <h3>Solicitudes de mensajes</h3>
+            <div class="solicitud-preview">
+                <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
+                <div class="mensaje-info">
+                    <div class="usuario">
+                        <span class="nombre">Carlos Mendoza</span>
+                        <span>@carlosm · 3h</span>
+                    </div>
+                    <p>¿Podemos hablar por aquí?</p>
+                </div>
+                <div class="acciones">
+                    <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a> {# Use URL tag #}
+                    <i class="fas fa-times rechazar" title="Rechazar"></i>
+                </div>
+            </div>
+
+            <div class="solicitud-preview">
+                <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+                <div class="mensaje-info">
+                    <div class="usuario">
+                        <span class="nombre">Ana García</span>
+                        <span>@anag · 4h</span>
+                    </div>
+                    <p>¿Podemos hablar por aquí?</p>
+                </div>
+                <div class="acciones">
+                    <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a> {# Use URL tag #}
+                    <i class="fas fa-times rechazar" title="Rechazar"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="{% url 'post_mobile' %}"> {# Use URL tag #}
+        <div class="boton-publicar-mobile">
+            <div class="burbuja">
+                <span class="texto">Publicar</span>
+                <div class="icono"><i class="fas fa-plus"></i></div>
+            </div>
+        </div>
+    </a>
+
+    {# The modal can be a common component or placed here #}
+    <div class="modal-respuesta" id="modalRespuesta">
+        <div class="contenido-modal">
+            <div class="barra-superior-modal">
+                <a href="#" class="cancelar-modal" onclick="cerrarModal()">Cancelar</a>
+                <button class="btn-subir">Subir</button>
+            </div>
+
+            <div class="publicacion-respuesta">
+                <img src="https://i.pravatar.cc/150?img=12" alt="Carlos Mendoza" />
+                <div class="contenido">
+                    <strong>Carlos Mendoza</strong>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam.</p>
+                </div>
+            </div>
+
+            <div class="campo-respuesta">
+                <img src="https://i.pravatar.cc/150?img=9" alt="Usuario actual" />
+                <div class="respuesta-input">
+                    <span class="respondiendo-a">Respondiendo a <span>@carlosm</span></span>
+                    <textarea placeholder="Escribe tu respuesta"></textarea>
+                </div>
+            </div>
+
+            <div class="acciones-respuesta">
+                <i class="fas fa-camera"></i>
+                <i class="fas fa-image"></i>
+                <i class="fas fa-moon"></i>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const botonesComentar = document.querySelectorAll(".comentario-btn");
+        const modal = document.getElementById("modalRespuesta");
+        const contenido = document.querySelector(".contenido-modal");
+
+        botonesComentar.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const isMobile = window.innerWidth <= 876;
+
+                if (isMobile) {
+                    window.location.href = "{% url 'post_mobile' %}"; // Use URL tag
+                } else {
+                    abrirModalRespuesta();
+                }
+            });
+        });
+
+        // Cierre al hacer clic fuera del modal
+        document.addEventListener("click", (e) => {
+            if (
+                modal.style.display === "flex" &&
+                !document.querySelector(".contenido-modal").contains(e.target)
+            ) {
+                cerrarModal();
+            }
+        });
+
+        // Opcional: Cierre con la tecla ESC
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                cerrarModal();
+            }
+        });
+    });
+
+    function abrirModalRespuesta() {
+        const modal = document.getElementById("modalRespuesta");
+        modal.style.display = "flex";
+    }
+
+    function cerrarModal() {
+        const modal = document.getElementById("modalRespuesta");
+        modal.style.display = "none";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const textarea = document.querySelector(".crear-post textarea");
+
+        if (textarea) {
+            textarea.addEventListener("input", () => {
+                textarea.style.height = "auto"; // reset
+                textarea.style.height = textarea.scrollHeight + "px"; // crece
+            });
+        }
+    });
+    function seleccionarPrivacidad(valor) {
+        document.getElementById("valorPrivacidad").textContent = valor;
+        document.getElementById("togglePrivacidad").checked = false;
+    }
+
+    const input = document.getElementById('inputBusqueda');
+    const dropdown = document.getElementById('dropdownBuscador');
+
+    input.addEventListener('focus', () => {
+        dropdown.classList.remove('oculto');
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!document.querySelector('.buscador').contains(e.target)) {
+            dropdown.classList.add('oculto');
+        }
+    });
+</script>
+{% endblock %}
