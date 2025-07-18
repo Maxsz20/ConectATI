@@ -22,5 +22,4 @@ urlpatterns = [
     path('app/editprofile/', views.EditProfileView, name='editprofile'),
     path('app/post_mobile/', views.PostMobileView, name='post_mobile'),
     path('app/reply_mobile/', views.ReplyMobileView, name='reply_mobile'),
-    
     ]
