@@ -76,13 +76,19 @@ WSGI_APPLICATION = 'project_conectati.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # <- subimos hasta la raíz del proyecto
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'web' / 'db.sqlite3',  # <- base de datos interna de Django
+    },
+    'conectati': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db' / 'ConectATI_db.db',  # <- tu base de datos externa
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
