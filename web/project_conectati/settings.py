@@ -82,13 +82,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent  # <- subimos hasta la 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'web' / 'db.sqlite3',  # <- base de datos interna de Django
+        'NAME': BASE_DIR / 'db.sqlite3',
     },
     'conectati': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db' / 'ConectATI_db.db',  # <- tu base de datos externa
+        'NAME': '/app/db/ConectATI_db.db',
     }
+
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -134,5 +136,6 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-DATABASE_ROUTERS = ['web.db_router.ConectATIRouter']
+DATABASE_ROUTERS = ['db_router.ConectATIRouter']
+
 
