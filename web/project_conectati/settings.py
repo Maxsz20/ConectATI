@@ -137,5 +137,4 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATABASE_ROUTERS = ['db_router.ConectATIRouter']
-
-
+APPEND_SLASH = True

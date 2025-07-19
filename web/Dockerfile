@@ -24,8 +24,9 @@ RUN a2ensite django.conf && a2dissite 000-default.conf
 # Asegura que la ruta STATIC_ROOT exista antes del collectstatic
 RUN mkdir -p /app/static
 
-# Ejecuta collectstatic y otorga permisos
-RUN python manage.py collectstatic --noinput && chmod -R 755 /app/static
+# Ejecuta collectstatic en la ruta correcta
+RUN python manage.py collectstatic --noinput \
+    && chmod -R 755 /app/app/static
 
 # Exponer puerto
 EXPOSE 80
