@@ -8,6 +8,7 @@
 from django.db import models
 
 class Usuario(models.Model):
+    id = models.AutoField(primary_key=True)
     nombre = models.TextField()
     email = models.TextField(unique=True)
     ci = models.TextField(unique=True)
@@ -28,7 +29,7 @@ class Usuario(models.Model):
         app_label = 'app'
 
     def __str__(self):
-        return self.nombre
+        return f"Usuario: {self.nombre} ({self.email})"
 
 
 class Amistad(models.Model):
