@@ -1,0 +1,197 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}Chat{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/chat_conectati.css' %}">
+{% endblock %}
+
+{% block titulo_pagina %}Mensajes{% endblock %}
+{% block titulo_pagina_mobile %}Mensajes{% endblock %}
+
+{% block encabezado_unificado %}
+<div class="fila-encabezados">
+  <div class="encabezado-lista">
+    <h2>Mensajes</h2>
+  </div>
+  <div class="encabezado-chat">
+    <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
+    <strong>Ana García</strong>
+    <small id="chat-usuario">@anag</small>
+  </div>
+</div>
+
+<div class="titulo-mobile">
+  <h2>Mensajes</h2>
+</div>
+{% endblock %}
+
+
+{% block contenido2 %}
+<div class="contenedor-mensajes">
+  <!-- Lista lateral -->
+  <div class="columna-central">
+    <section class="chat-list">
+      {% for i in "12345" %}
+      <div class="chat-user">
+        <div class="chat-user-info">
+          <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
+          <span>
+            @anag<br />
+            <small>Ana García</small>
+          </span>
+        </div>
+        <i class="fas fa-trash" title="Eliminar chat"></i>
+      </div>
+      {% endfor %}
+    </section>
+
+    <section class="solicitudes-chat">
+      <h3>Solicitudes de Mensajes</h3>
+      {% for i in "12" %}
+      <div class="item-solicitud">
+        <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
+        <div class="contenido">
+          <strong>@carlosm</strong> <span class="nombre">Carlos Mendoza</span>
+          <p>¿Podemos hablar por aquí?</p>
+        </div>
+        <div class="acciones">
+          <i class="fas fa-check aceptar" title="Aceptar"></i>
+          <i class="fas fa-times rechazar" title="Rechazar"></i>
+        </div>
+      </div>
+      {% endfor %}
+    </section>
+  </div>
+
+  <!-- Conversación -->
+  <div class="conversacion">
+    <div class="chat-mensajes">
+      {% for i in "1111" %}
+      <div class="mensaje recibido">¿Qué deberíamos hacer?</div>
+      <div class="mensaje enviado">¡Empecemos!</div>
+      {% endfor %}
+    </div>
+    <div class="chat-input">
+      <i class="fas fa-camera"></i>
+      <input type="text" placeholder="Escribir mensaje..." />
+      <i class="fas fa-microphone"></i>
+      <i class="fas fa-image"></i>
+      <i class="fas fa-paper-plane"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Encabezado alternativo mobile -->
+<div class="encabezado-chat-mobile" style="display: none;">
+  <i class="fas fa-arrow-left btn-volver-chat"></i>
+  <img id="chat-avatar" src="" alt="Avatar usuario" />
+  <div class="nombre-chat-info">
+    <strong id="chat-nombre">Nombre</strong>
+    <small id="chat-usuario">@usuario</small>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const isMobile = () => window.innerWidth <= 768;
+
+  const chatItems = document.querySelectorAll(".chat-user");
+  const chatList = document.querySelector(".chat-list");
+  const conversacion = document.querySelector(".conversacion");
+  const encabezadoLista = document.querySelector(".encabezado-lista");
+  const tituloMobile = document.querySelector(".titulo-mobile");
+  const headerMobile = document.querySelector(".header-mobile");
+  const chatInput = document.querySelector(".chat-input");
+  const menuMobile = document.querySelector(".menu-mobile");
+  const encabezadoChatMobile = document.querySelector(".encabezado-chat-mobile");
+  const avatarMobile = document.getElementById("chat-avatar");
+  const nombreMobile = document.getElementById("chat-nombre");
+  const usuarioMobile = document.getElementById("chat-usuario");
+  const botonPublicar = document.querySelector(".boton-publicar-mobile");
+  const columnaCentral = document.querySelector(".columna-central");
+  const avatarDesktop = document.querySelector(".encabezado-chat img");
+  const nombreDesktop = document.querySelector(".encabezado-chat strong");
+
+  const btnVolver = encabezadoChatMobile.querySelector(".btn-volver-chat");
+  btnVolver.addEventListener("click", () => {
+    chatList.style.display = "block";
+    conversacion.style.display = "none";
+    encabezadoChatMobile.style.display = "none";
+    encabezadoLista.style.display = "flex";
+    headerMobile.style.display = "flex";
+    tituloMobile.style.display = "block";
+    chatInput.style.display = "none";
+    menuMobile.style.display = "flex";
+    botonPublicar.style.display = "flex";
+    columnaCentral.style.display = "block";
+  });
+
+  chatItems.forEach(item => {
+    item.addEventListener("click", () => {
+      const img = item.querySelector("img");
+      const nameSpan = item.querySelector("span");
+      const usuario = item.querySelector("small");
+
+      const nombreTexto = nameSpan.childNodes[0].nodeValue.trim();
+      const usuarioTexto = usuario.childNodes[0].nodeValue.trim();
+
+      avatarMobile.src = img.src;
+      avatarMobile.alt = img.alt;
+      nombreMobile.textContent = nombreTexto;
+      usuarioMobile.textContent = usuarioTexto;
+
+      avatarDesktop.src = img.src;
+      avatarDesktop.alt = img.alt;
+      nombreDesktop.textContent = nombreTexto;
+
+      if (isMobile()) {
+        chatList.style.display = "none";
+        conversacion.style.display = "flex";
+        encabezadoLista.style.display = "none";
+        encabezadoChatMobile.style.display = "flex";
+        headerMobile.style.display = "none";
+        tituloMobile.style.display = "none";
+        menuMobile.style.display = "none";
+        chatInput.style.display = "flex";
+        botonPublicar.style.display = "none";
+        columnaCentral.style.display = "none";
+      }
+    });
+  });
+
+  window.addEventListener("resize", () => {
+    if (!isMobile()) {
+      chatList.style.display = "";
+      conversacion.style.display = "";
+      encabezadoLista.style.display = "";
+      encabezadoChatMobile.style.display = "none";
+      headerMobile.style.display = "";
+      tituloMobile.style.display = "";
+      chatInput.style.display = "";
+      menuMobile.style.display = "";
+      botonPublicar.style.display = "";
+      columnaCentral.style.display = "";
+    }
+  });
+});
+
+function scrollToBottom() {
+  const chatMensajes = document.querySelector('.chat-mensajes');
+  if (chatMensajes) {
+    chatMensajes.scrollTop = chatMensajes.scrollHeight;
+  }
+}
+
+window.addEventListener('load', scrollToBottom);
+const chatItems = document.querySelectorAll(".chat-user");
+chatItems.forEach(item => {
+  item.addEventListener("click", () => {
+    setTimeout(scrollToBottom, 100);
+  });
+});
+</script>
+{% endblock %}

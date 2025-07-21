@@ -1,0 +1,67 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/perfil_conectati.css' %}">
+{% endblock %}
+
+{% block encabezado_unificado %}{% endblock %}
+
+{% block contenido %}
+    <!-- Cabecera del perfil -->
+    <div class="area-perfil">
+      <div class="perfil-header">
+        <div class="franja-azul">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
+          <div class="info-texto">
+            <h2>Daniela Rojas</h2>
+            <p class="usuario">@danroj</p>
+            <p class="bio">Desarrollador de software en ConectATI. Apasionado por la tecnología y el aprendizaje continuo.</p>
+          </div>
+          <a  class="editar-perfil" href="/app/editprofile">
+            <span>Editar perfil</span>
+          </a>
+
+        </div>
+        <div class="barra-inferior">
+          <span><strong>50</strong> Amigos</span>
+        </div>
+      </div>
+
+      <!-- Publicaciones -->
+      <div class="post">
+        <div class="post-header">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
+          <div class="info-texto">
+            <strong>Daniela Rojas</strong>
+            <span class="usuario">@danroj · 1d</span>
+          </div>
+        </div>
+        <p class="post-texto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <div class="post-acciones">
+          <button class="accion"><i class="far fa-star"></i> 12</button>
+          <button class="accion comentario-btn" data-usuario="@danroj"><i class="far fa-comment"></i> 3</button>
+        </div>
+        <div class="meta">3:15 PM · 16/06/2025</div>
+      </div>
+
+      <div class="post">
+        <div class="post-header">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
+          <div class="info-texto">
+            <strong>Daniela Rojas</strong>
+            <span class="usuario">@danroj · 1d</span>
+          </div>
+        </div>
+        <p class="post-texto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.✨</p>
+        <img class="post-image" src="https://t3.ftcdn.net/jpg/08/44/84/46/360_F_844844652_Z3SF4M5HIZsSMkGLt5ts0cr1s5O4mdQL.jpg" alt="Paisaje" />
+        <div class="post-acciones">
+          <button class="accion"><i class="far fa-star"></i> 12</button>
+          <button class="accion comentario-btn" data-usuario="@danroj"><i class="far fa-comment"></i> 3</button>
+        </div>
+        <div class="meta">3:15 PM · 16/06/2025</div>
+      </div>
+    </div>
+{% endblock %} 

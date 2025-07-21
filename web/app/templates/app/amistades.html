@@ -1,0 +1,83 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}Amistades{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/amistades_conectati.css' %}">
+{% endblock %}
+
+{% block titulo_pagina %}Amistades{% endblock %}
+{% block titulo_pagina_mobile %}Amistades{% endblock %}
+
+{% block contenido2 %}
+<div class="contenedor-info">
+  <div class="columna-central">
+    <section class="lista-amigos">
+      {% for i in "12345" %}
+      <div class="item-amigo">
+        <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+        <div class="contenido">
+          <strong>@anag</strong> <span class="nombre">Ana García</span>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+        </div>
+        <i class="fas fa-user-slash eliminar"></i>
+      </div>
+      {% endfor %}
+    </section>
+
+    <section class="solicitudes">
+      <h3>Solicitudes de Amistad</h3>
+      {% for i in "12345" %}
+      <div class="item-solicitud">
+        <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
+        <div class="contenido">
+          <strong>@carlosm</strong> <span class="nombre">Carlos Mendoza</span>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+        </div>
+        <div class="acciones">
+          <i class="fas fa-check aceptar" title="Aceptar"></i>
+          <i class="fas fa-times rechazar" title="Rechazar"></i>
+        </div>
+      </div>
+      {% endfor %}
+    </section>
+  </div>
+
+  <div class="panel-lateral">
+    <h3>Mensajes</h3>
+    {% for i in "12" %}
+    <a href="#">
+      <div class="mensaje-preview">
+        <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+        <div class="mensaje-info">
+          <div class="usuario">
+            <span class="nombre">Ana García</span>
+            <span>@anag · 4h</span>
+          </div>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <i class="fas fa-envelope"></i>
+      </div>
+    </a>
+    {% endfor %}
+
+    <h3>Solicitudes de mensajes</h3>
+    {% for i in "12" %}
+    <div class="solicitud-preview">
+      <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
+      <div class="mensaje-info">
+        <div class="usuario">
+          <span class="nombre">Carlos Mendoza</span>
+          <span>@carlosm · 3h</span>
+        </div>
+        <p>¿Podemos hablar por aquí?</p>
+      </div>
+      <div class="acciones">
+        <a href="#"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
+        <i class="fas fa-times rechazar" title="Rechazar"></i>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

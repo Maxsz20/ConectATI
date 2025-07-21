@@ -1,0 +1,25 @@
+# web/app/urls.py
+
+from django.urls import path
+from . import views
+
+urlpatterns = [
+#    path('', views.index, name='index'),
+    path('login/', views.LoginView, name='login'),
+    path('register/', views.RegisterView, name='register'),
+    path('forgotten_password/', views.ForgottenPassView, name = 'forgotten_password'),
+    path('forgotten_password/check_code/', views.CheckCodeView, name = 'check_code'),
+    path('forgotten_password/check_code/change_password', views.ChangePassView, name = 'change_password'),
+    path('feed/', views.FeedView, name='feed'),
+    path('notifications/', views.NotifyView, name='notifications'),
+    path('friends/', views.FriendView, name='friends'),
+    path('chat/', views.ChatView, name='chat'),
+    path('settings/', views.SettingsView, name='settings'),
+    path('post/', views.PostView, name='post'),
+    path('search/', views.SearchView, name='search'),
+    path('search_mobile/', views.SearchMobileView, name='search_mobile'),
+    path('profile/', views.ProfileView, name='profile'),
+    path('editprofile/', views.EditProfileView, name='editprofile'),
+    path('post_mobile/', views.PostMobileView, name='post_mobile'),
+    path('reply_mobile/', views.ReplyMobileView, name='reply_mobile'),
+    ]

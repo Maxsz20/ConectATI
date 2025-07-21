@@ -1,0 +1,164 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}Configuración{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/configuracion_conectati.css' %}" />
+{% endblock %}
+
+{% block titulo_pagina %}Configuración{% endblock %}
+{% block titulo_pagina_mobile %}Configuración{% endblock %}
+
+{% block contenido2 %}
+<div class="contenedor-info">
+    <section class="configuracion">
+        <div class="grupo-opcion">
+            <label>Tema</label>
+            <div class="selector-toggle">
+                <input type="checkbox" id="toggleTema" hidden />
+                <label for="toggleTema" class="btn-privacidad">
+                    <span id="valorTema">Claro</span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <ul class="menu-privacidad">
+                    <li onclick="cambiarOpcion('valorTema', 'Claro', 'toggleTema')">Claro</li>
+                    <li onclick="cambiarOpcion('valorTema', 'Oscuro', 'toggleTema')">Oscuro</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="grupo-opcion">
+            <label>Idioma</label>
+            <div class="selector-toggle">
+                <input type="checkbox" id="toggleIdioma" hidden />
+                <label for="toggleIdioma" class="btn-privacidad">
+                    <span id="valorIdioma">ES</span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <ul class="menu-privacidad">
+                    <li onclick="cambiarOpcion('valorIdioma', 'ES', 'toggleIdioma')">ES</li>
+                    <li onclick="cambiarOpcion('valorIdioma', 'EN', 'toggleIdioma')">EN</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="grupo-opcion">
+            <label>Privacidad</label>
+            <div class="selector-toggle">
+                <input type="checkbox" id="togglePrivacidad" hidden />
+                <label for="togglePrivacidad" class="btn-privacidad">
+                    <span id="valorPrivacidad">Privado</span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <ul class="menu-privacidad">
+                    <li onclick="cambiarOpcion('valorPrivacidad', 'Privado', 'togglePrivacidad')">Privado</li>
+                    <li onclick="cambiarOpcion('valorPrivacidad', 'Público', 'togglePrivacidad')">Público</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="grupo-opcion">
+            <label>Notificaciones</label>
+            <div class="selector-toggle">
+                <input type="checkbox" id="toggleNotificaciones" hidden />
+                <label for="toggleNotificaciones" class="btn-privacidad">
+                    <span id="valorNotificaciones">Sí</span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <ul class="menu-privacidad">
+                    <li onclick="cambiarOpcion('valorNotificaciones', 'Sí', 'toggleNotificaciones')">Sí</li>
+                    <li onclick="cambiarOpcion('valorNotificaciones', 'No', 'toggleNotificaciones')">No</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    {% block panel_lateral %}
+    <div class="panel-lateral">
+
+        <h3>Mensajes</h3>
+        <a href="{% url 'chat' %}">
+            <div class="mensaje-preview">
+                <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+                <div class="mensaje-info">
+                    <div class="usuario">
+                        <span class="nombre">Ana García</span>
+                        <span>@anag · 4h</span>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <i class="fas fa-envelope"></i>
+            </div>
+        </a>
+
+        <a href="{% url 'chat' %}">
+            <div class="mensaje-preview">
+                <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+                <div class="mensaje-info">
+                    <div class="usuario">
+                        <span class="nombre">Ana García</span>
+                        <span>@anag · 4h</span>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <i class="fas fa-envelope"></i>
+            </div>
+        </a>
+
+        <h3>Solicitudes de mensajes</h3>
+        <div class="solicitud-preview">
+            <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
+            <div class="mensaje-info">
+                <div class="usuario">
+                    <span class="nombre">Carlos Mendoza</span>
+                    <span>@carlosm · 3h</span>
+                </div>
+                <p>¿Podemos hablar por aquí?</p>
+            </div>
+            <div class="acciones">
+                <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
+                <i class="fas fa-times rechazar" title="Rechazar"></i>
+            </div>
+        </div>
+
+        <div class="solicitud-preview">
+            <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+            <div class="mensaje-info">
+                <div class="usuario">
+                    <span class="nombre">Ana García</span>
+                    <span>@anag · 4h</span>
+                </div>
+                <p>¿Podemos hablar por aquí?</p>
+            </div>
+            <div class="acciones">
+                <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
+                <i class="fas fa-times rechazar" title="Rechazar"></i>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+</div>    
+{% endblock %}
+
+{% block boton_mobile %}{% endblock %}
+
+{% block extra_js %}
+<script>
+    function cambiarOpcion(spanID, valor, toggleID) {
+        document.getElementById(spanID).textContent = valor;
+        document.getElementById(toggleID).checked = false;
+    }
+    const input = document.getElementById('inputBusqueda');
+    const dropdown = document.getElementById('dropdownBuscador');
+
+    input.addEventListener('focus', () => {
+        dropdown.classList.remove('oculto');
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!document.querySelector('.buscador').contains(e.target)) {
+            dropdown.classList.add('oculto');
+        }
+    });
+</script>
+{% endblock %}

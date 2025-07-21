@@ -1,0 +1,8 @@
+services:
+  web:
+    build: ./web
+    ports:
+      - "8000:80"
+    volumes:
+      - ./web:/app  # Esto garantiza que todo lo de web/ quede en /app
+    container_name: conectati_web

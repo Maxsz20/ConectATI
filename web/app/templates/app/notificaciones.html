@@ -1,0 +1,182 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}Notificaciones{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/notificaciones_conectati.css' %}" />
+{% endblock %}
+
+{% block titulo_pagina %}Notificaciones{% endblock %}
+{% block titulo_pagina_mobile %}Notificaciones{% endblock %}
+
+{% block contenido2 %}
+<div class="contenedor-info">
+    <section class="notificaciones">
+        <div class="grupo">
+            <h3>Hoy</h3>
+            <div class="item-notif">
+                <div class="icono-envuelto"><i class="fas fa-star star"></i></div>
+                <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
+                <div class="contenido">
+                <strong>@anag</strong> le gustan 2 de tus posts
+                <div class="meta">Hace 2 horas</div>
+                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                </div>
+            </div>
+            <div class="item-notif">
+                <div class="icono-envuelto"><i class="fas fa-heart like"></i></div>
+                <img src="https://i.pravatar.cc/150?img=8" alt="Carlos" />
+                <div class="contenido">
+                <strong>@carlosm</strong> le gusta 1 de tus posts
+                <div class="meta">Hace 3 horas</div>
+                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grupo">
+        <h3>Ayer</h3>
+            <div class="item-notif">
+                <div class="icono-envuelto"><i class="fas fa-reply reply"></i></div>
+                <img src="https://i.pravatar.cc/150?img=12" alt="danroj" />
+                <div class="contenido">
+                <strong>@danroj</strong> respondió tu comentario
+                <div class="meta">Ayer</div>
+                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                </div>
+            </div>
+            <div class="item-notif">
+                <div class="icono-envuelto"><i class="fas fa-heart like"></i></div>
+                <img src="https://i.pravatar.cc/150?img=21" alt="valenng" />
+                <div class="contenido">
+                <strong>@valenng</strong> le gusta tu comentario
+                <div class="meta">Ayer</div>
+                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit. orem ipsum dolor sit amet, consectetur adipiscing elit. orem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                </div>
+            </div>
+            <div class="item-notif">
+                <div class="icono-envuelto"><i class="fas fa-heart like"></i></div>
+                <img src="https://i.pravatar.cc/150?img=6" alt="juanp" />
+                <div class="contenido">
+                <strong>@juanp</strong> le gusta 1 de tus posts
+                <div class="meta">Ayer</div>
+                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grupo">
+            <h3>Últimos 7 días</h3>
+            <div class="item-notif">
+                <div class="icono-envuelto"><i class="fas fa-star star"></i></div>
+                <img src="https://i.pravatar.cc/150?img=15" alt="jorges" />
+                <div class="contenido">
+                <strong>@jorges</strong> respondió tu comentario
+                <div class="meta">Hace 3 días</div>
+                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                </div>
+            </div>
+            <div class="item-notif">
+                <div class="icono-envuelto"><i class="fas fa-star star"></i></div>
+                <img src="https://i.pravatar.cc/150?img=47" alt="dania" />
+                <div class="contenido">
+                <strong>@dania</strong> respondió tu comentario
+                <div class="meta">Hace 5 días</div>
+                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                </div>
+            </div>
+            <div class="item-notif">
+                <div class="icono-envuelto"><i class="fas fa-star star"></i></div>
+                <img src="https://i.pravatar.cc/150?img=15" alt="jorges" />
+                <div class="contenido">
+                <strong>@jorges</strong> respondió tu comentario
+                <div class="meta">Hace 3 días</div>
+                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% block panel_lateral %}
+    <div class="panel-lateral">
+        <h3>Mensajes</h3>
+        <a href="{% url 'chat' %}">
+            <div class="mensaje-preview">
+                <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+                <div class="mensaje-info">
+                    <div class="usuario">
+                        <span class="nombre">Ana García</span>
+                        <span>@anag · 4h</span>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <i class="fas fa-envelope"></i>
+            </div>
+        </a>
+
+        <a href="{% url 'chat' %}">
+            <div class="mensaje-preview">
+                <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+                <div class="mensaje-info">
+                    <div class="usuario">
+                        <span class="nombre">Ana García</span>
+                        <span>@anag · 4h</span>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <i class="fas fa-envelope"></i>
+            </div>
+        </a>
+
+        <h3>Solicitudes de mensajes</h3>
+        <div class="solicitud-preview">
+            <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
+            <div class="mensaje-info">
+                <div class="usuario">
+                    <span class="nombre">Carlos Mendoza</span>
+                    <span>@carlosm · 3h</span>
+                </div>
+                <p>¿Podemos hablar por aquí?</p>
+            </div>
+            <div class="acciones">
+                <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
+                <i class="fas fa-times rechazar" title="Rechazar"></i>
+            </div>
+        </div>
+
+        <div class="solicitud-preview">
+            <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+            <div class="mensaje-info">
+                <div class="usuario">
+                    <span class="nombre">Ana García</span>
+                    <span>@anag · 4h</span>
+                </div>
+                <p>¿Podemos hablar por aquí?</p>
+            </div>
+            <div class="acciones">
+                <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
+                <i class="fas fa-times rechazar" title="Rechazar"></i>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+</div> 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const input = document.getElementById('inputBusqueda');
+    const dropdown = document.getElementById('dropdownBuscador');
+
+    input.addEventListener('focus', () => {
+        dropdown.classList.remove('oculto');
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!document.querySelector('.buscador').contains(e.target)) {
+            dropdown.classList.add('oculto');
+        }
+    });
+</script>
+{% endblock %}

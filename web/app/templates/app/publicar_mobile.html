@@ -1,0 +1,55 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}Publicar{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/publicar_mobile.css' %}">
+{% endblock %}
+
+
+{% block contenido %}
+
+
+  <!-- Contenido principal -->
+  <div class="area-publicar">
+    <div class="barra-superior">
+      <a class="cancelar" href="/app/feed">Cancelar</a>
+      <!-- Botón de apertura -->
+        <div class="selector-toggle">
+            <input type="checkbox" id="togglePrivacidad" hidden />
+            <label for="togglePrivacidad" class="btn-privacidad">
+                <span id="valorPrivacidad">Público</span>
+                <i class="fas fa-chevron-down"></i>
+            </label>
+
+            <ul class="menu-privacidad">
+                <li onclick="cambiarPrivacidad('Público')">Público</li>
+                <li onclick="cambiarPrivacidad('Privado')">Privado</li>
+            </ul>
+        </div>
+
+      <button class="btn-subir">Subir</button>
+    </div>
+
+    <div class="contenido-publicacion">
+      <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Mi perfil" />
+      <textarea placeholder="¿Qué estas pensando?"></textarea>
+    </div>
+
+    <div class="acciones-publicacion">
+      <i class="fas fa-camera"></i>
+      <i class="fas fa-image"></i>
+      <i class="fas fa-moon"></i>
+    </div>
+  </div>
+
+
+<script>
+  function cambiarPrivacidad(valor) {
+    document.getElementById("valorPrivacidad").textContent = valor;
+    document.getElementById("togglePrivacidad").checked = false;
+  }
+</script>
+
+{% endblock %} 
