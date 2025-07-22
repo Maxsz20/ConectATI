@@ -1,14 +1,58 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .forms import RegistroForm
+from .models import Usuario
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password, check_password
+from django.db import models
 
 # Create your views here.
 def FriendView(request):
     return render(request, 'app/amistades.html', {})
 
 def LoginView(request):
+
+    if request.method == "POST":
+        email_o_usuario = request.POST.get("correo_usuario")
+        password = request.POST.get("password")
+
+        try:
+            usuario = Usuario.objects.using('conectati').get(
+                models.Q(email=email_o_usuario) | models.Q(ci=email_o_usuario)
+            )
+            if check_password(password, usuario.contrasena):
+                request.session['usuario_id'] = usuario.id
+                return redirect('feed')
+            else:
+                messages.error(request, "Credenciales incorrectas.")
+        except Usuario.DoesNotExist:
+            messages.error(request, "Credenciales incorrectas.")
+
     return render(request, 'app/iniciar_sesion.html', {})
 
+
 def RegisterView(request):
-    return render(request, 'app/registrarse.html', {})
+
+    if request.method == "POST":
+        form = RegistroForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            if Usuario.objects.using('conectati').filter(email=data['email']).exists():
+                form.add_error('email', 'Este correo ya está registrado.')
+            elif Usuario.objects.using('conectati').filter(ci=data['ci']).exists():
+                form.add_error('ci', 'Esta cédula ya está registrada.')
+            else:
+                nuevo_usuario = Usuario(
+                    nombre=data['nombre'],
+                    email=data['email'],
+                    ci=data['ci'],
+                    contrasena=make_password(data['contrasena'])
+                )
+                nuevo_usuario.save(using='conectati')
+                return redirect('login')
+    else:
+        form = RegistroForm()
+
+    return render(request, 'app/registrarse.html', {'form': form})
 
 def ForgottenPassView(request):
     return render(request, 'app/forgotten_password.html', {})

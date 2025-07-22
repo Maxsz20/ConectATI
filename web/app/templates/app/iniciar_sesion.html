@@ -19,24 +19,34 @@
   <!-- Contenedor principal -->
   <div class="container">
     <h1>ConectATI</h1>
-    <form class="form">
-      <input type="text" placeholder="Correo o Usuario" required />
-
-      <div class="password-container">
-        <input type="password" placeholder="Contraseña" id="password" required />
-        <i class="fas fa-eye-slash toggle" id="togglePassword" onclick="togglePassword('password', 'togglePassword')"></i>
-      </div>
+    <form class="form" method="post">
+      {% csrf_token %}
+      <input type="text" name="correo_usuario" placeholder="Correo o Usuario" required />
       
+      <div class="password-container">
+        <input type="password" name="password" placeholder="Contraseña" id="password" required />
+        <i class="fas fa-eye-slash toggle" onclick="togglePassword('password', this.id)" id="togglePassword"></i>
+      </div>
+
+      {% if messages %}
+        <div class="form-errors">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
       <div class="forgot-password">
         <a href="{% url 'forgotten_password' %}">¿Olvidaste tu contraseña?</a>
       </div>
 
-      <button type="submit" href="{% url 'feed' %}">Iniciar Sesión</button>
+      <button type="submit">Iniciar Sesión</button>
 
       <div class="register-message">
         ¿Aún no eres usuario? <a href="{% url 'register' %}">Regístrate</a>
       </div>
     </form>
+
   </div>
 
   <!-- Script para mostrar/ocultar contraseña -->

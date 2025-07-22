@@ -86,7 +86,8 @@ DATABASES = {
     },
     'conectati': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/app/db/ConectATI_db.db',
+        'NAME': '/app/db/ConectATI_db.db', # <- ruta de la base de datos cuando se usa Docker
+        #'NAME': BASE_DIR / 'web' / 'db' / 'ConectATI_db.db', # <- ruta de la base de datos cuando se usa python manage.py runserver
     }
 
 }
