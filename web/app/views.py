@@ -16,9 +16,11 @@ def LoginView(request):
         password = request.POST.get("password")
 
         try:
-            usuario = Usuario.objects.using('conectati').get(
-                models.Q(email=email_o_usuario) | models.Q(ci=email_o_usuario)
-            )
+            usuario = Usuario.objects.using('conectati').filter(
+                models.Q(email=email_o_usuario) |
+                models.Q(username=email_o_usuario)
+            ).first()
+
             if check_password(password, usuario.contrasena):
                 request.session['usuario_id'] = usuario.id
                 return redirect('feed')
@@ -40,9 +42,12 @@ def RegisterView(request):
                 form.add_error('email', 'Este correo ya está registrado.')
             elif Usuario.objects.using('conectati').filter(ci=data['ci']).exists():
                 form.add_error('ci', 'Esta cédula ya está registrada.')
+            elif Usuario.objects.using('conectati').filter(username=data['username']).exists():
+                form.add_error('username', 'Este nombre de usuario ya está registrado.')
             else:
                 nuevo_usuario = Usuario(
                     nombre=data['nombre'],
+                    username=data['username'],
                     email=data['email'],
                     ci=data['ci'],
                     contrasena=make_password(data['contrasena'])

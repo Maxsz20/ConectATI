@@ -6,8 +6,8 @@ from .models import (
 
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nombre', 'email', 'ci', 'fecha_nacimiento', 'genero', 'foto')
-    search_fields = ('nombre', 'email', 'ci')
+    list_display = ('id', 'nombre', 'username', 'email', 'ci', 'fecha_nacimiento', 'genero', 'foto')
+    search_fields = ('nombre', 'username', 'email', 'ci')
     list_filter = ('genero',)
     ordering = ('nombre',)
     readonly_fields = ('id',)

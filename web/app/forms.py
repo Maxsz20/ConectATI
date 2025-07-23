@@ -4,6 +4,7 @@ from .models import Usuario
 
 class RegistroForm(forms.Form):
     nombre = forms.CharField(max_length=100)
+    username = forms.CharField(max_length=50)
     email = forms.EmailField()
     ci = forms.CharField(max_length=20)
     telefono = forms.CharField(max_length=20)
@@ -19,3 +20,4 @@ class RegistroForm(forms.Form):
             raise forms.ValidationError("Las contraseñas no coinciden")
 
         return cleaned_data
+

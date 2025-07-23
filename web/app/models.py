@@ -10,6 +10,7 @@ from django.db import models
 class Usuario(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.TextField()
+    username = models.TextField(unique=True) 
     email = models.TextField(unique=True)
     ci = models.TextField(unique=True)
     foto = models.TextField(blank=True, null=True)
@@ -29,7 +30,7 @@ class Usuario(models.Model):
         app_label = 'app'
 
     def __str__(self):
-        return f"Usuario: {self.nombre} ({self.email})"
+        return f"Usuario: {self.nombre} {self.username} ({self.email})"
 
 
 class Amistad(models.Model):
