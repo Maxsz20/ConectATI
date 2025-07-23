@@ -14,11 +14,11 @@
     <div class="area-perfil">
       <div class="perfil-header">
         <div class="franja-azul">
-          <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
+          <img class="avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
           <div class="info-texto">
-            <h2>Daniela Rojas</h2>
-            <p class="usuario">@danroj</p>
-            <p class="bio">Desarrollador de software en ConectATI. Apasionado por la tecnología y el aprendizaje continuo.</p>
+            <h2>{{ usuario_logueado.nombre }}</h2>
+            <p class="usuario">@{{ usuario_logueado.username }}</p>
+            <p class="bio">{{ usuario_logueado.descripcion }}</p>
           </div>
           <a  class="editar-perfil" href="/app/editprofile">
             <span>Editar perfil</span>

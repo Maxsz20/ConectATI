@@ -22,4 +22,5 @@ urlpatterns = [
     path('editprofile/', views.EditProfileView, name='editprofile'),
     path('post_mobile/', views.PostMobileView, name='post_mobile'),
     path('reply_mobile/', views.ReplyMobileView, name='reply_mobile'),
+    path('logout/', views.LogoutView, name='logout'),
     ]

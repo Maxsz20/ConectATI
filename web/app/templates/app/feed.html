@@ -15,7 +15,7 @@
         <section class="feed">
             <div class="crear-post">
                 <div class="top-line">
-                    <img src="https://i.pravatar.cc/150?img=47" alt="Usuario" class="profile-pic">
+                    <img style="width: 50px; height: 50px; border-radius: 50%;" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
                     <div class="selector-toggle">
                         <input type="checkbox" id="togglePrivacidad" hidden>
                         <label for="togglePrivacidad" class="btn-privacidad">

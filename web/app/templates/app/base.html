@@ -14,7 +14,7 @@
   <!-- Header mobile -->
   <div class="header-mobile">
     <a href="{% url 'profile' %}">
-      <img src="https://i.pravatar.cc/150?img=47" alt="Perfil" />
+      <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
     </a>
     <h1>
       <div class="logo-circulo"></div>
@@ -43,7 +43,7 @@
     </div>
 
     <div class="perfil-contenedor">
-      <a href="{% url 'login' %}" class="cerrar-sesion">Cerrar Sesión</a>
+      <a href="{% url 'logout' %}" class="cerrar-sesion">Cerrar Sesión</a>
       <a href="{% url 'profile' %}" class="perfil-detalle-a" style="text-decoration: none;">
         <div class="perfil-detalle">
           <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />

@@ -6,10 +6,19 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
 
 # Create your views here.
+def InicioRedirectView(request):
+    if request.session.get('usuario_id'):
+        return redirect('feed')
+    else:
+        return redirect('login')
+
 def FriendView(request):
     return render(request, 'app/amistades.html', {})
 
 def LoginView(request):
+
+    if request.session.get('usuario_id'):
+        return redirect('feed')  # Ya está logueado, no mostrar login otra vez
 
     if request.method == "POST":
         email_o_usuario = request.POST.get("correo_usuario")
@@ -58,6 +67,11 @@ def RegisterView(request):
         form = RegistroForm()
 
     return render(request, 'app/registrarse.html', {'form': form})
+
+def LogoutView(request):
+    request.session.flush()  # ← borra todos los datos de sesión
+    return redirect('login')
+
 
 def ForgottenPassView(request):
     return render(request, 'app/forgotten_password.html', {})
