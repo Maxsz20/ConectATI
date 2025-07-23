@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'app.context_processors.usuario_actual',
             ],
         },
     },
@@ -82,12 +83,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent  # <- subimos hasta la 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'web' / 'db.sqlite3',
     },
     'conectati': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/app/db/ConectATI_db.db', # <- ruta de la base de datos cuando se usa Docker
-        #'NAME': BASE_DIR / 'web' / 'db' / 'ConectATI_db.db', # <- ruta de la base de datos cuando se usa python manage.py runserver
+        #'NAME': '/app/db/ConectATI_db.db', # <- ruta de la base de datos cuando se usa Docker
+        'NAME': BASE_DIR / 'web' / 'db' / 'ConectATI_db.db', # <- ruta de la base de datos cuando se usa python manage.py runserver
     }
 
 }

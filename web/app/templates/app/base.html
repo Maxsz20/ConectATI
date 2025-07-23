@@ -46,13 +46,13 @@
       <a href="{% url 'login' %}" class="cerrar-sesion">Cerrar Sesión</a>
       <a href="{% url 'profile' %}" class="perfil-detalle-a" style="text-decoration: none;">
         <div class="perfil-detalle">
-          <img src="https://i.pravatar.cc/150?img=47" alt="Daniel" />
+          <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
           <div class="info">
             <div class="nombre">
-              <strong>Daniel Rojas</strong>
+              <strong>{{ usuario_logueado.nombre }}</strong>
               <span class="puntos">●●●</span>
             </div>
-            <small>@danroj</small>
+            <small>@{{ usuario_logueado.ci }}</small>
           </div>
         </div>
       </a>
