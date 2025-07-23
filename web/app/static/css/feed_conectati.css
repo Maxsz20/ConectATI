@@ -438,6 +438,11 @@ a, a:visited {
   margin-bottom: 0.45rem;
 }
 
+.estrella.marcada i {
+  color: gold;
+}
+
+
 @media (min-width: 877px) {
   .modal-respuesta {
     display: none;

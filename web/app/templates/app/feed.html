@@ -13,7 +13,7 @@
 {% block contenido2 %}
     <div class="contenedor-info">
         <section class="feed">
-            <form method="POST" class="crear-post">
+            <form method="POST" enctype="multipart/form-data" class="crear-post">
                 {% csrf_token %} 
                 <div class="top-line">
                     <img style="width: 50px; height: 50px; border-radius: 50%;" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
@@ -35,12 +35,21 @@
                     <textarea name="texto" placeholder="¿Qué estás pensando?" rows="1">{{ form.texto.value|default_if_none:'' }}</textarea>
                 </div>
 
+                <div class="preview-imagen" id="previewImagen" style="margin-top: 10px; display: none;">
+                    <img id="imagenPreview" src="#" alt="Vista previa" style="max-width: 100%; max-height: 200px; border-radius: 10px;" />
+                </div>
+
                 <div class="bottom-line">
+
                     <div class="iconos">
                         <i class="fas fa-camera"></i>
-                        <i class="fas fa-image"></i>
-                        <i class="fas fa-moon"></i>
+
+                        <label for="archivoInput" style="cursor: pointer;">
+                            <i class="fas fa-image"></i>
+                        </label>
+                        <input type="file" id="archivoInput" name="archivo" accept="image/*" style="display: none;" />
                     </div>
+
                     <button type="submit" class="btn-postear">Postear</button>
                 </div>
             </form>
@@ -55,12 +64,16 @@
                     </div>
                     </div>
                     <p class="contenido-post">{{ post.texto }}</p>
-                    {% if post.archivo %}
-                    <img class="imagen-post" src="{{ post.archivo }}" alt="Imagen de la publicación">
+
+                    {% if post.archivo_nombre %}
+                        <img class="imagen-post" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="Imagen de la publicación">
                     {% endif %}
+
                     <div class="acciones">
-                    <span><i class="far fa-star"></i> 0</span>
-                    <span><i class="far fa-comment comentario-btn" data-usuario="@{{ post.usuario.username }}"></i> 0</span>
+                        <span class="estrella {% if post.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ post.id }}">
+                            <i class="fas fa-star"></i> <span class="contador">{{ post.estrellas }}</span>
+                        </span>                               
+                        <span><i class="far fa-comment comentario-btn" data-usuario="@{{ post.usuario.username }}"></i> 0</span>
                     </div>
                     <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
                 </article>
@@ -144,69 +157,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const botonesComentar = document.querySelectorAll(".comentario-btn");
-        const modal = document.getElementById("modalRespuesta");
-
-        botonesComentar.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const isMobile = window.innerWidth <= 876;
-
-            if (isMobile) {
-            window.location.href = "{% url 'reply_mobile' %}";
-            } else {
-            abrirModalRespuesta();
-            }
-        });
-        });
-
-        document.addEventListener("click", (e) => {
-        if (modal.style.display === "flex" &&
-            !document.querySelector(".contenido-modal").contains(e.target)) {
-            cerrarModal();
-        }
-        });
-
-        document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            cerrarModal();
-        }
-        });
-    });
-
-    function abrirModalRespuesta() {
-        document.getElementById("modalRespuesta").style.display = "flex";
-    }
-
-    function cerrarModal() {
-        document.getElementById("modalRespuesta").style.display = "none";
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const textarea = document.querySelector(".crear-post textarea");
-
-        if (textarea) {
-            textarea.addEventListener("input", () => {
-                textarea.style.height = "auto"; // reset
-                textarea.style.height = textarea.scrollHeight + "px"; // crece
-            });
-        }
-    });
-    function seleccionarPrivacidad(valor) {
-        document.getElementById("valorPrivacidad").textContent = valor;
-        document.getElementById("togglePrivacidad").checked = false;
-
-        const inputPriv = document.getElementById("inputPrivacidad");
-        if (inputPriv) {
-            if (valor === "Público") {
-                inputPriv.value = "publica";
-            } else if (valor === "Privado") {
-                inputPriv.value = "privada";
-            }
-        }
-    }
-
-</script>
+<script src="{% static 'js/feed_conectati.js' %}"></script>
 {% endblock %}

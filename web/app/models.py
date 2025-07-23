@@ -113,12 +113,23 @@ class Notificacion(models.Model):
 class Publicacion(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     texto = models.TextField(blank=True, null=True)
-    archivo = models.TextField(blank=True, null=True)
+    archivo_nombre = models.TextField(blank=True, null=True)
     privacidad = models.TextField(blank=True, null=True)
     fecha = models.DateTimeField(blank=True, null=True)
+    estrellas = models.IntegerField(default=0)
 
     class Meta:
         managed = False
         db_table = 'Publicacion'
         app_label = 'app'
+
+class Estrella(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE)
+
+    class Meta:
+        managed = False
+        db_table = 'Estrella'
+        app_label = 'app'
+        unique_together = ('usuario', 'publicacion')
 

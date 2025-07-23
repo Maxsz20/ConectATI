@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from .forms import RegistroForm, PublicacionForm
 from django.utils import timezone
-from .models import Usuario, Publicacion
+from .models import Usuario, Publicacion, Estrella
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
+from django.http import JsonResponse
+import os
+from django.conf import settings
 
 # Create your views here.
 def InicioRedirectView(request):
@@ -94,33 +97,86 @@ def FeedView(request):
         return redirect('login')
 
     form = PublicacionForm()
+
+    # Obtener publicaciones públicas
     publicaciones = Publicacion.objects.using('conectati').filter(
         privacidad='publica'
     ).order_by('-fecha')
 
+    # Obtener publicaciones que este usuario ya marcó con estrella
+    estrellas_usuario = []
+    if request.session.get('usuario_id'):
+        user_id = request.session['usuario_id']
+        estrellas_usuario = Estrella.objects.using('conectati') \
+            .filter(usuario_id=user_id) \
+            .values_list('publicacion_id', flat=True)
+
     if request.method == "POST":
-        form = PublicacionForm(request.POST)
+        form = PublicacionForm(request.POST, request.FILES)
         if form.is_valid():
             data = form.cleaned_data
+            archivo_obj = request.FILES.get('archivo')
+            archivo_nombre = None
 
-            if not data['texto'] and not data['archivo']:
+            if archivo_obj:
+                # Guardar en media/publicaciones
+                ruta_media = os.path.join(settings.MEDIA_ROOT, 'publicaciones')
+                os.makedirs(ruta_media, exist_ok=True)
+
+                archivo_nombre = archivo_obj.name
+                ruta_completa = os.path.join(ruta_media, archivo_nombre)
+
+                with open(ruta_completa, 'wb+') as destino:
+                    for chunk in archivo_obj.chunks():
+                        destino.write(chunk)
+
+            if not data['texto'] and not archivo_nombre:
                 form.add_error(None, "Debes escribir algo o subir un archivo.")
             else:
                 usuario = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
                 nueva = Publicacion(
                     usuario=usuario,
                     texto=data['texto'],
-                    archivo=data['archivo'],
+                    archivo_nombre=archivo_nombre,
                     privacidad=data['privacidad'].lower(),
                     fecha=timezone.now()
                 )
                 nueva.save(using='conectati')
-                return redirect('feed')  # redirige para limpiar el POST
+                return redirect('feed')
 
     return render(request, 'app/feed.html', {
         'form': form,
-        'publicaciones': publicaciones
+        'publicaciones': publicaciones,
+        'estrellas_usuario': list(estrellas_usuario)  # Para saber qué post ya fue marcado
     })
+
+
+# Lógica para dar estrellas a una publicación
+def dar_estrella(request, publicacion_id):
+    if not request.session.get('usuario_id'):
+        return JsonResponse({'error': 'No autenticado'}, status=403)
+
+    user_id = request.session['usuario_id']
+    try:
+        publicacion = Publicacion.objects.using('conectati').get(id=publicacion_id)
+
+        # Verificar si ya dio estrella
+        ya_dio = Estrella.objects.using('conectati').filter(usuario_id=user_id, publicacion_id=publicacion_id).exists()
+        if ya_dio:
+            return JsonResponse({'ok': False, 'repetido': True})
+
+        # Sumar estrella
+        publicacion.estrellas += 1
+        publicacion.save(using='conectati')
+
+        # Guardar registro
+        nueva = Estrella(usuario_id=user_id, publicacion_id=publicacion_id)
+        nueva.save(using='conectati')
+
+        return JsonResponse({'ok': True, 'nuevas_estrellas': publicacion.estrellas})
+    except Publicacion.DoesNotExist:
+        return JsonResponse({'error': 'No encontrada'}, status=404)
+
 
 def NotifyView(request):
     return render(request, 'app/notificaciones.html', {})

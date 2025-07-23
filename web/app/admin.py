@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Usuario, Amistad, Chat, Comentario,
-    Configuracion, Mensaje, Notificacion, Publicacion
+    Configuracion, Mensaje, Notificacion, Publicacion, Estrella
 )
 
 @admin.register(Usuario)
@@ -94,7 +94,7 @@ class NotificacionAdmin(admin.ModelAdmin):
 
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'usuario_nombre', 'texto_corto', 'privacidad', 'fecha')
+    list_display = ('id', 'usuario_nombre', 'texto_corto', 'privacidad', 'fecha', 'estrellas', 'archivo_nombre')
     search_fields = ('texto',)
     list_filter = ('privacidad', 'fecha')
     ordering = ('-fecha',)
@@ -106,3 +106,15 @@ class PublicacionAdmin(admin.ModelAdmin):
     def texto_corto(self, obj):
         return (obj.texto[:50] + '...') if obj.texto and len(obj.texto) > 50 else obj.texto
     texto_corto.short_description = 'Texto'
+
+@admin.register(Estrella)
+class EstrellaAdmin(admin.ModelAdmin):
+    list_display = ('id', 'usuario_nombre', 'publicacion_id')
+    search_fields = ('usuario__nombre',)
+    list_filter = ('usuario', 'publicacion')
+    ordering = ('-id',)
+
+    def usuario_nombre(self, obj):
+        return obj.usuario.nombre
+    usuario_nombre.short_description = 'Usuario'
+

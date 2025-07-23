@@ -23,4 +23,5 @@ urlpatterns = [
     path('post_mobile/', views.PostMobileView, name='post_mobile'),
     path('reply_mobile/', views.ReplyMobileView, name='reply_mobile'),
     path('logout/', views.LogoutView, name='logout'),
+    path('publicacion/<int:publicacion_id>/estrella/', views.dar_estrella, name='dar_estrella'),
     ]
