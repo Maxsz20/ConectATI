@@ -21,3 +21,15 @@ class RegistroForm(forms.Form):
 
         return cleaned_data
 
+class PublicacionForm(forms.Form):
+    texto = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'rows': 3}),
+        max_length=500
+    )
+    archivo = forms.URLField(required=False)
+    privacidad = forms.ChoiceField(
+        choices=[('publica', 'Pública'), ('privada', 'Privada')],
+        required=True
+    )
+

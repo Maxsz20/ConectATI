@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from .forms import RegistroForm
-from .models import Usuario
+from .forms import RegistroForm, PublicacionForm
+from django.utils import timezone
+from .models import Usuario, Publicacion
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
@@ -89,7 +90,37 @@ def EditProfileView(request):
     return render(request, 'app/editarPerfil.html', {'no_area_info': True})
 
 def FeedView(request):
-    return render(request, 'app/feed.html', {})
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+
+    form = PublicacionForm()
+    publicaciones = Publicacion.objects.using('conectati').filter(
+        privacidad='publica'
+    ).order_by('-fecha')
+
+    if request.method == "POST":
+        form = PublicacionForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            if not data['texto'] and not data['archivo']:
+                form.add_error(None, "Debes escribir algo o subir un archivo.")
+            else:
+                usuario = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
+                nueva = Publicacion(
+                    usuario=usuario,
+                    texto=data['texto'],
+                    archivo=data['archivo'],
+                    privacidad=data['privacidad'].lower(),
+                    fecha=timezone.now()
+                )
+                nueva.save(using='conectati')
+                return redirect('feed')  # redirige para limpiar el POST
+
+    return render(request, 'app/feed.html', {
+        'form': form,
+        'publicaciones': publicaciones
+    })
 
 def NotifyView(request):
     return render(request, 'app/notificaciones.html', {})

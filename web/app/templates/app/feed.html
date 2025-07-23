@@ -13,11 +13,13 @@
 {% block contenido2 %}
     <div class="contenedor-info">
         <section class="feed">
-            <div class="crear-post">
+            <form method="POST" class="crear-post">
+                {% csrf_token %} 
                 <div class="top-line">
                     <img style="width: 50px; height: 50px; border-radius: 50%;" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
                     <div class="selector-toggle">
                         <input type="checkbox" id="togglePrivacidad" hidden>
+                        <input type="hidden" name="privacidad" id="inputPrivacidad" value="publica">
                         <label for="togglePrivacidad" class="btn-privacidad">
                             <span id="valorPrivacidad">Público</span>
                             <i class="fas fa-chevron-down"></i>
@@ -30,7 +32,7 @@
                 </div>
 
                 <div class="post-input">
-                    <textarea placeholder="¿Qué estás pensando?" rows="1"></textarea>
+                    <textarea name="texto" placeholder="¿Qué estás pensando?" rows="1">{{ form.texto.value|default_if_none:'' }}</textarea>
                 </div>
 
                 <div class="bottom-line">
@@ -39,66 +41,32 @@
                         <i class="fas fa-image"></i>
                         <i class="fas fa-moon"></i>
                     </div>
-                    <button class="btn-postear">Postear</button>
+                    <button type="submit" class="btn-postear">Postear</button>
                 </div>
-            </div>
+            </form>
 
-            <article class="post-container">
-                <a href="{% url 'post' %}" style="text-decoration: none;"> {# Use URL tag #}
+            {% for post in publicaciones %}
+                <article class="post-container">
                     <div class="usuario">
-                        <img src="https://i.pravatar.cc/150?img=47" alt="Daniel Rojas" class="profile-pic">
-                        <div class="datos">
-                            <strong>Daniel Rojas</strong>
-                            <span>@danroj · 2h</span>
-                        </div>
+                    <img src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" class="profile-pic">
+                    <div class="datos">
+                        <strong>{{ post.usuario.nombre }}</strong>
+                        <span>@{{ post.usuario.username }}</span>
                     </div>
-                    <p class="contenido-post">Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-                </a>
-                <div class="acciones">
-                    <span><i class="far fa-star"></i> 12</span>
-                    <span><i class="far fa-comment comentario-btn" data-usuario="@carlosm"></i> 30</span>
-                </div>
-                <div class="meta">3:15 PM · 16/06/2025</div>
-            </article>
-
-            <article class="post-container">
-                <a href="{% url 'post' %}" style="text-decoration: none;"> {# Use URL tag #}
-                    <div class="usuario">
-                        <img src="https://i.pravatar.cc/150?img=20" alt="Carlos Mendoza" />
-                        <div class="datos">
-                            <strong>Carlos Mendoza</strong>
-                            <span>@carlosm</span>
-                        </div>
                     </div>
-                    <p class="contenido-post">Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-                    <img class="imagen-post" src="{% static 'images/gato.jfif' %}" alt="Imagen de la publicación"> {# Use static tag #}
-                </a>
-                <div class="acciones">
-                    <span><i class="far fa-star"></i> 12</span>
-                    <span><i class="far fa-comment comentario-btn" data-usuario="@carlosm"></i> 3</span>
-                </div>
-                <div class="meta">3:15 PM · 16/06/2025</div>
-            </article>
-
-            <article class="post-container">
-                <a href="{% url 'post' %}" style="text-decoration: none;">
-                    <div class="usuario">
-                        <img src="https://i.pravatar.cc/150?img=20" alt="Carlos Mendoza" />
-                        <div class="datos">
-                            <strong>Carlos Mendoza</strong>
-                            <span>@carlosm</span>
-                        </div>
+                    <p class="contenido-post">{{ post.texto }}</p>
+                    {% if post.archivo %}
+                    <img class="imagen-post" src="{{ post.archivo }}" alt="Imagen de la publicación">
+                    {% endif %}
+                    <div class="acciones">
+                    <span><i class="far fa-star"></i> 0</span>
+                    <span><i class="far fa-comment comentario-btn" data-usuario="@{{ post.usuario.username }}"></i> 0</span>
                     </div>
-                </a>
-                <p class="contenido-post">Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-                <img class="imagen-post" src="{% static 'images/gato.jfif' %}" alt="Imagen de la publicación"> {# Use static tag #}
-                <a href="#" style="text-decoration: none;"></a> {# Use URL tag #}
-                <div class="acciones">
-                    <span><i class="far fa-star"></i> 15</span>
-                    <span><i class="far fa-comment comentario-btn" data-usuario="@carlosm"></i> 24</span>
-                </div>
-                <div class="meta">3:15 PM · 16/06/2025</div>
-            </article>
+                    <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
+                </article>
+            {% empty %}
+                <p style="text-align:center;">No hay publicaciones aún.</p>
+            {% endfor %}
         </section>
 
         {% block panel_lateral %}
@@ -229,6 +197,16 @@
     function seleccionarPrivacidad(valor) {
         document.getElementById("valorPrivacidad").textContent = valor;
         document.getElementById("togglePrivacidad").checked = false;
+
+        const inputPriv = document.getElementById("inputPrivacidad");
+        if (inputPriv) {
+            if (valor === "Público") {
+                inputPriv.value = "publica";
+            } else if (valor === "Privado") {
+                inputPriv.value = "privada";
+            }
+        }
     }
+
 </script>
 {% endblock %}
