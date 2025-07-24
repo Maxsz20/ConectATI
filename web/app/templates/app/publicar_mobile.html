@@ -7,49 +7,80 @@
   <link rel="stylesheet" href="{% static 'css/publicar_mobile.css' %}">
 {% endblock %}
 
-
 {% block contenido %}
-
-
   <!-- Contenido principal -->
-  <div class="area-publicar">
+  <form method="POST" enctype="multipart/form-data" class="area-publicar">
+    {% csrf_token %}
+    
     <div class="barra-superior">
-      <a class="cancelar" href="/app/feed">Cancelar</a>
-      <!-- Botón de apertura -->
-        <div class="selector-toggle">
-            <input type="checkbox" id="togglePrivacidad" hidden />
-            <label for="togglePrivacidad" class="btn-privacidad">
-                <span id="valorPrivacidad">Público</span>
-                <i class="fas fa-chevron-down"></i>
-            </label>
+      <a class="cancelar" href="{% url 'feed' %}">Cancelar</a>
 
-            <ul class="menu-privacidad">
-                <li onclick="cambiarPrivacidad('Público')">Público</li>
-                <li onclick="cambiarPrivacidad('Privado')">Privado</li>
-            </ul>
-        </div>
+      <div class="selector-toggle">
+        <input type="checkbox" id="togglePrivacidad" hidden />
+        <input type="hidden" name="privacidad" id="inputPrivacidad" value="publica">
+        <label for="togglePrivacidad" class="btn-privacidad">
+          <span id="valorPrivacidad">Público</span>
+          <i class="fas fa-chevron-down"></i>
+        </label>
+        <ul class="menu-privacidad">
+          <li onclick="cambiarPrivacidad('Público')">Público</li>
+          <li onclick="cambiarPrivacidad('Privado')">Privado</li>
+        </ul>
+      </div>
 
-      <button class="btn-subir">Subir</button>
+      <button class="btn-subir" type="submit">Subir</button>
     </div>
 
     <div class="contenido-publicacion">
-      <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Mi perfil" />
-      <textarea placeholder="¿Qué estas pensando?"></textarea>
+      <img class="avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Mi perfil" />
+      <textarea name="texto" placeholder="¿Qué estas pensando?" rows="3">{{ form.texto.value|default_if_none:'' }}</textarea>
     </div>
 
+    <!-- Vista previa de imagen -->
+    <div class="preview-imagen" id="previewImagen" style="display: none;">
+      <img id="imagenPreview" src="#" alt="Vista previa" style="max-width: 100%; max-height: 200px; border-radius: 10px;" />
+    </div>
+
+    <!-- Ícono de imagen e input real oculto -->
     <div class="acciones-publicacion">
-      <i class="fas fa-camera"></i>
-      <i class="fas fa-image"></i>
-      <i class="fas fa-moon"></i>
+      <label for="archivoInput"><i class="fas fa-image"></i></label>
+      <input id="archivoInput" name="archivo" type="file" accept="image/*" hidden>
     </div>
-  </div>
+  </form>
 
+  <script>
+    function cambiarPrivacidad(valor) {
+      document.getElementById("valorPrivacidad").textContent = valor;
+      document.getElementById("togglePrivacidad").checked = false;
 
-<script>
-  function cambiarPrivacidad(valor) {
-    document.getElementById("valorPrivacidad").textContent = valor;
-    document.getElementById("togglePrivacidad").checked = false;
-  }
-</script>
+      const inputPriv = document.getElementById("inputPrivacidad");
+      if (inputPriv) {
+        inputPriv.value = valor === "Público" ? "publica" : "privada";
+      }
+    }
 
-{% endblock %} 
+    document.addEventListener("DOMContentLoaded", () => {
+      const inputArchivo = document.getElementById("archivoInput");
+      const previewContenedor = document.getElementById("previewImagen");
+      const imagenPreview = document.getElementById("imagenPreview");
+
+      if (inputArchivo) {
+        inputArchivo.addEventListener("change", () => {
+          const archivo = inputArchivo.files[0];
+
+          if (archivo && archivo.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              imagenPreview.src = e.target.result;
+              previewContenedor.style.display = "block";
+            };
+            reader.readAsDataURL(archivo);
+          } else {
+            imagenPreview.src = "#";
+            previewContenedor.style.display = "none";
+          }
+        });
+      }
+    });
+  </script>
+{% endblock %}

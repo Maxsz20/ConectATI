@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import RegistroForm, PublicacionForm
 from django.utils import timezone
-from .models import Usuario, Publicacion, Estrella
+from .models import Usuario, Publicacion, Estrella, Amistad
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
@@ -87,7 +87,19 @@ def ChangePassView(request):
     return render(request, 'app/change_password.html', {})
 
 def ProfileView(request):
-    return render(request, 'app/perfil.html', {'no_area_info': True})
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+
+    usuario = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
+
+    publicaciones = Publicacion.objects.using('conectati').filter(usuario=usuario).order_by('-fecha')
+
+    return render(request, 'app/perfil.html', {
+        'usuario_logueado': usuario,
+        'publicaciones': publicaciones,
+        'no_area_info': True
+    })
+
 
 def EditProfileView(request):
     return render(request, 'app/editarPerfil.html', {'no_area_info': True})
@@ -97,13 +109,8 @@ def FeedView(request):
         return redirect('login')
 
     form = PublicacionForm()
+    publicaciones = Publicacion.objects.using('conectati').filter(privacidad='publica').order_by('-fecha')
 
-    # Obtener publicaciones públicas
-    publicaciones = Publicacion.objects.using('conectati').filter(
-        privacidad='publica'
-    ).order_by('-fecha')
-
-    # Obtener publicaciones que este usuario ya marcó con estrella
     estrellas_usuario = []
     if request.session.get('usuario_id'):
         user_id = request.session['usuario_id']
@@ -113,42 +120,88 @@ def FeedView(request):
 
     if request.method == "POST":
         form = PublicacionForm(request.POST, request.FILES)
-        if form.is_valid():
-            data = form.cleaned_data
-            archivo_obj = request.FILES.get('archivo')
-            archivo_nombre = None
-
-            if archivo_obj:
-                # Guardar en media/publicaciones
-                ruta_media = os.path.join(settings.MEDIA_ROOT, 'publicaciones')
-                os.makedirs(ruta_media, exist_ok=True)
-
-                archivo_nombre = archivo_obj.name
-                ruta_completa = os.path.join(ruta_media, archivo_nombre)
-
-                with open(ruta_completa, 'wb+') as destino:
-                    for chunk in archivo_obj.chunks():
-                        destino.write(chunk)
-
-            if not data['texto'] and not archivo_nombre:
-                form.add_error(None, "Debes escribir algo o subir un archivo.")
-            else:
-                usuario = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
-                nueva = Publicacion(
-                    usuario=usuario,
-                    texto=data['texto'],
-                    archivo_nombre=archivo_nombre,
-                    privacidad=data['privacidad'].lower(),
-                    fecha=timezone.now()
-                )
-                nueva.save(using='conectati')
-                return redirect('feed')
+        nueva = procesar_publicacion(request, form)
+        if nueva:
+            return redirect('feed')
 
     return render(request, 'app/feed.html', {
         'form': form,
         'publicaciones': publicaciones,
-        'estrellas_usuario': list(estrellas_usuario)  # Para saber qué post ya fue marcado
+        'estrellas_usuario': list(estrellas_usuario)
     })
+
+
+def NotifyView(request):
+    return render(request, 'app/notificaciones.html', {})
+
+def ChatView(request):
+    return render(request, 'app/chat.html', {})
+
+def SettingsView(request):
+    return render(request, 'app/configuracion.html', {})
+
+def PostView(request):
+    return render(request, 'app/publicacion.html', {})
+    
+def PostMobileView(request):
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+
+    form = PublicacionForm()
+
+    if request.method == "POST":
+        form = PublicacionForm(request.POST, request.FILES)
+        nueva = procesar_publicacion(request, form)
+        if nueva:
+            return redirect('feed')
+
+    return render(request, 'app/publicar_mobile.html', {
+        'form': form,
+        'no_area_info': True,
+    })
+
+def ReplyMobileView(request):
+    return render(request, 'app/responder_mobile.html', {'no_area_info': True})
+
+def SearchView(request):
+    return render(request, 'app/busqueda.html', {})
+
+def SearchMobileView(request):
+    return render(request, 'app/busqueda_mobile.html', {'no_area_info': True})
+
+# Función para procesar publicaciones
+def procesar_publicacion(request, form):
+    if not form.is_valid():
+        return None  # O maneja errores si quieres mostrar mensajes
+
+    data = form.cleaned_data
+    archivo_obj = request.FILES.get('archivo')
+    archivo_nombre = None
+
+    if archivo_obj:
+        ruta_media = os.path.join(settings.MEDIA_ROOT, 'publicaciones')
+        os.makedirs(ruta_media, exist_ok=True)
+
+        archivo_nombre = archivo_obj.name
+        ruta_completa = os.path.join(ruta_media, archivo_nombre)
+
+        with open(ruta_completa, 'wb+') as destino:
+            for chunk in archivo_obj.chunks():
+                destino.write(chunk)
+
+    if not data['texto'] and not archivo_nombre:
+        return None  # O agrega lógica para errores personalizados
+
+    usuario = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
+    nueva = Publicacion(
+        usuario=usuario,
+        texto=data['texto'],
+        archivo_nombre=archivo_nombre,
+        privacidad=data['privacidad'].lower(),
+        fecha=timezone.now()
+    )
+    nueva.save(using='conectati')
+    return nueva
 
 
 # Lógica para dar estrellas a una publicación
@@ -178,26 +231,4 @@ def dar_estrella(request, publicacion_id):
         return JsonResponse({'error': 'No encontrada'}, status=404)
 
 
-def NotifyView(request):
-    return render(request, 'app/notificaciones.html', {})
-
-def ChatView(request):
-    return render(request, 'app/chat.html', {})
-
-def SettingsView(request):
-    return render(request, 'app/configuracion.html', {})
-
-def PostView(request):
-    return render(request, 'app/publicacion.html', {})
-    
-def PostMobileView(request):
-    return render(request, 'app/publicar_mobile.html', {'no_area_info': True})
-
-def ReplyMobileView(request):
-    return render(request, 'app/responder_mobile.html', {'no_area_info': True})
-
-def SearchView(request):
-    return render(request, 'app/busqueda.html', {})
-
-def SearchMobileView(request):
-    return render(request, 'app/busqueda_mobile.html', {'no_area_info': True})
+# Logica para buscar usuarios

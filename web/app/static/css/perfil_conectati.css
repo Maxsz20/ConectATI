@@ -606,13 +606,16 @@ a, a:visited {
 /* Styling for post images */
 .post-image {
   width: 100%;
-  height: auto; /* Maintain aspect ratio */
-  max-width: 100%; /* Ensure it doesn't exceed container width */
-  object-fit: contain; /* Ensure the image fits within the container */
+  max-width: 500px;         /* Máximo ancho visible */
+  max-height: 300px;        /* Limita la altura */
+  height: auto;
+  object-fit: cover;        /* Recorta para que se vea bien */
   border-radius: 8px;
-  margin: 0 auto; /* Center the image */
+  margin: 10px auto;        /* Espaciado y centrado */
   display: block;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
+
 
 /* Para centrar la publicación en pantallas grandes */
 .publicaciones {

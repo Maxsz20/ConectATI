@@ -31,37 +31,30 @@
       </div>
 
       <!-- Publicaciones -->
-      <div class="post">
-        <div class="post-header">
-          <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
-          <div class="info-texto">
-            <strong>Daniela Rojas</strong>
-            <span class="usuario">@danroj · 1d</span>
+      {% for post in publicaciones %}
+        <div class="post">
+          <div class="post-header">
+            <img class="avatar" src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" />
+            <div class="info-texto">
+              <strong>{{ post.usuario.nombre }}</strong>
+              <span class="usuario">@{{ post.usuario.username }}</span>
+            </div>
           </div>
-        </div>
-        <p class="post-texto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        <div class="post-acciones">
-          <button class="accion"><i class="far fa-star"></i> 12</button>
-          <button class="accion comentario-btn" data-usuario="@danroj"><i class="far fa-comment"></i> 3</button>
-        </div>
-        <div class="meta">3:15 PM · 16/06/2025</div>
-      </div>
 
-      <div class="post">
-        <div class="post-header">
-          <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
-          <div class="info-texto">
-            <strong>Daniela Rojas</strong>
-            <span class="usuario">@danroj · 1d</span>
+          <p class="post-texto">{{ post.texto }}</p>
+
+          {% if post.archivo_nombre %}
+            <img class="post-image" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="Imagen de la publicación">
+          {% endif %}
+
+          <div class="post-acciones">
+            <button class="accion"><i class="far fa-star"></i> {{ post.estrellas }}</button>
+            <button class="accion comentario-btn"><i class="far fa-comment"></i> 0</button>
           </div>
+          <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
         </div>
-        <p class="post-texto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.✨</p>
-        <img class="post-image" src="https://t3.ftcdn.net/jpg/08/44/84/46/360_F_844844652_Z3SF4M5HIZsSMkGLt5ts0cr1s5O4mdQL.jpg" alt="Paisaje" />
-        <div class="post-acciones">
-          <button class="accion"><i class="far fa-star"></i> 12</button>
-          <button class="accion comentario-btn" data-usuario="@danroj"><i class="far fa-comment"></i> 3</button>
-        </div>
-        <div class="meta">3:15 PM · 16/06/2025</div>
-      </div>
+      {% endfor %}
+
+
     </div>
 {% endblock %} 

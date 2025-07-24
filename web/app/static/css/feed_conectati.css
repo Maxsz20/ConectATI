@@ -935,6 +935,9 @@ a, a:visited {
   .feed {
     width: 100%;
   }
+  .feed{
+    padding-bottom: 5rem;
+  }
 
   .titulo-mobile {
     display: block;
