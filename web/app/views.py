@@ -355,6 +355,7 @@ def aceptar_solicitud(request):
 
             amistad = Amistad.objects.using('conectati').get(id=solicitud_id, para_usuario_id=usuario_id)
             amistad.estado = 'aceptada'
+            amistad.fecha = timezone.now()  # ✅ asignar fecha de aceptación
             amistad.save(using='conectati')
 
             # Obtener datos del nuevo amigo
