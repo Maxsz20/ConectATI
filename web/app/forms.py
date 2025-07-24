@@ -27,7 +27,7 @@ class PublicacionForm(forms.Form):
         widget=forms.Textarea(attrs={'rows': 3}),
         max_length=500
     )
-    archivo = forms.URLField(required=False)
+    archivo = forms.FileField(required=False)
     privacidad = forms.ChoiceField(
         choices=[('publica', 'Pública'), ('privada', 'Privada')],
         required=True

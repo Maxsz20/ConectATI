@@ -84,6 +84,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'web' / 'db.sqlite3',
+        #'NAME': '/app/db.sqlite3', # <- ruta de la base de datos cuando se usa Docker
     },
     'conectati': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -129,7 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = Path("/app/static")  # <- importante para que Django recoja ahí
+STATIC_ROOT = Path("/web/static")  # <- importante para que Django recoja ahí
 STATICFILES_DIRS = [
     BASE_DIR / 'web' / 'app' / 'static',  # <- donde están tus CSS, imágenes, etc.
 ]
@@ -143,3 +144,5 @@ APPEND_SLASH = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'web', 'media')
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']  # Ajusta según el dominio si estás en otro entorno
