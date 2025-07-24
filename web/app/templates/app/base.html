@@ -79,23 +79,8 @@
                 <span>Recientes</span>
                 <a href="#">Ver todo</a>
               </div>
-
-              <div class="usuario-busqueda">
-                <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
-                <div class="info">
-                  <strong>@anag</strong>
-                  <small>Ana García · 2 nuevos posts</small>
-                </div>
-                <i class="fas fa-times"></i>
-              </div>
-
-              <div class="usuario-busqueda">
-                <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" />
-                <div class="info">
-                  <strong>@carlosm</strong>
-                  <small>Carlos Mendoza</small>
-                </div>
-                <i class="fas fa-times"></i>
+              <div class="usuarios-buscados">
+                <!-- Aquí se agregan los resultados -->
               </div>
             </div>
           </div>
@@ -135,22 +120,7 @@
   {% block extra_body_content%}
   {% endblock %}
 
-  <script>
-    const input = document.getElementById('inputBusqueda');
-    const dropdown = document.getElementById('dropdownBuscador');
-
-    if (input && dropdown) {
-      input.addEventListener('focus', () => {
-        dropdown.classList.remove('oculto');
-      });
-
-      document.addEventListener('click', function (e) {
-        if (!document.querySelector('.buscador').contains(e.target)) {
-          dropdown.classList.add('oculto');
-        }
-      });
-    }
-  </script>
+  <script src="{% static 'js/base.js' %}"></script>
 
   {% block extra_js %}{% endblock %}
 </body>

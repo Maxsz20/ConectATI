@@ -24,4 +24,8 @@ urlpatterns = [
     path('reply_mobile/', views.ReplyMobileView, name='reply_mobile'),
     path('logout/', views.LogoutView, name='logout'),
     path('publicacion/<int:publicacion_id>/estrella/', views.dar_estrella, name='dar_estrella'),
+    path('buscar-usuarios/', views.buscar_usuarios, name='buscar_usuarios'),
+    path('enviar-solicitud-amistad/', views.enviar_solicitud_amistad, name='enviar_solicitud_amistad'),
+    path('aceptar-solicitud/', views.aceptar_solicitud, name='aceptar_solicitud'),
+    path('rechazar-solicitud/', views.rechazar_solicitud, name='rechazar_solicitud'),
     ]

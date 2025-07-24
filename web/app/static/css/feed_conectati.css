@@ -731,9 +731,10 @@ a, a:visited {
   color: var(--color-fondo);
 }
 
-.dropdown-resultados.oculto {
+.oculto {
   display: none;
 }
+
 
 .dropdown-resultados .usuario-busqueda {
   display: flex;

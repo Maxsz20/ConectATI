@@ -13,32 +13,38 @@
 <div class="contenedor-info">
   <div class="columna-central">
     <section class="lista-amigos">
-      {% for i in "12345" %}
+      {% for amigo in amigos %}
       <div class="item-amigo">
-        <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+        <img src="{{ amigo.foto|default:'/static/images/default_user.avif' }}" alt="{{ amigo.nombre }}" />
         <div class="contenido">
-          <strong>@anag</strong> <span class="nombre">Ana García</span>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+          <strong>@{{ amigo.username }}</strong> <span class="nombre">{{ amigo.nombre }}</span>
+          <p>{{ amigo.descripcion|default:"" }}</p>
         </div>
         <i class="fas fa-user-slash eliminar"></i>
       </div>
+      {% empty %}
+      <p>No tienes amigos aún.</p>
       {% endfor %}
     </section>
 
     <section class="solicitudes">
       <h3>Solicitudes de Amistad</h3>
-      {% for i in "12345" %}
+      {% for solicitud in solicitudes %}
+      {% with usuario=solicitud.de_usuario %}
       <div class="item-solicitud">
-        <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
+        <img src="{{ usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ usuario.nombre }}" />
         <div class="contenido">
-          <strong>@carlosm</strong> <span class="nombre">Carlos Mendoza</span>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+          <strong>@{{ usuario.username }}</strong> <span class="nombre">{{ usuario.nombre }}</span>
+          <p>{{ usuario.descripcion|default:"" }}</p>
         </div>
         <div class="acciones">
-          <i class="fas fa-check aceptar" title="Aceptar"></i>
-          <i class="fas fa-times rechazar" title="Rechazar"></i>
+          <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
+          <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
         </div>
       </div>
+      {% endwith %}
+      {% empty %}
+      <p>No tienes nuevas solicitudes de amistad.</p>
       {% endfor %}
     </section>
   </div>
@@ -81,3 +87,8 @@
   </div>
 </div>
 {% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/amistades_conectati.js' %}"></script>
+{% endblock %}
+

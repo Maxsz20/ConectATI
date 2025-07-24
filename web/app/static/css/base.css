@@ -1,0 +1,91 @@
+:root {
+  --color-fondo: #E5E7EB;
+  --color-iconos: #8E9BFF;
+  --color-bordes: #ccc;
+  --lavanda-translucido: rgba(188, 190, 255, 0.4);
+}
+
+.usuario-busqueda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.usuario-busqueda:hover {
+  background-color: #f0f0f0;
+}
+
+.usuario-busqueda img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.usuario-busqueda .info {
+  flex: 1;
+}
+
+.usuario-busqueda button.btn-agregar {
+  background-color: #615EF0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.sin-resultados {
+  padding: 10px;
+  color: gray;
+  text-align: center;
+}
+.btn-agregar {
+  background-color: var(--lavanda-translucido);
+  border: 1px solid var(--color-iconos);
+  color: var(--color-fondo);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-agregar:hover {
+  background-color: var(--color-iconos);
+  color: white;
+}
+
+.solicitud-enviada {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b6b6b;
+  font-size: 0.8rem;
+}
+
+.solicitud-enviada i {
+  color: #6b6b6b;
+}
+
+.btn-error {
+  background-color: #f5c6cb;
+  color: #721c24;
+  cursor: not-allowed;
+}
+
+.estado-pendiente {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: #ffff  ;
+}
+
+.estado-pendiente i {
+  color: #fff;
+}
+
+
