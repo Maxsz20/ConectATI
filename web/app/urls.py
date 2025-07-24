@@ -29,4 +29,9 @@ urlpatterns = [
     path('aceptar-solicitud/', views.aceptar_solicitud, name='aceptar_solicitud'),
     path('rechazar-solicitud/', views.rechazar_solicitud, name='rechazar_solicitud'),
     path('usuario/<int:usuario_id>/', views.ver_perfil_usuario, name='ver_perfil_usuario'),
+    path('enviar-solicitud-chat/', views.enviar_solicitud_chat, name='enviar_solicitud_chat'),
+    path('aceptar-solicitud-chat/', views.aceptar_solicitud_chat, name='aceptar_solicitud_chat'),
+    path('rechazar-solicitud-chat/', views.rechazar_solicitud_chat, name='rechazar_solicitud_chat'),
+    path('obtener-conversacion/', views.obtener_conversacion, name='obtener_conversacion'),
+    path('obtener-mensajes-chat/', views.obtener_mensajes_chat, name='obtener_mensajes_chat'),
 ]

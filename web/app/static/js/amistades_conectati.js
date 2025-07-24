@@ -32,7 +32,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const listaAmigos = document.querySelector('.lista-amigos');
           if (listaAmigos) {
+            // Quitar mensaje vacío si existe
+            const vacio = listaAmigos.querySelector('p');
+            if (vacio && vacio.textContent.includes('No tienes amigos')) {
+              vacio.remove();
+            }
             listaAmigos.prepend(nuevo); // lo coloca arriba
+          }
+
+          // Si ya no quedan solicitudes, quitar mensaje vacío
+          const solicitudesSection = document.querySelector('.solicitudes');
+          if (solicitudesSection) {
+            const solicitudesRestantes = solicitudesSection.querySelectorAll('.item-solicitud');
+            if (solicitudesRestantes.length === 0) {
+              let vacio = solicitudesSection.querySelector('p');
+              if (!vacio) {
+                vacio = document.createElement('p');
+                vacio.textContent = 'No tienes nuevas solicitudes de amistad.';
+                solicitudesSection.appendChild(vacio);
+              }
+            }
           }
         }
       });
@@ -54,6 +73,19 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(data => {
         if (data.ok) {
           btn.closest('.item-solicitud').remove();
+          // Si ya no quedan solicitudes, quitar mensaje vacío
+          const solicitudesSection = document.querySelector('.solicitudes');
+          if (solicitudesSection) {
+            const solicitudesRestantes = solicitudesSection.querySelectorAll('.item-solicitud');
+            if (solicitudesRestantes.length === 0) {
+              let vacio = solicitudesSection.querySelector('p');
+              if (!vacio) {
+                vacio = document.createElement('p');
+                vacio.textContent = 'No tienes nuevas solicitudes de amistad.';
+                solicitudesSection.appendChild(vacio);
+              }
+            }
+          }
         }
       });
     });

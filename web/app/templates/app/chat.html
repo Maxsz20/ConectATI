@@ -16,9 +16,15 @@
     <h2>Mensajes</h2>
   </div>
   <div class="encabezado-chat">
-    <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
-    <strong>Ana García</strong>
-    <small id="chat-usuario">@anag</small>
+    {% if primer_chat %}
+      <img id="chat-avatar-desktop" src="{{ primer_chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ primer_chat.nombre }}" />
+      <strong id="chat-nombre-desktop">{{ primer_chat.nombre }}</strong>
+      <small id="chat-usuario-desktop">@{{ primer_chat.username }}</small>
+    {% else %}
+      <img id="chat-avatar-desktop" src="/static/images/default_user.avif" alt="Sin chat seleccionado" style="opacity:0.3;filter:grayscale(1);" />
+      <strong id="chat-nombre-desktop">Sin chat seleccionado</strong>
+      <small id="chat-usuario-desktop">&nbsp;</small>
+    {% endif %}
   </div>
 </div>
 
@@ -29,58 +35,76 @@
 
 
 {% block contenido2 %}
+
 <div class="contenedor-mensajes">
   <!-- Lista lateral -->
   <div class="columna-central">
     <section class="chat-list">
-      {% for i in "12345" %}
-      <div class="chat-user">
-        <div class="chat-user-info">
-          <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
-          <span>
-            @anag<br />
-            <small>Ana García</small>
-          </span>
+      {% if chats %}
+        {% for chat in chats %}
+        <div class="chat-user" data-usuario-id="{{ chat.usuario.id }}" data-chat-id="{{ chat.id }}">
+          <div class="chat-user-info">
+            <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
+            <span>
+              @{{ chat.username }}<br />
+              <small>{{ chat.nombre }}</small>
+            </span>
+          </div>
+          <i class="fas fa-trash" title="Eliminar chat"></i>
         </div>
-        <i class="fas fa-trash" title="Eliminar chat"></i>
-      </div>
-      {% endfor %}
+        {% endfor %}
+      {% else %}
+        <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">No hay mensajes.</div>
+      {% endif %}
     </section>
 
     <section class="solicitudes-chat">
       <h3>Solicitudes de Mensajes</h3>
-      {% for i in "12" %}
-      <div class="item-solicitud">
-        <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
-        <div class="contenido">
-          <strong>@carlosm</strong> <span class="nombre">Carlos Mendoza</span>
-          <p>¿Podemos hablar por aquí?</p>
+      {% if solicitudes_chat_pendientes %}
+        {% for solicitud in solicitudes_chat_pendientes %}
+        <div class="item-solicitud">
+          <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
+          <div class="contenido">
+            <strong>@{{ solicitud.de_usuario.username }}</strong> <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
+            <p>¿Podemos hablar por aquí?</p>
+          </div>
+          <div class="acciones">
+            <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
+            <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
+          </div>
         </div>
-        <div class="acciones">
-          <i class="fas fa-check aceptar" title="Aceptar"></i>
-          <i class="fas fa-times rechazar" title="Rechazar"></i>
-        </div>
-      </div>
-      {% endfor %}
+        {% endfor %}
+      {% else %}
+        <div style="color: #888; text-align: center; padding: 1rem 0;">No tienes solicitudes de chat pendientes.</div>
+      {% endif %}
     </section>
   </div>
 
   <!-- Conversación -->
   <div class="conversacion">
     <div class="chat-mensajes">
-      {% for i in "1111" %}
-      <div class="mensaje recibido">¿Qué deberíamos hacer?</div>
-      <div class="mensaje enviado">¡Empecemos!</div>
-      {% endfor %}
+      {% if primer_chat %}
+        {% if mensajes %}
+          {% for msg in mensajes %}
+            <div class="mensaje {% if msg.emisor.id == request.session.usuario_id %}enviado{% else %}recibido{% endif %}">
+              {{ msg.texto }}
+            </div>
+          {% endfor %}
+        {% else %}
+          <div style="color:#888; text-align:center; padding:1rem;">No hay mensajes aún.</div>
+        {% endif %}
+      {% else %}
+        <div style="color:#888; text-align:center; padding:1rem;">Selecciona un chat para comenzar a conversar.</div>
+      {% endif %}
     </div>
-    <div class="chat-input">
+
+    <div class="chat-input" {% if not primer_chat %}style="display: none;"{% endif %}>
       <i class="fas fa-camera"></i>
       <input type="text" placeholder="Escribir mensaje..." />
       <i class="fas fa-microphone"></i>
       <i class="fas fa-image"></i>
       <i class="fas fa-paper-plane"></i>
     </div>
-  </div>
 </div>
 
 <!-- Encabezado alternativo mobile -->
@@ -95,103 +119,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const isMobile = () => window.innerWidth <= 768;
-
-  const chatItems = document.querySelectorAll(".chat-user");
-  const chatList = document.querySelector(".chat-list");
-  const conversacion = document.querySelector(".conversacion");
-  const encabezadoLista = document.querySelector(".encabezado-lista");
-  const tituloMobile = document.querySelector(".titulo-mobile");
-  const headerMobile = document.querySelector(".header-mobile");
-  const chatInput = document.querySelector(".chat-input");
-  const menuMobile = document.querySelector(".menu-mobile");
-  const encabezadoChatMobile = document.querySelector(".encabezado-chat-mobile");
-  const avatarMobile = document.getElementById("chat-avatar");
-  const nombreMobile = document.getElementById("chat-nombre");
-  const usuarioMobile = document.getElementById("chat-usuario");
-  const botonPublicar = document.querySelector(".boton-publicar-mobile");
-  const columnaCentral = document.querySelector(".columna-central");
-  const avatarDesktop = document.querySelector(".encabezado-chat img");
-  const nombreDesktop = document.querySelector(".encabezado-chat strong");
-
-  const btnVolver = encabezadoChatMobile.querySelector(".btn-volver-chat");
-  btnVolver.addEventListener("click", () => {
-    chatList.style.display = "block";
-    conversacion.style.display = "none";
-    encabezadoChatMobile.style.display = "none";
-    encabezadoLista.style.display = "flex";
-    headerMobile.style.display = "flex";
-    tituloMobile.style.display = "block";
-    chatInput.style.display = "none";
-    menuMobile.style.display = "flex";
-    botonPublicar.style.display = "flex";
-    columnaCentral.style.display = "block";
-  });
-
-  chatItems.forEach(item => {
-    item.addEventListener("click", () => {
-      const img = item.querySelector("img");
-      const nameSpan = item.querySelector("span");
-      const usuario = item.querySelector("small");
-
-      const nombreTexto = nameSpan.childNodes[0].nodeValue.trim();
-      const usuarioTexto = usuario.childNodes[0].nodeValue.trim();
-
-      avatarMobile.src = img.src;
-      avatarMobile.alt = img.alt;
-      nombreMobile.textContent = nombreTexto;
-      usuarioMobile.textContent = usuarioTexto;
-
-      avatarDesktop.src = img.src;
-      avatarDesktop.alt = img.alt;
-      nombreDesktop.textContent = nombreTexto;
-
-      if (isMobile()) {
-        chatList.style.display = "none";
-        conversacion.style.display = "flex";
-        encabezadoLista.style.display = "none";
-        encabezadoChatMobile.style.display = "flex";
-        headerMobile.style.display = "none";
-        tituloMobile.style.display = "none";
-        menuMobile.style.display = "none";
-        chatInput.style.display = "flex";
-        botonPublicar.style.display = "none";
-        columnaCentral.style.display = "none";
-      }
-    });
-  });
-
-  window.addEventListener("resize", () => {
-    if (!isMobile()) {
-      chatList.style.display = "";
-      conversacion.style.display = "";
-      encabezadoLista.style.display = "";
-      encabezadoChatMobile.style.display = "none";
-      headerMobile.style.display = "";
-      tituloMobile.style.display = "";
-      chatInput.style.display = "";
-      menuMobile.style.display = "";
-      botonPublicar.style.display = "";
-      columnaCentral.style.display = "";
-    }
-  });
-});
-
-function scrollToBottom() {
-  const chatMensajes = document.querySelector('.chat-mensajes');
-  if (chatMensajes) {
-    chatMensajes.scrollTop = chatMensajes.scrollHeight;
-  }
-}
-
-window.addEventListener('load', scrollToBottom);
-const chatItems = document.querySelectorAll(".chat-user");
-chatItems.forEach(item => {
-  item.addEventListener("click", () => {
-    setTimeout(scrollToBottom, 100);
-  });
-});
-</script>
+<script src="{% static 'js/chat_conectati.js' %}"></script>
 {% endblock %}

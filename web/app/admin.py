@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Usuario, Amistad, Chat, Comentario,
-    Configuracion, Mensaje, Notificacion, Publicacion, Estrella
+    Configuracion, Mensaje, Notificacion, Publicacion, Estrella, SolicitudChat
 )
 
 @admin.register(Usuario)
@@ -118,3 +118,17 @@ class EstrellaAdmin(admin.ModelAdmin):
         return obj.usuario.nombre
     usuario_nombre.short_description = 'Usuario'
 
+@admin.register(SolicitudChat)
+class SolicitudChatAdmin(admin.ModelAdmin):
+    list_display = ('id', 'de_usuario_nombre', 'para_usuario_nombre', 'estado', 'fecha')
+    list_filter = ('estado', 'fecha')
+    search_fields = ('de_usuario__nombre', 'para_usuario__nombre')
+    ordering = ('-fecha',)
+
+    def de_usuario_nombre(self, obj):
+        return obj.de_usuario.nombre
+    de_usuario_nombre.short_description = 'De'
+
+    def para_usuario_nombre(self, obj):
+        return obj.para_usuario.nombre
+    para_usuario_nombre.short_description = 'Para'

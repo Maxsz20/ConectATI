@@ -75,66 +75,48 @@
     </section>
     {% block panel_lateral %}
     <div class="panel-lateral">
-
         <h3>Mensajes</h3>
-        <a href="{% url 'chat' %}">
-            <div class="mensaje-preview">
-                <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+        {% if chats %}
+            {% for chat in chats %}
+            <a href="{% url 'chat' %}">
+                <div class="mensaje-preview">
+                <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
                 <div class="mensaje-info">
                     <div class="usuario">
-                        <span class="nombre">Ana García</span>
-                        <span>@anag · 4h</span>
+                    <span class="nombre">{{ chat.nombre }}</span>
+                    <span>@{{ chat.username }}</span>
                     </div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p>Haz clic para conversar</p>
                 </div>
                 <i class="fas fa-envelope"></i>
-            </div>
-        </a>
-
-        <a href="{% url 'chat' %}">
-            <div class="mensaje-preview">
-                <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
-                <div class="mensaje-info">
-                    <div class="usuario">
-                        <span class="nombre">Ana García</span>
-                        <span>@anag · 4h</span>
-                    </div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                 </div>
-                <i class="fas fa-envelope"></i>
-            </div>
-        </a>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">No hay mensajes.</div>
+        {% endif %}
 
         <h3>Solicitudes de mensajes</h3>
-        <div class="solicitud-preview">
-            <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
+        {% if solicitudes_chat_pendientes %}
+            {% for solicitud in solicitudes_chat_pendientes %}
+            <div class="solicitud-preview">
+            <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
             <div class="mensaje-info">
                 <div class="usuario">
-                    <span class="nombre">Carlos Mendoza</span>
-                    <span>@carlosm · 3h</span>
+                <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
+                <span>@{{ solicitud.de_usuario.username }}</span>
                 </div>
                 <p>¿Podemos hablar por aquí?</p>
             </div>
             <div class="acciones">
-                <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
-                <i class="fas fa-times rechazar" title="Rechazar"></i>
+                <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
             </div>
-        </div>
-
-        <div class="solicitud-preview">
-            <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
-            <div class="mensaje-info">
-                <div class="usuario">
-                    <span class="nombre">Ana García</span>
-                    <span>@anag · 4h</span>
-                </div>
-                <p>¿Podemos hablar por aquí?</p>
             </div>
-            <div class="acciones">
-                <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
-                <i class="fas fa-times rechazar" title="Rechazar"></i>
-            </div>
-        </div>
+            {% endfor %}
+        {% else %}
+            <div style="color: #888; text-align: center; padding: 1rem 0;">No tienes solicitudes de chat pendientes.</div>
+        {% endif %}
     </div>
     {% endblock %}
 </div>    

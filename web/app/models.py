@@ -133,3 +133,19 @@ class Estrella(models.Model):
         app_label = 'app'
         unique_together = ('usuario', 'publicacion')
 
+class SolicitudChat(models.Model):
+    de_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='solicitudes_chat_enviadas')
+    para_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='solicitudes_chat_recibidas')
+    estado = models.CharField(max_length=20, choices=[('pendiente', 'Pendiente'), ('aceptada', 'Aceptada'), ('rechazada', 'Rechazada')], default='pendiente')
+    fecha = models.DateTimeField(auto_now_add=True)
+    fecha_aceptada = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'SolicitudChat'
+        app_label = 'app'
+        unique_together = ('de_usuario', 'para_usuario')
+
+    def __str__(self):
+        return f"Solicitud de {self.de_usuario.username} a {self.para_usuario.username} ({self.estado})"
+

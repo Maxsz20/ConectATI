@@ -13,6 +13,10 @@
   cursor: pointer;
 }
 
+.usuario-busqueda .info {
+  color: var(--color-fondo);
+} 
+
 .usuario-busqueda:hover {
   background-color: #f0f0f0;
 }
@@ -37,6 +41,10 @@
   font-size: 12px;
 }
 
+.usuario-busqueda button.btn-agregar:hover {
+  background-color: #211de7;
+}
+
 .sin-resultados {
   padding: 10px;
   color: gray;
@@ -51,11 +59,6 @@
   border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-}
-
-.btn-agregar:hover {
-  background-color: var(--color-iconos);
-  color: white;
 }
 
 .solicitud-enviada {
@@ -94,6 +97,27 @@
   text-decoration: none;
   color: inherit;
   flex: 1;
+}
+
+.usuario-busqueda button.btn-chat-solicitud {
+  background-color: #615EF0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.usuario-busqueda button.btn-chat-solicitud:hover {
+  background-color: #211de7;
+}
+
+.acciones-buscador {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto;
 }
 
 

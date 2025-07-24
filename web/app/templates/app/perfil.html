@@ -25,19 +25,34 @@
             <span>Editar perfil</span>
           </a>
           {% else %}
-            {% if estado_amistad == None %}
+            <div class="perfil-botones-acciones">
+              {% if estado_amistad == None %}
               <button id="btn-aniadir-amigo" class="editar-perfil" onclick="enviarSolicitudAmistad('{{ usuario_perfil.id }}')">
                   <span>Añadir amigo</span>
               </button>
-            {% elif estado_amistad == 'pendiente' %}
+              {% elif estado_amistad == 'pendiente' %}
               <button class="editar-perfil" disabled style="cursor:not-allowed;opacity:0.7;">
                 <span>Pendiente</span>
               </button>
-            {% elif estado_amistad == 'aceptada' %}
+              {% elif estado_amistad == 'aceptada' %}
               <button class="editar-perfil" disabled style="cursor:not-allowed;opacity:0.7;">
                 <span>Amigo</span>
               </button>
-            {% endif %}
+              {% endif %}
+              {% if estado_chat == None %}
+              <button id="btn-chatear" class="editar-perfil" onclick="enviarSolicitudChat('{{ usuario_perfil.id }}')">
+                  <span>Chatear</span>
+              </button>
+              {% elif estado_chat == 'pendiente' %}
+              <button class="editar-perfil" disabled style="cursor:not-allowed;opacity:0.7;">
+                <span>Chat pendiente</span>
+              </button>
+              {% elif estado_chat == 'aceptada' %}
+              <a href="{% url 'chat' %}" class="editar-perfil" style="background:#5793fb;">
+                <span><i class="fas fa-comments"></i> Ir al chat</span>
+              </a>
+              {% endif %}
+            </div>
           {% endif %}
         </div>
         <div class="barra-inferior">
@@ -107,6 +122,50 @@ function enviarSolicitudAmistad(para_usuario_id) {
         btn.querySelector('span').innerText = 'Error';
         btn.disabled = false;
     });
+}
+
+function enviarSolicitudChat(para_usuario_id) {
+    var btn = document.getElementById('btn-chatear');
+    btn.disabled = true;
+    btn.querySelector('span').innerText = 'Enviando...';
+    fetch("/app/enviar-solicitud-chat/", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ para_usuario_id: para_usuario_id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.ok || (data.error && data.error.includes('Ya existe solicitud'))) {
+            // Oculta el botón de chatear y muestra el de pendiente
+            btn.outerHTML = `<button class='editar-perfil' disabled style='cursor:not-allowed;opacity:0.7;'><span>Chat pendiente</span></button>`;
+        } else {
+            alert(data.error || 'Error enviando solicitud');
+            btn.querySelector('span').innerText = 'Chatear';
+            btn.disabled = false;
+        }
+    })
+    .catch(err => {
+        btn.querySelector('span').innerText = 'Error';
+        btn.disabled = false;
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 </script>
 {% endblock %}
