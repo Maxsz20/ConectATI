@@ -87,5 +87,14 @@
 .estado-pendiente i {
   color: #fff;
 }
+.link-usuario-busqueda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+}
+
 
 

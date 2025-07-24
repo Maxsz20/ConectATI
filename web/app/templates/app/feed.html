@@ -57,11 +57,13 @@
             {% for post in publicaciones %}
                 <article class="post-container">
                     <div class="usuario">
-                    <img src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" class="profile-pic">
-                    <div class="datos">
-                        <strong>{{ post.usuario.nombre }}</strong>
-                        <span>@{{ post.usuario.username }}</span>
-                    </div>
+                    <a href="{% url 'ver_perfil_usuario' post.usuario.id %}" style="display:flex;align-items:center;text-decoration:none;color:inherit;">
+                        <img src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" class="profile-pic">
+                        <div class="datos">
+                            <strong>{{ post.usuario.nombre }}</strong>
+                            <span>@{{ post.usuario.username }}</span>
+                        </div>
+                    </a>
                     </div>
                     <p class="contenido-post">{{ post.texto }}</p>
 

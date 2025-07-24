@@ -606,8 +606,8 @@ a, a:visited {
 /* Styling for post images */
 .post-image {
   width: 100%;
-  max-width: 500px;         /* Máximo ancho visible */
-  max-height: 300px;        /* Limita la altura */
+  max-width: 700px;         /* Máximo ancho visible */
+  max-height: 500px;        /* Limita la altura */
   height: auto;
   object-fit: cover;        /* Recorta para que se vea bien */
   border-radius: 8px;

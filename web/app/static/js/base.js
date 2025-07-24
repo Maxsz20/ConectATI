@@ -29,18 +29,20 @@ const input = document.getElementById('inputBusqueda');
                 const div = document.createElement('div');
                 div.classList.add('usuario-busqueda');
                 div.innerHTML = `
-                <img src="${usuario.foto}" alt="${usuario.nombre}">
-                <div class="info">
-                    <strong>@${usuario.username}</strong>
-                    <small>${usuario.nombre}</small>
-                </div>
-                ${
+                  <a href="/app/usuario/${usuario.id}" class="link-usuario-busqueda">
+                    <img src="${usuario.foto}" alt="${usuario.nombre}">
+                    <div class="info">
+                      <strong>@${usuario.username}</strong>
+                      <small>${usuario.nombre}</small>
+                    </div>
+                  </a>
+                  ${
                     usuario.estado_amistad === 'aceptada'
-                    ? `<i class="fas fa-user-check" title="Ya son amigos"></i>`
-                    : usuario.estado_amistad === 'pendiente'
+                      ? `<i class="fas fa-user-check" title="Ya son amigos"></i>`
+                      : usuario.estado_amistad === 'pendiente'
                         ? `<span class="estado-pendiente"><i class="fas fa-clock"></i> Pendiente</span>`
                         : `<button class="btn-agregar" data-id="${usuario.id}">Añadir</button>`
-                }
+                  }
                 `;
                 contenedor.appendChild(div);
             });

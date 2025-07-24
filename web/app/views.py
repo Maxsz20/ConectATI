@@ -5,11 +5,12 @@ from .models import Usuario, Publicacion, Estrella, Amistad
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
-from django.http import JsonResponse
 import os
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.db.models import Q
+from django.http import JsonResponse
 
 # Create your views here.
 def InicioRedirectView(request):
@@ -119,25 +120,62 @@ def ChangePassView(request):
 def ProfileView(request):
     if not request.session.get('usuario_id'):
         return redirect('login')
-
     usuario_id = request.session['usuario_id']
-    usuario = Usuario.objects.using('conectati').get(id=usuario_id)
+    return ver_perfil_usuario(request, usuario_id)
 
-    # Contar amistades aceptadas (el usuario puede ser en cualquiera de los dos lados)
-    cantidad_amigos = Amistad.objects.using('conectati').filter(
-        Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id),
-        estado='aceptada'
-    ).count()
+# Vista para ver perfil de otros usuarios (y propio)
+def ver_perfil_usuario(request, usuario_id):
+    # Verificar que el usuario esté autenticado
+    if not request.session.get('usuario_id'):
+        return redirect('login')
 
-    publicaciones = Publicacion.objects.using('conectati').filter(usuario=usuario).order_by('-fecha')
-
-    return render(request, 'app/perfil.html', {
-        'usuario_logueado': usuario,
-        'publicaciones': publicaciones,
-        'cantidad_amigos': cantidad_amigos,
-        'no_area_info': True
-    })
-
+    try:
+        # Obtener el usuario cuyo perfil se quiere ver
+        usuario_perfil = Usuario.objects.using('conectati').get(id=usuario_id)
+        
+        # Obtener el usuario actual para verificar relación de amistad
+        usuario_actual_id = request.session['usuario_id']
+        
+        # Verificar si existe una relación de amistad
+        amistad = Amistad.objects.using('conectati').filter(
+            Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario_id) |
+            Q(de_usuario_id=usuario_id, para_usuario_id=usuario_actual_id)
+        ).first()
+        
+        estado_amistad = None
+        if amistad:
+            estado_amistad = amistad.estado
+        
+        # Contar amistades aceptadas del usuario del perfil
+        cantidad_amigos = Amistad.objects.using('conectati').filter(
+            Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id),
+            estado='aceptada'
+        ).count()
+        
+        # Obtener publicaciones del usuario (solo públicas si no son amigos)
+        if estado_amistad == 'aceptada' or usuario_actual_id == usuario_id:
+            # Si son amigos o es el mismo usuario, mostrar todas las publicaciones
+            publicaciones = Publicacion.objects.using('conectati').filter(usuario=usuario_perfil).order_by('-fecha')
+        else:
+            # Si no son amigos, solo mostrar publicaciones públicas
+            publicaciones = Publicacion.objects.using('conectati').filter(
+                usuario=usuario_perfil, 
+                privacidad='publica'
+            ).order_by('-fecha')
+        
+        return render(request, 'app/perfil.html', {
+            'usuario_perfil': usuario_perfil,
+            'publicaciones': publicaciones,
+            'cantidad_amigos': cantidad_amigos,
+            'estado_amistad': estado_amistad,
+            'es_propio_perfil': usuario_actual_id == usuario_id,
+            'no_area_info': True
+        })
+        
+    except Usuario.DoesNotExist:
+        # Si el usuario no existe, redirigir al feed con un mensaje de error
+        messages.error(request, 'Usuario no encontrado.')
+        return redirect('feed')
 
 def EditProfileView(request):
     return render(request, 'app/editarPerfil.html', {'no_area_info': True})
@@ -270,35 +308,42 @@ def dar_estrella(request, publicacion_id):
 
 
 # Logica para buscar usuarios
-from django.http import JsonResponse
-from .models import Usuario, Amistad
-from django.db.models import Q
-
 def buscar_usuarios(request):
     try:
+        # Verificar que el usuario esté autenticado mediante la sesión
         if not request.session.get('usuario_id'):
             return JsonResponse({'error': 'No autenticado'}, status=403)
 
+        # Obtener el término de búsqueda desde los parámetros GET y limpiarlo
         query = request.GET.get('q', '').strip()
         if not query:
+            # Si no hay término de búsqueda, retornar lista vacía
             return JsonResponse({'usuarios': []})
 
+        # Obtener el ID del usuario actual para excluirlo de los resultados
         usuario_actual_id = request.session['usuario_id']
+        
+        # Buscar usuarios que coincidan con el nombre o username, excluyendo al usuario actual
+        # Limitar a 10 resultados para optimizar rendimiento
         resultados = Usuario.objects.using('conectati') \
             .filter(Q(nombre__icontains=query) | Q(username__icontains=query)) \
             .exclude(id=usuario_actual_id)[:10]
 
+        # Preparar lista para almacenar datos de usuarios encontrados
         usuarios_data = []
         for usuario in resultados:
+            # Para cada usuario encontrado, verificar si ya existe una relación de amistad
             amistad = Amistad.objects.using('conectati').filter(
                 Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario.id) |
                 Q(de_usuario_id=usuario.id, para_usuario_id=usuario_actual_id)
             ).first()
 
+            # Determinar el estado de la amistad (pendiente, aceptada, etc.)
             estado_amistad = None
             if amistad:
                 estado_amistad = amistad.estado  # ← esto puede ser 'pendiente', 'aceptada', etc.
 
+            # Agregar datos del usuario a la lista de resultados
             usuarios_data.append({
                 'id': usuario.id,
                 'nombre': usuario.nombre,
@@ -307,9 +352,11 @@ def buscar_usuarios(request):
                 'estado_amistad': estado_amistad  # ← esto sí lo necesita el JS
             })
 
+        # Retornar los usuarios encontrados en formato JSON
         return JsonResponse({'usuarios': usuarios_data})
     
     except Exception as e:
+        # Manejar cualquier error que pueda ocurrir durante la búsqueda
         print("ERROR en buscar_usuarios:", e)
         return JsonResponse({'error': 'Error interno en la búsqueda'}, status=500)
 
@@ -317,18 +364,22 @@ def buscar_usuarios(request):
 # Logica para enviar solicitud de amistad
 @csrf_exempt
 def enviar_solicitud_amistad(request):
+    # Verificar que sea una petición POST y que el usuario esté autenticado
     if request.method == 'POST' and request.session.get('usuario_id'):
         try:
+            # Parsear los datos JSON enviados en el cuerpo de la petición
             data = json.loads(request.body)
-            de_id = request.session['usuario_id']
-            para_id = int(data.get('para_usuario_id'))
+            de_id = request.session['usuario_id']  # ID del usuario que envía la solicitud
+            para_id = int(data.get('para_usuario_id'))  # ID del usuario que recibirá la solicitud
 
+            # Verificar si ya existe una solicitud de amistad entre estos usuarios
             ya_existe = Amistad.objects.using('conectati').filter(
                 de_usuario_id=de_id,
                 para_usuario_id=para_id
             ).exists()
 
             if not ya_existe:
+                # Si no existe, crear nueva solicitud de amistad con estado 'pendiente'
                 Amistad.objects.using('conectati').create(
                     de_usuario_id=de_id,
                     para_usuario_id=para_id,
@@ -336,29 +387,36 @@ def enviar_solicitud_amistad(request):
                 )
                 return JsonResponse({'ok': True})
             else:
+                # Si ya existe, informar que no se puede crear duplicada
                 return JsonResponse({'ok': False, 'error': 'Ya existe'})
         except Exception as e:
+            # Manejar errores durante el proceso de creación
             print("❌ Error:", e)
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
+    # Si no es POST o no está autenticado, retornar error de método no permitido
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
 
-
-
+# Logica para aceptar una solicitud de amistad
 @csrf_exempt
 def aceptar_solicitud(request):
+    # Verificar que sea una petición POST y que el usuario esté autenticado
     if request.method == 'POST' and request.session.get('usuario_id'):
         try:
+            # Parsear los datos JSON para obtener el ID de la solicitud
             data = json.loads(request.body)
             solicitud_id = data.get('solicitud_id')
             usuario_id = request.session['usuario_id']
 
+            # Buscar la solicitud de amistad específica dirigida al usuario actual
             amistad = Amistad.objects.using('conectati').get(id=solicitud_id, para_usuario_id=usuario_id)
+            
+            # Cambiar el estado de la solicitud a 'aceptada' y actualizar la fecha
             amistad.estado = 'aceptada'
-            amistad.fecha = timezone.now()  # ✅ asignar fecha de aceptación
+            amistad.fecha = timezone.now() 
             amistad.save(using='conectati')
 
-            # Obtener datos del nuevo amigo
+            # Obtener datos del nuevo amigo para enviarlos de vuelta al frontend
             amigo = amistad.de_usuario
             amigo_data = {
                 'id': amigo.id,
@@ -368,27 +426,39 @@ def aceptar_solicitud(request):
                 'foto': amigo.foto or '/static/images/default_user.avif'
             }
 
+            # Retornar confirmación exitosa junto con los datos del amigo
             return JsonResponse({'ok': True, 'amigo': amigo_data})
         except Exception as e:
+            # Manejar errores durante el proceso de aceptación
             print("❌ Error aceptando:", e)
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
+    
+    # Si no es POST o no está autenticado, retornar error
     return JsonResponse({'ok': False}, status=405)
 
-
-
+# Logica para rechazar una solicitud de amistad
 @csrf_exempt
 def rechazar_solicitud(request):
+    # Verificar que sea una petición POST y que el usuario esté autenticado
     if request.method == 'POST' and request.session.get('usuario_id'):
         try:
+            # Parsear los datos JSON para obtener el ID de la solicitud
             data = json.loads(request.body)
             solicitud_id = data.get('solicitud_id')
             usuario_id = request.session['usuario_id']
 
+            # Buscar la solicitud de amistad específica dirigida al usuario actual
             amistad = Amistad.objects.using('conectati').get(id=solicitud_id, para_usuario_id=usuario_id)
+            
+            # Eliminar completamente la solicitud de amistad de la base de datos
             amistad.delete(using='conectati')
 
+            # Retornar confirmación exitosa
             return JsonResponse({'ok': True})
         except Exception as e:
-            print("❌ Error rechazando:", e)
+            # Manejar errores durante el proceso de rechazo
+            print("Error rechazando:", e)
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
+    
+    # Si no es POST o no está autenticado, retornar error
     return JsonResponse({'ok': False}, status=405)

@@ -14,16 +14,31 @@
     <div class="area-perfil">
       <div class="perfil-header">
         <div class="franja-azul">
-          <img class="avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
+          <img class="avatar" src="{% if usuario_perfil.foto %}{{ usuario_perfil.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_perfil.nombre }}" />
           <div class="info-texto">
-            <h2>{{ usuario_logueado.nombre }}</h2>
-            <p class="usuario">@{{ usuario_logueado.username }}</p>
-            <p class="bio">{{ usuario_logueado.descripcion }}</p>
+            <h2>{{ usuario_perfil.nombre }}</h2>
+            <p class="usuario">@{{ usuario_perfil.username }}</p>
+            <p class="bio">{{ usuario_perfil.descripcion }}</p>
           </div>
-          <a  class="editar-perfil" href="/app/editprofile">
+          {% if es_propio_perfil %}
+          <a class="editar-perfil" href="{% url 'editprofile' %}">
             <span>Editar perfil</span>
           </a>
-
+          {% else %}
+            {% if estado_amistad == None %}
+              <button id="btn-aniadir-amigo" class="editar-perfil" onclick="enviarSolicitudAmistad('{{ usuario_perfil.id }}')">
+                  <span>Añadir amigo</span>
+              </button>
+            {% elif estado_amistad == 'pendiente' %}
+              <button class="editar-perfil" disabled style="cursor:not-allowed;opacity:0.7;">
+                <span>Pendiente</span>
+              </button>
+            {% elif estado_amistad == 'aceptada' %}
+              <button class="editar-perfil" disabled style="cursor:not-allowed;opacity:0.7;">
+                <span>Amigo</span>
+              </button>
+            {% endif %}
+          {% endif %}
         </div>
         <div class="barra-inferior">
           <span><strong>{{ cantidad_amigos }}</strong> Amigos</span>
@@ -31,6 +46,7 @@
       </div>
 
       <!-- Publicaciones -->
+      {% if publicaciones %}
       {% for post in publicaciones %}
         <div class="post">
           <div class="post-header">
@@ -54,7 +70,43 @@
           <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
         </div>
       {% endfor %}
-
-
+      {% else %}
+        <p style="text-align:center; color: #888; margin-top: 2rem;">Este usuario aún no tiene publicaciones.</p>
+      {% endif %}
     </div>
 {% endblock %} 
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+function enviarSolicitudAmistad(para_usuario_id) {
+    var btn = document.getElementById('btn-aniadir-amigo');
+    btn.disabled = true;
+    btn.querySelector('span').innerText = 'Enviando...';
+    fetch("{% url 'enviar_solicitud_amistad' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ para_usuario_id: para_usuario_id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.ok) {
+            btn.querySelector('span').innerText = 'Pendiente';
+            btn.disabled = true;
+            btn.style.cursor = 'not-allowed';
+            btn.style.opacity = '0.7';
+        } else {
+            btn.querySelector('span').innerText = data.error || 'Error';
+            btn.disabled = false;
+        }
+    })
+    .catch(err => {
+        btn.querySelector('span').innerText = 'Error';
+        btn.disabled = false;
+    });
+}
+</script>
+{% endblock %}

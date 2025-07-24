@@ -28,4 +28,5 @@ urlpatterns = [
     path('enviar-solicitud-amistad/', views.enviar_solicitud_amistad, name='enviar_solicitud_amistad'),
     path('aceptar-solicitud/', views.aceptar_solicitud, name='aceptar_solicitud'),
     path('rechazar-solicitud/', views.rechazar_solicitud, name='rechazar_solicitud'),
-    ]
+    path('usuario/<int:usuario_id>/', views.ver_perfil_usuario, name='ver_perfil_usuario'),
+]
