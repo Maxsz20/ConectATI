@@ -72,15 +72,19 @@
             </div>
           </div>
 
-          <p class="post-texto">{{ post.texto }}</p>
+          <a href="{% url 'post' post.id %}" style="text-decoration: none; color: inherit;">
+            <p class="post-texto">{{ post.texto }}</p>
 
-          {% if post.archivo_nombre %}
-            <img class="post-image" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="Imagen de la publicación">
-          {% endif %}
+            {% if post.archivo_nombre %}
+              <img class="post-image" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="Imagen de la publicación">
+            {% endif %}
+          </a>
 
           <div class="post-acciones">
-            <button class="accion"><i class="far fa-star"></i> {{ post.estrellas }}</button>
-            <button class="accion comentario-btn"><i class="far fa-comment"></i> 0</button>
+            <span class="estrella {% if post.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ post.id }}">
+              <i class="fas fa-star"></i> <span class="contador">{{ post.estrellas }}</span>
+            </span>
+            <button class="accion comentario-btn"><i class="far fa-comment"></i> {{ post.num_comentarios }}</button>
           </div>
           <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
         </div>

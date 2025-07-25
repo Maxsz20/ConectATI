@@ -608,7 +608,7 @@ a, a:visited {
 }
 
 /* RESPONSIVE */
-@media (max-width: 768px) {
+@media (max-width: 876px) {
   .encabezado-chat-mobile {
     display: none;
     position: fixed;

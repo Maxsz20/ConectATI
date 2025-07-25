@@ -190,7 +190,7 @@
   .acciones-publicacion {
     position: fixed;
     bottom: 80px;
-    left: 50%;
+    left: 90%;
     background-color: var(--lavanda-translucido);
     padding: 0.6rem 0.8rem;
     border-radius: 16px;

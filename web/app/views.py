@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import RegistroForm, PublicacionForm
 from django.utils import timezone
-from .models import Usuario, Publicacion, Estrella, Amistad, SolicitudChat, Chat, Mensaje
+from .models import Usuario, Publicacion, Estrella, Amistad, SolicitudChat, Chat, Mensaje, Comentario
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
@@ -9,8 +9,9 @@ import os
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import JsonResponse
+
 
 # Create your views here.
 def InicioRedirectView(request):
@@ -107,7 +108,6 @@ def LogoutView(request):
     request.session.flush()  # ← borra todos los datos de sesión
     return redirect('login')
 
-
 def ForgottenPassView(request):
     return render(request, 'app/forgotten_password.html', {})
 
@@ -135,6 +135,10 @@ def ver_perfil_usuario(request, usuario_id):
         
         # Obtener el usuario actual para verificar relación de amistad
         usuario_actual_id = request.session['usuario_id']
+
+        estrellas_usuario = Estrella.objects.using('conectati') \
+            .filter(usuario_id=usuario_id) \
+            .values_list('publicacion_id', flat=True)
         
         # Verificar si existe una relación de amistad
         amistad = Amistad.objects.using('conectati').filter(
@@ -165,13 +169,13 @@ def ver_perfil_usuario(request, usuario_id):
         # Obtener publicaciones del usuario (solo públicas si no son amigos)
         if estado_amistad == 'aceptada' or usuario_actual_id == usuario_id:
             # Si son amigos o es el mismo usuario, mostrar todas las publicaciones
-            publicaciones = Publicacion.objects.using('conectati').filter(usuario=usuario_perfil).order_by('-fecha')
+            publicaciones = Publicacion.objects.using('conectati').filter(usuario=usuario_perfil).annotate(num_comentarios=Count('comentario')).order_by('-fecha')
         else:
             # Si no son amigos, solo mostrar publicaciones públicas
             publicaciones = Publicacion.objects.using('conectati').filter(
                 usuario=usuario_perfil, 
                 privacidad='publica'
-            ).order_by('-fecha')
+            ).annotate(num_comentarios=Count('comentario')).order_by('-fecha')
         
         return render(request, 'app/perfil.html', {
             'usuario_perfil': usuario_perfil,
@@ -180,7 +184,8 @@ def ver_perfil_usuario(request, usuario_id):
             'estado_amistad': estado_amistad,
             'estado_chat': estado_chat,
             'es_propio_perfil': usuario_actual_id == usuario_id,
-            'no_area_info': True
+            'no_area_info': True,
+            'estrellas_usuario': list(estrellas_usuario)
         })
         
     except Usuario.DoesNotExist:
@@ -196,7 +201,10 @@ def FeedView(request):
         return redirect('login')
 
     form = PublicacionForm()
-    publicaciones = Publicacion.objects.using('conectati').filter(privacidad='publica').order_by('-fecha')
+    publicaciones = Publicacion.objects.using('conectati') \
+        .filter(privacidad='publica') \
+        .annotate(num_comentarios=Count('comentario')) \
+        .order_by('-fecha')
 
     estrellas_usuario = []
     if request.session.get('usuario_id'):
@@ -262,13 +270,47 @@ def ChatView(request):
         'solicitudes_chat_pendientes': solicitudes_chat_pendientes,
     })
 
-
-
 def SettingsView(request):
     return render(request, 'app/configuracion.html', {})
 
-def PostView(request):
-    return render(request, 'app/publicacion.html', {})
+def PostView(request, publicacion_id):
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+    
+    try:
+        publicacion = Publicacion.objects.using('conectati').select_related('usuario').get(id=publicacion_id)
+        comentarios = Comentario.objects.using('conectati').filter(publicacion=publicacion).select_related('usuario').order_by('fecha')
+
+        usuario_id = request.session['usuario_id']
+        estrellas_usuario = Estrella.objects.using('conectati') \
+            .filter(usuario_id=usuario_id) \
+            .values_list('publicacion_id', flat=True)
+
+        es_propia = usuario_id == publicacion.usuario.id
+
+        estado_amistad = None
+        if not es_propia:
+            amistad = Amistad.objects.using('conectati').filter(
+                Q(de_usuario_id=usuario_id, para_usuario_id=publicacion.usuario.id) |
+                Q(de_usuario_id=publicacion.usuario.id, para_usuario_id=usuario_id)
+            ).first()
+
+            if amistad:
+                estado_amistad = amistad.estado
+
+        return render(request, 'app/publicacion.html', {
+            'publicacion': publicacion,
+            'comentarios': comentarios,
+            'num_comentarios': comentarios.count(),
+            'estrellas_usuario': list(estrellas_usuario),
+            'es_propia': es_propia,
+            'estado_amistad': estado_amistad,
+        })
+
+    except Publicacion.DoesNotExist:
+        messages.error(request, 'Publicación no encontrada.')
+        return redirect('feed')
+
     
 def PostMobileView(request):
     if not request.session.get('usuario_id'):
@@ -669,3 +711,44 @@ def obtener_mensajes_chat(request):
         return JsonResponse({'ok': True, 'mensajes': datos})
     except Chat.DoesNotExist:
         return JsonResponse({'ok': True, 'mensajes': []})
+
+@csrf_exempt
+def crear_comentario(request):
+    if request.method == "POST" and request.session.get('usuario_id'):
+        try:
+            texto = request.POST.get("texto", "").strip()
+            publicacion_id = request.POST.get("publicacion_id")
+
+            if not texto:
+                return JsonResponse({"ok": False, "error": "Texto vacío"})
+
+            usuario = Usuario.objects.using('conectati').get(id=request.session["usuario_id"])
+            publicacion = Publicacion.objects.using('conectati').get(id=publicacion_id)
+
+            comentario = Comentario.objects.using('conectati').create(
+                usuario=usuario,
+                publicacion=publicacion,
+                texto=texto,
+                fecha=timezone.now()
+            )
+
+            nuevo_total = Comentario.objects.using('conectati').filter(publicacion=publicacion).count()
+
+            return JsonResponse({
+                "ok": True,
+                "nuevo_total": nuevo_total,
+                "comentario": {
+                    "texto": comentario.texto,
+                    "nombre": usuario.nombre,
+                    "username": usuario.username,
+                    "foto": usuario.foto if usuario.foto else '/static/images/default_user.avif',
+                    "fecha": comentario.fecha.strftime("%H:%M · %d/%m/%Y")
+                }
+            })
+
+
+        except Exception as e:
+            print("❌ Error al comentar:", e)
+            return JsonResponse({"ok": False, "error": str(e)})
+
+    return JsonResponse({"ok": False, "error": "No autorizado o método incorrecto"}, status=403)

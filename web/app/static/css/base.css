@@ -31,6 +31,10 @@
   flex: 1;
 }
 
+.estrella.marcada i{
+  color: gold;
+}
+
 .usuario-busqueda button.btn-agregar {
   background-color: #615EF0;
   color: white;
@@ -119,6 +123,31 @@
   align-items: center;
   margin-left: auto;
 }
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #5793fb;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  font-weight: 500;
+  z-index: 9999;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeout {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(20px); }
+}
+
 
 
 

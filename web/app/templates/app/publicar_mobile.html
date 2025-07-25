@@ -49,17 +49,17 @@
   </form>
 
   <script>
-    function cambiarPrivacidad(valor) {
-      document.getElementById("valorPrivacidad").textContent = valor;
-      document.getElementById("togglePrivacidad").checked = false;
-
-      const inputPriv = document.getElementById("inputPrivacidad");
-      if (inputPriv) {
-        inputPriv.value = valor === "Público" ? "publica" : "privada";
-      }
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
+      function cambiarPrivacidad(valor) {
+        document.getElementById("valorPrivacidad").textContent = valor;
+        document.getElementById("togglePrivacidad").checked = false;
+
+        const inputPriv = document.getElementById("inputPrivacidad");
+        if (inputPriv) {
+          inputPriv.value = valor === "Público" ? "publica" : "privada";
+        }
+      }
+
       const inputArchivo = document.getElementById("archivoInput");
       const previewContenedor = document.getElementById("previewImagen");
       const imagenPreview = document.getElementById("imagenPreview");
@@ -78,6 +78,22 @@
           } else {
             imagenPreview.src = "#";
             previewContenedor.style.display = "none";
+          }
+        });
+      }
+
+      const formulario = document.querySelector(".area-publicar");
+      if (formulario) {
+        formulario.addEventListener("submit", function (e) {
+          console.log("📨 Submit detectado");
+
+          const textarea = formulario.querySelector("textarea[name='texto']");
+          const texto = textarea?.value.trim();
+          const archivo = inputArchivo?.files.length;
+
+          if (!texto && !archivo) {
+            e.preventDefault();
+            alert("Debe escribir un texto o subir una imagen para publicar.");
           }
         });
       }

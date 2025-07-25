@@ -640,7 +640,7 @@ a, a:visited {
 }
 
 /* RESPONSIVE */
-@media (max-width: 768px) {
+@media (max-width: 876px) {
   aside,
   .conversacion,
   .fila-encabezados {

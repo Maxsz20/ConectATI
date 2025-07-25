@@ -1,121 +1,217 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Abrir modal de respuesta
-    const botonesComentar = document.querySelectorAll(".comentario-btn");
-    const modal = document.getElementById("modalRespuesta");
+  const modal = document.getElementById("modalRespuesta");
+  const avatarPublicacion = document.getElementById("avatarPublicacion");
+  const nombreAutor = document.getElementById("nombreAutor");
+  const textoOriginal = document.getElementById("textoOriginal");
+  const usuarioMencionado = document.getElementById("usuarioMencionado");
+  const idPadreRespuesta = document.getElementById("idPadreRespuesta");
+  const imagenPublicacion = document.getElementById("imagen-publicacion");
   
-    botonesComentar.forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const isMobile = window.innerWidth <= 876;
-  
-        if (isMobile) {
-          window.location.href = "/app/reply_mobile/";
-        } else {
-          abrirModalRespuesta();
-        }
-      });
-    });
-  
-    document.addEventListener("click", (e) => {
-      if (
-        modal &&
-        modal.style.display === "flex" &&
-        !document.querySelector(".contenido-modal").contains(e.target)
-      ) {
-        cerrarModal();
+
+  function mostrarToast(mensaje) {
+    const toast = document.getElementById("toast");
+    const mensajeEl = document.getElementById("toastMensaje");
+    mensajeEl.textContent = mensaje;
+
+    toast.style.display = "block";
+
+    setTimeout(() => {
+      toast.style.display = "none";
+    }, 3000);
+  }
+
+  // Abrir modal al hacer clic en el ícono de comentar
+  document.querySelectorAll(".comentario-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      const isMobile = window.innerWidth <= 876;
+      if (isMobile) {
+        window.location.href = "/app/reply_mobile/";
+        return;
       }
-    });
-  
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        cerrarModal();
-      }
-    });
-  
-    function abrirModalRespuesta() {
-      document.getElementById("modalRespuesta").style.display = "flex";
-    }
-  
-    function cerrarModal() {
-      document.getElementById("modalRespuesta").style.display = "none";
-    }
-  
-    // Expansión dinámica del textarea
-    const textarea = document.querySelector(".crear-post textarea");
-    if (textarea) {
-      textarea.addEventListener("input", () => {
-        textarea.style.height = "auto";
-        textarea.style.height = textarea.scrollHeight + "px";
-      });
-    }
-  
-    // Selector de privacidad
-    window.seleccionarPrivacidad = function (valor) {
-      document.getElementById("valorPrivacidad").textContent = valor;
-      document.getElementById("togglePrivacidad").checked = false;
-  
-      const inputPriv = document.getElementById("inputPrivacidad");
-      if (inputPriv) {
-        inputPriv.value = valor === "Público" ? "publica" : "privada";
-      }
-    };
-  
-    // Interacción con estrellas
-    document.querySelectorAll('.estrella').forEach(el => {
-      el.addEventListener('click', function () {
-        if (this.classList.contains('marcada')) return; // Ya marcada
-    
-        const id = this.dataset.id;
-        fetch(`/app/publicacion/${id}/estrella/`, {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': getCSRFToken(),
-          },
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data.ok) {
-              this.querySelector('.contador').textContent = data.nuevas_estrellas;
-              this.classList.add('marcada');
-              this.querySelector('i').style.color = 'gold';
-            }
-          });
-      });
-    });
+
+      // Cargar datos del post al que se responde
+      const nombre = btn.dataset.nombre;
+      const username = btn.dataset.username;
+      const texto = btn.dataset.texto;
+      const foto = btn.dataset.foto;
+      const postId = btn.dataset.id;
+      const imagenUrl = btn.dataset.imagen;
 
 
-    const inputArchivo = document.getElementById('archivoInput');
-    const preview = document.getElementById('previewImagen');
-    const imgTag = document.getElementById('imagenPreview');
-
-    if (inputArchivo && preview && imgTag) {
-      inputArchivo.addEventListener('change', function () {
-        const archivo = this.files[0];
-        if (archivo) {
-          const lector = new FileReader();
-          lector.onload = function (e) {
-            imgTag.src = e.target.result;
-            preview.style.display = 'block';
-          }
-          lector.readAsDataURL(archivo);
-        } else {
-          preview.style.display = 'none';
-        }
-      });
-    }
-  
-    // Extraer token CSRF desde cookies
-    function getCSRFToken() {
-      const name = "csrftoken";
-      const cookies = document.cookie.split(";");
-  
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith(name + "=")) {
-          return decodeURIComponent(cookie.substring(name.length + 1));
-        }
+      if (nombreAutor) nombreAutor.textContent = nombre;
+      if (usuarioMencionado) usuarioMencionado.textContent = username;
+      if (textoOriginal) textoOriginal.textContent = texto;
+      if (avatarPublicacion) avatarPublicacion.src = foto;
+      if (idPadreRespuesta) idPadreRespuesta.value = postId;
+      if (imagenUrl && imagenPublicacion) {
+        imagenPublicacion.src = imagenUrl;
+        imagenPublicacion.style.display = "block";
+      } else if (imagenPublicacion) {
+        imagenPublicacion.style.display = "none";
       }
-      return "";
+
+      abrirModalRespuesta();
+    });
+  });
+
+  // Cerrar modal al hacer clic fuera del contenido
+  document.addEventListener("click", (e) => {
+    if (modal && modal.style.display === "flex" &&
+        !document.querySelector(".contenido-modal").contains(e.target)) {
+      cerrarModal();
     }
   });
-  
+
+  // Cerrar modal con tecla ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      cerrarModal();
+    }
+  });
+
+  function abrirModalRespuesta() {
+    modal.style.display = "flex";
+  }
+
+  function cerrarModal() {
+    modal.style.display = "none";
+  }
+
+  // Enviar comentario desde el modal
+  const btnEnviarComentario = document.getElementById("btnEnviarComentario");
+
+  if (btnEnviarComentario) {
+    btnEnviarComentario.addEventListener("click", () => {
+      const texto = document.getElementById("inputRespuesta").value.trim();
+      const publicacionId = document.getElementById("idPadreRespuesta").value;
+
+      if (!texto) {
+        alert("Debes escribir algo para responder.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("texto", texto);
+      formData.append("publicacion_id", publicacionId);
+      console.log("➡ Enviando comentario:", { texto, publicacionId });
+      fetch("/app/comentar/", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": getCSRFToken()
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          mostrarToast("Comentario publicado");
+          cerrarModal();
+          document.getElementById("inputRespuesta").value = "";
+          const iconoComentario = document.querySelector(`.comentario-btn[data-id="${publicacionId}"]`);
+          if (iconoComentario) {
+            const contador = iconoComentario.parentElement.querySelector(".contador-comentarios");
+            if (contador) {
+              contador.textContent = data.nuevo_total;
+            }
+          }
+        } else {
+          alert("Error: " + (data.error || "No se pudo comentar"));
+        }
+      })
+      .catch(() => {
+        alert("Error de red al intentar comentar");
+      });
+    });
+  }
+
+  // Expansión dinámica del textarea principal (crear post)
+  const textarea = document.querySelector(".crear-post textarea");
+  if (textarea) {
+    textarea.addEventListener("input", () => {
+      textarea.style.height = "auto";
+      textarea.style.height = textarea.scrollHeight + "px";
+    });
+  }
+
+  // Selector de privacidad
+  window.seleccionarPrivacidad = function (valor) {
+    document.getElementById("valorPrivacidad").textContent = valor;
+    document.getElementById("togglePrivacidad").checked = false;
+    const inputPriv = document.getElementById("inputPrivacidad");
+    if (inputPriv) inputPriv.value = valor === "Público" ? "publica" : "privada";
+  };
+
+  // Marcar estrella (like)
+  document.querySelectorAll('.estrella').forEach(el => {
+    el.addEventListener('click', function () {
+      if (this.classList.contains('marcada')) return;
+      const id = this.dataset.id;
+
+      fetch(`/app/publicacion/${id}/estrella/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCSRFToken(),
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.ok) {
+            this.querySelector('.contador').textContent = data.nuevas_estrellas;
+            this.classList.add('marcada');
+            this.querySelector('i').style.color = 'gold';
+          }
+        });
+    });
+  });
+
+  // Vista previa de imagen
+  const inputArchivo = document.getElementById('archivoInput');
+  const preview = document.getElementById('previewImagen');
+  const imgTag = document.getElementById('imagenPreview');
+
+  if (inputArchivo && preview && imgTag) {
+    inputArchivo.addEventListener('change', function () {
+      const archivo = this.files[0];
+      if (archivo && archivo.type.startsWith("image/")) {
+        const lector = new FileReader();
+        lector.onload = function (e) {
+          imgTag.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        lector.readAsDataURL(archivo);
+      } else {
+        preview.style.display = 'none';
+        imgTag.src = "#";
+      }
+    });
+  }
+
+  // Validación antes de enviar el formulario de publicación
+  const formulario = document.querySelector(".crear-post");
+  if (formulario) {
+    formulario.addEventListener("submit", function (e) {
+      const texto = formulario.querySelector("textarea[name='texto']")?.value.trim();
+      const archivo = inputArchivo?.files.length;
+
+      if (!texto && !archivo) {
+        e.preventDefault();
+        alert("Debe escribir un texto o subir una imagen para publicar.");
+      }
+    });
+  }
+
+  // Función para obtener el CSRF token desde cookies
+  function getCSRFToken() {
+    const name = "csrftoken";
+    const cookies = document.cookie.split(";");
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + "=")) {
+        return decodeURIComponent(cookie.substring(name.length + 1));
+      }
+    }
+    return "";
+  }
+});

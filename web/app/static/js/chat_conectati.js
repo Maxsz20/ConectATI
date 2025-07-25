@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const isMobile = () => window.innerWidth <= 768;
+  const isMobile = () => window.innerWidth <= 876;
 
   const chatList = document.querySelector(".chat-list");
   const conversacion = document.querySelector(".conversacion");
@@ -181,8 +181,9 @@ document.addEventListener("DOMContentLoaded", () => {
           if (mensajeVacio) mensajeVacio.remove();
           chatList.prepend(nuevo);
           activarClickChats();
-          nuevo.click();
-
+          if (!isMobile()) {
+            nuevo.click(); // Evita mostrar conversación automáticamente en mobile
+          }
           if (chatList.querySelectorAll('.chat-user').length === 1) {
             avatarDesktop.src = data.chat.foto;
             avatarDesktop.alt = data.chat.nombre;
@@ -232,5 +233,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener('load', scrollToBottom);
   const primerChat = document.querySelector(".chat-user");
-  if (primerChat) primerChat.click();
+  if (primerChat) {
+    if (!isMobile()) {
+      primerChat.click(); // solo en desktop
+    } else {
+      // En mobile, asegurar que solo la lista esté visible
+      chatList.style.display = "block";
+      conversacion.style.display = "none";
+      encabezadoChatMobile.style.display = "none";
+      encabezadoLista.style.display = "flex";
+      headerMobile.style.display = "flex";
+      tituloMobile.style.display = "block";
+      chatInput.style.display = "none";
+      menuMobile.style.display = "flex";
+      if (botonPublicar) botonPublicar.style.display = "flex";
+      columnaCentral.style.display = "block";
+    }
+  } else {
+    // Si no hay chats, también asegurar que en mobile se muestre la lista vacía
+    if (isMobile()) {
+      chatList.style.display = "block";
+      conversacion.style.display = "none";
+      encabezadoChatMobile.style.display = "none";
+      encabezadoLista.style.display = "flex";
+      headerMobile.style.display = "flex";
+      tituloMobile.style.display = "block";
+      chatInput.style.display = "none";
+      menuMobile.style.display = "flex";
+      if (botonPublicar) botonPublicar.style.display = "flex";
+      columnaCentral.style.display = "block";
+    }
+  }
 });

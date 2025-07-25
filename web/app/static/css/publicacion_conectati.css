@@ -313,6 +313,10 @@ a, a:visited {
   overflow: hidden; 
 }
 
+.marcada i {
+  color: gold;
+}
+
 .form-respuesta img {
   width: 50px;
   height: 50px;
@@ -799,7 +803,7 @@ a, a:visited {
     border-left: 3px solid var(--color-iconos);
   }
 
-  .publicacion-respuesta img {
+  .imagen-avatar {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -866,7 +870,6 @@ a, a:visited {
     display: flex;
     margin-left: auto;
     background-color: var(--lavanda-translucido);
-    width: 20%;
     border-radius: 2rem;
     padding: 0.5rem 0.8rem;
     gap: 0.8rem;
@@ -878,6 +881,15 @@ a, a:visited {
     font-size: 1.4rem;
     cursor: pointer;
   }
+  .publicacion-respuesta .imagen-mini {
+    max-width: 100%;
+    max-height: 150px;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    display: block;
+    object-fit: cover;
+  }
+
 }
 
 /* VERSIÓN RESPONSIVE */
