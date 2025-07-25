@@ -27,7 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const isMobile = window.innerWidth <= 876;
       if (isMobile) {
-        window.location.href = "/app/reply_mobile/";
+        const postId = btn.dataset.id;
+        window.location.href = `/app/reply_mobile/${postId}/`;
         return;
       }
 

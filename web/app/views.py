@@ -329,8 +329,37 @@ def PostMobileView(request):
         'no_area_info': True,
     })
 
-def ReplyMobileView(request):
-    return render(request, 'app/responder_mobile.html', {'no_area_info': True})
+def ReplyMobileView(request, publicacion_id):
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+    try:
+        publicacion = Publicacion.objects.using('conectati').select_related('usuario').get(id=publicacion_id)
+        autor = publicacion.usuario
+        usuario_logueado = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
+    except Publicacion.DoesNotExist:
+        messages.error(request, 'Publicación no encontrada.')
+        return redirect('feed')
+
+    error = None
+    if request.method == 'POST':
+        texto = request.POST.get('texto', '').strip()
+        if texto:
+            Comentario.objects.using('conectati').create(
+                publicacion=publicacion,
+                usuario=usuario_logueado,
+                texto=texto,
+                fecha=timezone.now()
+            )
+            return redirect('publicacion', publicacion_id=publicacion.id)
+        else:
+            error = 'El comentario no puede estar vacío.'
+    return render(request, 'app/responder_mobile.html', {
+        'publicacion': publicacion,
+        'autor': autor,
+        'usuario_logueado': usuario_logueado,
+        'error': error,
+        'no_area_info': True
+    })
 
 def SearchView(request):
     return render(request, 'app/busqueda.html', {})
