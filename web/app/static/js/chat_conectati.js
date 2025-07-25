@@ -232,6 +232,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   window.addEventListener('load', scrollToBottom);
+  
+  // Add resize event listener to handle responsive changes
+  window.addEventListener('resize', handleResponsiveLayout);
+  
   const primerChat = document.querySelector(".chat-user");
   if (primerChat) {
     if (!isMobile()) {
@@ -264,4 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
       columnaCentral.style.display = "block";
     }
   }
+  
+  // Initialize responsive layout
+  handleResponsiveLayout();
 });
