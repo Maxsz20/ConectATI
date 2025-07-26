@@ -444,7 +444,8 @@ def aceptar_solicitud(request):
                 'nombre': amigo.nombre,
                 'username': amigo.username,
                 'descripcion': amigo.descripcion or '',
-                'foto': amigo.foto or '/static/images/default_user.avif'
+                'foto': amigo.foto or '/static/images/default_user.avif',
+                'amistad_id': amistad.id
             }
 
             # Retornar confirmación exitosa junto con los datos del amigo
@@ -485,27 +486,67 @@ def rechazar_solicitud(request):
     return JsonResponse({'ok': False}, status=405)
 
 def eliminar_amistad(request):
-    """Funcion de utilidad para eliminar una amistad entre usuarios"""
-    # Verificar que sea una petición POST y que el usuario esté autenticado
+    """Función de utilidad para eliminar una amistad entre usuarios"""
+
     if request.method == 'POST' and request.session.get('usuario_id'):
         try:
-            # Parsear los datos JSON para obtener el ID de la amistad
             data = json.loads(request.body)
             amistad_id = data.get('amistad_id')
             usuario_id = request.session['usuario_id']
 
-            # Buscar la amistad específica dirigida al usuario actual
-            amistad = Amistad.objects.using('conectati').get(id=amistad_id, para_usuario_id=usuario_id)
-            
-            # Eliminar completamente la amistad de la base de datos
-            amistad.delete(using='conectati')
+            # Buscar la amistad donde el usuario sea uno de los involucrados (más general)
+            amistad = Amistad.objects.using('conectati').get(id=amistad_id)
 
-            # Retornar confirmación exitosa
+            if amistad.de_usuario_id != usuario_id and amistad.para_usuario_id != usuario_id:
+                return JsonResponse({'ok': False, 'error': 'No autorizado'}, status=403)
+
+            # Eliminar la amistad
+            amistad.delete(using='conectati')
             return JsonResponse({'ok': True})
+
+        except Amistad.DoesNotExist:
+            return JsonResponse({'ok': False, 'error': 'Amistad no encontrada'}, status=404)
+
         except Exception as e:
-            # Manejar errores durante el proceso de eliminación
-            print("Error eliminando:", e)
+            print("Error eliminando amistad:", e)
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
-    
-    # Si no es POST o no está autenticado, retornar error
-    return JsonResponse({'ok': False}, status=405)
+
+    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
+
+@csrf_exempt
+def eliminar_chat(request):
+    """Función de utilidad para eliminar un chat entre usuarios"""
+    if request.method == 'POST' and request.session.get('usuario_id'):
+        try:
+            data = json.loads(request.body)
+            chat_id = data.get('chat_id')
+            usuario_id = request.session['usuario_id']
+
+            if not chat_id:
+                return JsonResponse({'ok': False, 'error': 'chat_id vacío'}, status=400)
+
+            # Buscar el chat
+            chat = Chat.objects.using('conectati').get(id=chat_id)
+
+            # Verificar si el usuario está involucrado
+            if chat.usuario1_id != usuario_id and chat.usuario2_id != usuario_id:
+                return JsonResponse({'ok': False, 'error': 'No autorizado'}, status=403)
+
+            # Eliminar la solicitud de chat en ambas direcciones
+            SolicitudChat.objects.using('conectati').filter(
+                Q(de_usuario_id=chat.usuario1_id, para_usuario_id=chat.usuario2_id) |
+                Q(de_usuario_id=chat.usuario2_id, para_usuario_id=chat.usuario1_id)
+            ).delete()
+
+            chat.delete(using='conectati')
+
+            return JsonResponse({'ok': True})
+
+        except Chat.DoesNotExist:
+            return JsonResponse({'ok': False, 'error': 'Chat no encontrado'}, status=404)
+
+        except Exception as e:
+            print("❌ Error eliminando chat:", e)
+            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
+
+    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)

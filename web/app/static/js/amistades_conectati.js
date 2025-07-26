@@ -20,17 +20,19 @@ document.addEventListener('DOMContentLoaded', () => {
           // Insertar nuevo amigo
           const amigo = data.amigo;
           const nuevoHTML = `
-            <a href="/app/usuario/${amigo.id}/" class="item-amigo-link">
-              <div class="item-amigo card-amigo">
+            <div class="item-amigo card-amigo">
+              <a href="/app/usuario/${amigo.id}/" class="item-amigo-link">
                 <img src="${amigo.foto}" alt="${amigo.nombre}" />
                 <div class="contenido">
                   <strong>@${amigo.username}</strong> <span class="nombre">${amigo.nombre}</span>
                   <p>${amigo.descripcion || ""}</p>
                 </div>
-                <i class="fas fa-user-slash eliminar"></i>
+              </a>
+              <div class="acciones-amigoz">
+                <i class="fas fa-user-slash eliminar" data-id="${amigo.amistad_id}"></i>
               </div>
-            </a>
-          `;
+            </div>
+          `;  
 
           const temp = document.createElement('div');
           temp.innerHTML = nuevoHTML.trim();
@@ -93,6 +95,39 @@ document.addEventListener('DOMContentLoaded', () => {
               }
             }
           }
+        }
+      });
+    });
+  });
+
+  // Eliminar amistad
+  document.querySelectorAll('.eliminar').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const amistadId = btn.getAttribute('data-id');
+      if (!amistadId) {
+        console.error("amistad_id no válido:", amistadId);
+        return;
+      }
+
+      fetch('/app/eliminar-amistad/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ amistad_id: amistadId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          btn.closest('.item-amigo').remove();
+
+          const contenedorAmigos = document.querySelectorAll('.item-amigo');
+          if (contenedorAmigos.length === 0) {
+            document.getElementById('mensaje-sin-amigos').style.display = 'block';
+          }
+        } else {
+          console.error("Error del servidor:", data.error);
         }
       });
     });

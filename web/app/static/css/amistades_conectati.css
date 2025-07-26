@@ -286,12 +286,6 @@ a, a:visited {
   font-size: 1.2rem;
   color: #000;
 }
-
-.item-amigo .contenido .usuario {
-  color: #6c63ff;
-  font-weight: bold;
-}
-
 .item-amigo i , .item-solicitud i {
   font-size: 1.2rem;
   margin-left: 0.5rem;
@@ -299,9 +293,52 @@ a, a:visited {
   color: #888;
 }
 
-.item-amigo .eliminar:hover{
-    color: #f44336;
-    cursor: pointer;
+.item-amigo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+  border-bottom: 1px solid var(--color-bordes);
+}
+
+.item-amigo-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+}
+
+.item-amigo img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.item-amigo .contenido {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-amigo .contenido strong {
+  font-size: 1.2rem;
+  color: #000;
+}
+
+.acciones-amigos {
+  margin-left: 1rem;
+}
+
+.acciones-amigos .eliminar {
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.acciones-amigos .eliminar:hover {
+  color: #f44336;
 }
 /* Acciones */
 .solicitudes .acciones i {

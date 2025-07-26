@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import sys
+import io
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -148,3 +153,22 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'web', 'media')
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']  # Ajusta según el dominio si estás en otro entorno
+
+DEFAULT_CHARSET = 'utf-8'
+
+# Configuración para envío de correos
+# Para testing: usa console backend (muestra emails en consola)
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# OPCIÓN 1: Gmail con contraseña de aplicación (REQUIERE 2FA)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'conectatiUCV@gmail.com'
+EMAIL_HOST_PASSWORD = 'itjb jqpd ibfp pfkw'  # ← Contraseña de aplicación (NO la normal)
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_TIMEOUT = 60
+
+# Para volver a testing en consola:
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

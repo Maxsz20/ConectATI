@@ -127,6 +127,73 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           });
       });
+
+      const botonEliminar = item.querySelector(".eliminar-chat");
+      if (botonEliminar) {
+        botonEliminar.addEventListener("click", (e) => {
+          e.stopPropagation(); 
+
+          const chatId = item.dataset.chatId;
+
+          fetch('/app/eliminar-chat/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ chat_id: chatId })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.ok) {
+              item.remove();
+
+              const restantes = document.querySelectorAll('.chat-user');
+              const chatVacio = document.querySelector('.chat-mensajes');
+              const chatInput = document.querySelector('.chat-input');
+
+              // Si no queda ningún chat, mostrar mensaje de "No hay mensajes"
+              if (restantes.length === 0) {
+                const vacio = document.createElement('div');
+                vacio.className = 'mensaje-vacio-chat';
+                vacio.style.color = '#888';
+                vacio.style.textAlign = 'center';
+                vacio.style.padding = '1rem 0';
+                vacio.textContent = 'No hay mensajes.';
+                document.querySelector('.chat-list').appendChild(vacio);
+
+                // Reiniciar vista derecha
+                document.getElementById('chat-nombre-desktop').textContent = 'Sin chat seleccionado';
+                document.getElementById('chat-usuario-desktop').textContent = '';
+                document.getElementById('chat-avatar-desktop').src = '/static/images/default_user.avif';
+                document.getElementById('chat-avatar-desktop').alt = 'Sin chat seleccionado';
+
+                // También para mobile
+                document.getElementById('chat-nombre').textContent = 'Sin chat seleccionado';
+                document.getElementById('chat-usuario').textContent = '';
+                document.getElementById('chat-avatar').src = '/static/images/default_user.avif';
+                document.getElementById('chat-avatar').alt = 'Sin chat seleccionado';
+
+                // Limpiar mensajes
+                if (chatVacio) {
+                  chatVacio.innerHTML = `<div style="color:#888; text-align:center; padding:1rem;">Selecciona un chat para comenzar a conversar.</div>`;
+                }
+
+                // Ocultar input
+                if (chatInput) {
+                  chatInput.style.display = 'none';
+                }
+
+              } else {
+                // Si quedan otros chats, activa el primero
+                if (!isMobile()) {
+                  restantes[0].click();
+                }
+              }
+            }
+          });
+        });
+      }
     });
   }
 
@@ -186,7 +253,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 <small>${data.chat.nombre}</small>
               </span>
             </div>
-            <i class="fas fa-trash" title="Eliminar chat"></i>
+            <div class="acciones-chat">
+              <i class="fas fa-trash eliminar-chat" title="Eliminar chat"></i>
+            </div>
           `;
           const mensajeVacio = chatList.querySelector('.mensaje-vacio-chat');
           if (mensajeVacio) mensajeVacio.remove();

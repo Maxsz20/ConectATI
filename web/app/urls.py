@@ -4,7 +4,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-#    path('', views.index, name='index'),
     path('login/', views.LoginView, name='login'),
     path('register/', views.RegisterView, name='register'),
     path('forgotten_password/', views.ForgottenPassView, name = 'forgotten_password'),
@@ -36,4 +35,9 @@ urlpatterns = [
     path('comentar/', views.crear_comentario, name='crear_comentario'),
     path('eliminar-foto-perfil/', views.eliminar_foto_perfil, name='eliminar_foto_perfil'),
     path('notificaciones/marcar_leidas/', views.marcar_notificaciones_leidas, name='marcar_leidas'),
+    path('eliminar-amistad/', views.eliminar_amistad, name='eliminar_amistad'),
+    path('eliminar-chat/', views.eliminar_chat, name='eliminar_chat'),
+    path('verificar-codigo/', views.verificar_codigo, name='verificar_codigo'),
+    path('enviar-codigo/', views.enviar_codigo, name='enviar_codigo'),
+    path('cambiar-clave/', views.cambiar_password, name='cambiar-clave'),
 ]

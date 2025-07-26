@@ -29,13 +29,32 @@
     function validarCodigo(event) {
       event.preventDefault();
       const codigo = document.getElementById("codigo").value;
+      const correo = localStorage.getItem("correo_recuperacion");
 
       if (!codigo) {
         alert("Por favor, ingresa el código.");
         return;
       }
 
-      window.location.href = "{% url 'change_password' %}"; // Asegúrate de que este archivo exista y esté en la misma carpeta
+      fetch('/app/verificar-codigo/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: correo, codigo: codigo })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          window.location.href = "/app/cambiar-clave/";
+        } else {
+          alert(data.error || "Código incorrecto.");
+        }
+      })
+      .catch(err => {
+        alert("Error de red.");
+        console.error(err);
+      });
     }
   </script>
 </body>

@@ -15,16 +15,18 @@
     <section class="lista-amigos">
       {% if amigos %}
         {% for amigo in amigos %}
-          <a href="{% url 'ver_perfil_usuario' amigo.id %}" class="item-amigo-link">
-            <div class="item-amigo card-amigo">
+          <div class="item-amigo card-amigo">
+            <a href="{% url 'ver_perfil_usuario' amigo.id %}" class="item-amigo-link">
               <img src="{{ amigo.foto|default:'/static/images/default_user.avif' }}" alt="{{ amigo.nombre }}" />
               <div class="contenido">
                 <strong>@{{ amigo.username }}</strong> <span class="nombre">{{ amigo.nombre }}</span>
                 <p>{{ amigo.descripcion|default:"" }}</p>
               </div>
-              <i class="fas fa-user-slash eliminar"></i>
+            </a>
+            <div class="acciones-amigos">
+              <i class="fas fa-user-slash eliminar" data-id="{{ amigo.amistad_id }}"></i>
             </div>
-          </a>
+          </div>
         {% endfor %}
       {% else %}
         <div class="mensaje-vacio-chat" id="mensaje-sin-amigos" style="color: #888; text-align: center; padding: 1rem 0;">

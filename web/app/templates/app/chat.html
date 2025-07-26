@@ -23,7 +23,7 @@
       <small id="chat-usuario-desktop">@{{ primer_chat.username }}</small>
     </a>
     {% else %}
-      <img id="chat-avatar-desktop" src="/static/images/default_user.avif" alt="Sin chat seleccionado" style="opacity:0.3;filter:grayscale(1);" />
+      <img id="chat-avatar-desktop" src="/static/images/default_user.avif" alt="Sin chat seleccionado" />
       <strong id="chat-nombre-desktop">Sin chat seleccionado</strong>
       <small id="chat-usuario-desktop">&nbsp;</small>
     {% endif %}
@@ -35,16 +35,14 @@
 </div>
 {% endblock %}
 
-
 {% block contenido2 %}
-
 <div class="contenedor-mensajes">
   <!-- Lista lateral -->
   <div class="columna-central">
     <section class="chat-list">
       {% if chats %}
         {% for chat in chats %}
-        <div class="chat-user" data-usuario-id="{{ chat.usuario_id }}" data-chat-id="{{ chat.id }}">
+        <div class="chat-user" data-chat-id="{{ chat.id }}" data-usuario-id="{{ chat.usuario_id }}">
           <div class="chat-user-info">
             <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
             <span>
@@ -52,7 +50,9 @@
               <small>{{ chat.nombre }}</small>
             </span>
           </div>
-          <i class="fas fa-trash" title="Eliminar chat"></i>
+          <div class="acciones-chat">
+            <i class="fas fa-trash eliminar-chat" title="Eliminar chat"></i>
+          </div>
         </div>
         {% endfor %}
       {% else %}

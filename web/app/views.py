@@ -1,18 +1,24 @@
 from django.shortcuts import render, redirect
 from .forms import RegistroForm, PublicacionForm, EditarPerfilForm
+from django.utils.crypto import get_random_string
+from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail, EmailMessage
 from django.utils import timezone
-from .models import Usuario, Publicacion, Estrella, Amistad, SolicitudChat, Chat, Mensaje, Comentario, Notificacion
+from .models import Usuario, Publicacion, Estrella, Amistad, SolicitudChat, Chat, Mensaje, Comentario, Notificacion, CodigoRecuperacion
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
 import os
+import json
 from django.conf import settings
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from datetime import timedelta
+
 from .utils import (crear_notificacion, procesar_publicacion, eliminar_foto_perfil, marcar_notificaciones_leidas, 
 obtener_mensajes_chat, crear_comentario, dar_estrella, buscar_usuarios, obtener_conversacion,
-enviar_solicitud_chat, aceptar_solicitud_chat, rechazar_solicitud_chat, enviar_solicitud_amistad, aceptar_solicitud, rechazar_solicitud)
+enviar_solicitud_chat, aceptar_solicitud_chat, rechazar_solicitud_chat, enviar_solicitud_amistad, aceptar_solicitud, 
+rechazar_solicitud, eliminar_amistad, eliminar_chat)
 
 # Create your views here.
 def InicioRedirectView(request):
@@ -31,7 +37,7 @@ def FriendView(request):
     amistades = Amistad.objects.using('conectati').filter(
         Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id),
         estado='aceptada'
-    )
+    ).select_related('de_usuario', 'para_usuario')
 
     amigos = []
     for a in amistades:
@@ -39,7 +45,14 @@ def FriendView(request):
             amigo = a.para_usuario
         else:
             amigo = a.de_usuario
-        amigos.append(amigo)
+        amigos.append({
+            'id': amigo.id,
+            'nombre': amigo.nombre,
+            'username': amigo.username,
+            'descripcion': amigo.descripcion or '',
+            'foto': amigo.foto or '/static/images/default_user.avif',
+            'amistad_id': a.id
+        })
 
     # Solicitudes pendientes recibidas (donde yo soy el receptor)
     solicitudes = Amistad.objects.using('conectati').filter(
@@ -428,3 +441,109 @@ def ReplyMobileView(request, publicacion_id):
 
 def SearchMobileView(request):
     return render(request, 'app/busqueda_mobile.html', {'no_area_info': True})
+
+
+@csrf_exempt
+def enviar_codigo(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            correo = data.get('email')
+
+            # Verificación básica del correo
+            if not correo:
+                return JsonResponse({'ok': False, 'error': 'Correo vacío'}, status=400)
+
+            try:
+                usuario = Usuario.objects.using('conectati').get(email=correo)
+            except Usuario.DoesNotExist:
+                return JsonResponse({'ok': False, 'error': 'Correo no registrado'}, status=404)
+
+            # Generar código aleatorio
+            codigo = get_random_string(length=6, allowed_chars='0123456789')
+
+            # Guardar en la BD (eliminando códigos previos)
+            CodigoRecuperacion.objects.using('conectati').filter(usuario=usuario).delete()
+            CodigoRecuperacion.objects.using('conectati').create(usuario=usuario, codigo=codigo)
+
+            # Enviar correo
+            mensaje = f'Tu código de recuperación es: {codigo}'
+            
+            try:
+                email = EmailMessage(
+                    subject='Código de recuperación - ConectATI',
+                    body=mensaje,
+                    from_email='noreply@conectati.com',
+                    to=[correo]
+                )
+                email.content_subtype = "plain"
+                email.send()
+            except Exception as email_error:
+                print(f"❌ Error enviando correo: {email_error}")
+                # Por ahora, continuamos sin enviar correo para testing
+                pass
+
+            return JsonResponse({'ok': True})
+
+        except Exception as e:
+            print("❌ Error en enviar_codigo:", e)
+            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
+
+    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
+
+@csrf_exempt
+def verificar_codigo(request):
+    if request.method == 'GET':
+        # Mostrar la página de verificación de código
+        return render(request, 'app/check_code.html', {})
+    
+    elif request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            codigo = data.get('codigo')
+
+            recuperacion = CodigoRecuperacion.objects.using('conectati').get(codigo=codigo)
+            if recuperacion.expirado():
+                recuperacion.delete()
+                return JsonResponse({'ok': False, 'error': 'Código expirado'}, status=410)
+
+            # Guardar ID temporal en sesión para el siguiente paso
+            request.session['recuperacion_usuario_id'] = recuperacion.usuario.id
+            recuperacion.delete()  # elimina el código usado
+            return JsonResponse({'ok': True})
+
+        except CodigoRecuperacion.DoesNotExist:
+            return JsonResponse({'ok': False, 'error': 'Código inválido'}, status=404)
+        except Exception as e:
+            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
+    
+    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
+
+
+@csrf_exempt
+def cambiar_password(request):
+    if request.method == 'GET':
+        # Mostrar la página de cambio de contraseña
+        return render(request, 'app/change_password.html', {})
+    
+    elif request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            nueva = data.get('nueva')
+
+            usuario_id = request.session.get('recuperacion_usuario_id')
+            if not usuario_id:
+                return JsonResponse({'ok': False, 'error': 'Sesión expirada'}, status=403)
+
+            usuario = Usuario.objects.using('conectati').get(id=usuario_id)
+            usuario.contrasena = make_password(nueva)  # Hashear la contraseña
+            usuario.save(using='conectati')
+            del request.session['recuperacion_usuario_id']
+            return JsonResponse({'ok': True})
+            
+        except Usuario.DoesNotExist:
+            return JsonResponse({'ok': False, 'error': 'Usuario no encontrado'}, status=404)
+        except Exception as e:
+            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
+    
+    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)

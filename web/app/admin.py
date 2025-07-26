@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Usuario, Amistad, Chat, Comentario,
-    Configuracion, Mensaje, Notificacion, Publicacion, Estrella, SolicitudChat
+    Configuracion, Mensaje, Notificacion, Publicacion, Estrella, SolicitudChat, CodigoRecuperacion
 )
 
 @admin.register(Usuario)
@@ -132,3 +132,14 @@ class SolicitudChatAdmin(admin.ModelAdmin):
     def para_usuario_nombre(self, obj):
         return obj.para_usuario.nombre
     para_usuario_nombre.short_description = 'Para'
+
+@admin.register(CodigoRecuperacion)
+class CodigoRecuperacionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'usuario_nombre', 'codigo', 'creado_en')
+    list_filter = ('creado_en',)
+    search_fields = ('usuario__nombre',)
+    ordering = ('-creado_en',)
+
+    def usuario_nombre(self, obj):
+        return obj.usuario.nombre
+    usuario_nombre.short_description = 'Usuario'
