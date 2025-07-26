@@ -13,42 +13,51 @@
 <div class="contenedor-info">
   <div class="columna-central">
     <section class="lista-amigos">
-      {% for amigo in amigos %}
-      <a href="{% url 'ver_perfil_usuario' amigo.id %}" class="item-amigo-link">
-        <div class="item-amigo card-amigo">
-          <img src="{{ amigo.foto|default:'/static/images/default_user.avif' }}" alt="{{ amigo.nombre }}" />
-          <div class="contenido">
-            <strong>@{{ amigo.username }}</strong> <span class="nombre">{{ amigo.nombre }}</span>
-            <p>{{ amigo.descripcion|default:"" }}</p>
-          </div>
-          <i class="fas fa-user-slash eliminar"></i>
+      {% if amigos %}
+        {% for amigo in amigos %}
+          <a href="{% url 'ver_perfil_usuario' amigo.id %}" class="item-amigo-link">
+            <div class="item-amigo card-amigo">
+              <img src="{{ amigo.foto|default:'/static/images/default_user.avif' }}" alt="{{ amigo.nombre }}" />
+              <div class="contenido">
+                <strong>@{{ amigo.username }}</strong> <span class="nombre">{{ amigo.nombre }}</span>
+                <p>{{ amigo.descripcion|default:"" }}</p>
+              </div>
+              <i class="fas fa-user-slash eliminar"></i>
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <div class="mensaje-vacio-chat" id="mensaje-sin-amigos" style="color: #888; text-align: center; padding: 1rem 0;">
+          No tienes amigos aún.
         </div>
-      </a>
-      {% empty %}
-      <div style="color: #888; text-align: center; padding: 1rem 0;">No tienes amigos aún.</div>
-      {% endfor %}
+      {% endif %}
     </section>
 
     <section class="solicitudes">
       <h3>Solicitudes de Amistad</h3>
-      {% for solicitud in solicitudes %}
-      {% with usuario=solicitud.de_usuario %}
-      <div class="item-solicitud">
-        <img src="{{ usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ usuario.nombre }}" />
-        <div class="contenido">
-          <strong>@{{ usuario.username }}</strong> <span class="nombre">{{ usuario.nombre }}</span>
-          <p>{{ usuario.descripcion|default:"" }}</p>
+      {% if solicitudes %}
+        {% for solicitud in solicitudes %}
+          {% with usuario=solicitud.de_usuario %}
+            <div class="item-solicitud">
+              <img src="{{ usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ usuario.nombre }}" />
+              <div class="contenido">
+                <strong>@{{ usuario.username }}</strong> <span class="nombre">{{ usuario.nombre }}</span>
+                <p>{{ usuario.descripcion|default:"" }}</p>
+              </div>
+              <div class="acciones">
+                <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
+              </div>
+            </div>
+          {% endwith %}
+        {% endfor %}
+      {% else %}
+        <div class="mensaje-vacio-solicitudes" id="mensaje-sin-solicitudes" style="color: #888; text-align: center; padding: 1rem 0;">
+          No tienes solicitudes de amistad.
         </div>
-        <div class="acciones">
-          <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
-          <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
-        </div>
-      </div>
-      {% endwith %}
-      {% empty %}
-      <div style="color: #888; text-align: center; padding: 1rem 0;">No tienes solicitudes de amistad.</div>
-      {% endfor %}
+      {% endif %}
     </section>
+
   </div>
 
   {% block panel_lateral %}
@@ -71,7 +80,7 @@
           </a>
           {% endfor %}
       {% else %}
-          <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">No hay mensajes.</div>
+          <div id="mensaje-sin-mensajes" class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">No hay mensajes.</div>
       {% endif %}
 
       <h3>Solicitudes de mensajes</h3>

@@ -204,6 +204,13 @@ a, a:visited {
 
 .encabezado-chat strong {
   font-size: 1rem;
+  text-align: center;
+}
+
+.link-perfil-chat {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 /* Contenido inferior */

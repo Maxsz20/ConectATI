@@ -72,6 +72,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Cerrar modal al hacer clic en el botón Cancelar
+  const btnCancelarModal = document.getElementById("btnCancelarModal");
+  if (btnCancelarModal) {
+    btnCancelarModal.addEventListener("click", (e) => {
+      e.preventDefault();
+      cerrarModal();
+    });
+  }
+
   function abrirModalRespuesta() {
     modal.style.display = "flex";
   }

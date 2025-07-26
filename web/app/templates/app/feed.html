@@ -149,7 +149,7 @@
   <div class="contenido-modal">
     <!-- Barra superior del modal -->
     <div class="barra-superior-modal">
-      <a href="#" class="cancelar-modal" onclick="cerrarModal()">Cancelar</a>
+      <a href="#" class="cancelar-modal" id="btnCancelarModal">Cancelar</a>
       <button class="btn-subir" id="btnEnviarComentario">Subir</button>
     </div>
 
@@ -184,5 +184,9 @@
 
 
 {% block extra_js %}
-<script src="{% static 'js/feed_conectati.js' %}"></script>
+<script src="{% static 'js/feed_conectati.js' %}"> 
+    function cerrarModal() {
+    modal.style.display = "none"; 
+  }
+</script>
 {% endblock %}

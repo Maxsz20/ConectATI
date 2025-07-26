@@ -73,7 +73,10 @@
         </div>
       </div>
 
-      <button type="submit" class="btn-guardar">Guardar</button>
+      <div class="form-botones">
+        <a href="{% url 'profile' %}" class="btn-cancelar">Cancelar</a>
+        <button type="submit" class="btn-guardar">Guardar</button>
+      </div>
     </form>
 
     
@@ -86,6 +89,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const profileImage = document.getElementById('profileImage');
   const inputFoto = document.getElementById('inputFotoArchivo');
   let valorFotoOriginal = "{{ usuario_logueado.foto|default:'' }}";
+
+  function mostrarToast(mensaje) {
+    const toast = document.getElementById("toast");
+    const mensajeEl = document.getElementById("toastMensaje");
+    mensajeEl.textContent = mensaje;
+
+    toast.style.display = "block";
+
+    setTimeout(() => {
+      toast.style.display = "none";
+    }, 3000);
+  }
 
   // Lógica para subir y preview de nueva imagen
   if (inputFoto && profileImage) {
@@ -116,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (data.ok && data.foto_url) {
             profileImage.src = data.foto_url + "?t=" + new Date().getTime();
             valorFotoOriginal = data.foto_url; // actualizar la referencia
+            mostrarToast("Foto subida exitosamente");
           } else {
             alert("Error al subir la foto");
           }

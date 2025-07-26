@@ -81,7 +81,6 @@ aside .logo-conectati {
 }
 
 a, a:visited {
-  color: #333; /* o el color que uses normalmente */
   text-decoration: none; /* opcional */
 }
 
@@ -442,6 +441,32 @@ a, a:visited {
 }
 
 /* Botón Guardar */
+
+.form-botones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.btn-cancelar {
+  align-self: flex-end; /* Alinea el botón a la derecha */
+  background-color: var(--color-iconos);
+  color: white;
+  font-weight: bold;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s ease;
+  margin-top: 1rem;
+}
+
+.btn-cancelar:hover {
+  background-color: #6c63ff;
+}
+
 .btn-guardar {
   align-self: flex-end; /* Alinea el botón a la derecha */
   background-color: var(--color-iconos);

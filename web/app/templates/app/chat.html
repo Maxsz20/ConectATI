@@ -17,9 +17,11 @@
   </div>
   <div class="encabezado-chat">
     {% if primer_chat %}
+    <a href="#" class="link-perfil-chat" id="link-perfil-chat">
       <img id="chat-avatar-desktop" src="{{ primer_chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ primer_chat.nombre }}" />
       <strong id="chat-nombre-desktop">{{ primer_chat.nombre }}</strong>
       <small id="chat-usuario-desktop">@{{ primer_chat.username }}</small>
+    </a>
     {% else %}
       <img id="chat-avatar-desktop" src="/static/images/default_user.avif" alt="Sin chat seleccionado" style="opacity:0.3;filter:grayscale(1);" />
       <strong id="chat-nombre-desktop">Sin chat seleccionado</strong>
@@ -42,7 +44,7 @@
     <section class="chat-list">
       {% if chats %}
         {% for chat in chats %}
-        <div class="chat-user" data-usuario-id="{{ chat.usuario.id }}" data-chat-id="{{ chat.id }}">
+        <div class="chat-user" data-usuario-id="{{ chat.usuario_id }}" data-chat-id="{{ chat.id }}">
           <div class="chat-user-info">
             <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
             <span>

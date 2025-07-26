@@ -7,13 +7,12 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
 import os
 from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-import json
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from datetime import timedelta
-from django.views.decorators.http import require_POST
-from .utils import crear_notificacion, procesar_publicacion
+from .utils import (crear_notificacion, procesar_publicacion, eliminar_foto_perfil, marcar_notificaciones_leidas, 
+obtener_mensajes_chat, crear_comentario, dar_estrella, buscar_usuarios, obtener_conversacion,
+enviar_solicitud_chat, aceptar_solicitud_chat, rechazar_solicitud_chat, enviar_solicitud_amistad, aceptar_solicitud, rechazar_solicitud)
 
 # Create your views here.
 def InicioRedirectView(request):
@@ -115,7 +114,6 @@ def LogoutView(request):
 
     return redirect('login')
 
-
 def ForgottenPassView(request):
     return render(request, 'app/forgotten_password.html', {})
 
@@ -125,11 +123,69 @@ def CheckCodeView(request):
 def ChangePassView(request):
     return render(request, 'app/change_password.html', {})
 
-def ProfileView(request):
+def ProfileView(request, usuario_id=None):
     if not request.session.get('usuario_id'):
         return redirect('login')
-    usuario_id = request.session['usuario_id']
-    return ver_perfil_usuario(request, usuario_id)
+
+    usuario_actual_id = request.session['usuario_id']
+    if usuario_id is None:
+        usuario_id = usuario_actual_id  # Ver tu propio perfil
+
+    try:
+        usuario_perfil = Usuario.objects.using('conectati').get(id=usuario_id)
+
+        estrellas_usuario = Estrella.objects.using('conectati') \
+            .filter(usuario_id=usuario_actual_id) \
+            .values_list('publicacion_id', flat=True)
+
+        # Verificar si hay amistad (si es otro perfil)
+        amistad = None
+        if usuario_actual_id != usuario_id:
+            amistad = Amistad.objects.using('conectati').filter(
+                Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario_id) |
+                Q(de_usuario_id=usuario_id, para_usuario_id=usuario_actual_id)
+            ).first()
+
+        estado_amistad = amistad.estado if amistad else None
+
+        # Verificar si hay solicitud de chat
+        solicitud_chat = SolicitudChat.objects.using('conectati').filter(
+            Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario_id) |
+            Q(de_usuario_id=usuario_id, para_usuario_id=usuario_actual_id)
+        ).first()
+        estado_chat = solicitud_chat.estado if solicitud_chat else None
+
+        cantidad_amigos = Amistad.objects.using('conectati').filter(
+            Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id),
+            estado='aceptada'
+        ).count()
+
+        # Publicaciones: todas si es tu perfil o amigos, públicas si no
+        if usuario_actual_id == usuario_id or estado_amistad == 'aceptada':
+            publicaciones = Publicacion.objects.using('conectati') \
+                .filter(usuario=usuario_perfil)
+        else:
+            publicaciones = Publicacion.objects.using('conectati') \
+                .filter(usuario=usuario_perfil, privacidad='publica')
+
+        publicaciones = publicaciones.annotate(num_comentarios=Count('comentario')).order_by('-fecha')
+
+        return render(request, 'app/perfil.html', {
+            'usuario_perfil': usuario_perfil,
+            'publicaciones': publicaciones,
+            'cantidad_amigos': cantidad_amigos,
+            'estado_amistad': estado_amistad,
+            'estado_chat': estado_chat,
+            'es_propio_perfil': usuario_actual_id == usuario_id,
+            'no_area_info': True,
+            'estrellas_usuario': list(estrellas_usuario)
+        })
+
+    except Usuario.DoesNotExist:
+        messages.error(request, 'Usuario no encontrado.')
+        return redirect('feed')
+
+
 
 def EditProfileView(request):
     if not request.session.get('usuario_id'):
@@ -256,6 +312,7 @@ def ChatView(request):
             'username': otro_usuario.username,
             'nombre': otro_usuario.nombre,
             'foto': otro_usuario.foto or '/static/images/default_user.avif',
+            'usuario_id': otro_usuario.id,
         })
 
     # Obtener mensajes del primer chat si existe
@@ -371,499 +428,3 @@ def ReplyMobileView(request, publicacion_id):
 
 def SearchMobileView(request):
     return render(request, 'app/busqueda_mobile.html', {'no_area_info': True})
-
-
-# Lógica para dar estrellas a una publicación
-def dar_estrella(request, publicacion_id):
-    if not request.session.get('usuario_id'):
-        return JsonResponse({'error': 'No autenticado'}, status=403)
-
-    user_id = request.session['usuario_id']
-    try:
-        publicacion = Publicacion.objects.using('conectati').get(id=publicacion_id)
-
-        # Verificar si ya dio estrella
-        ya_dio = Estrella.objects.using('conectati').filter(usuario_id=user_id, publicacion_id=publicacion_id).exists()
-        if ya_dio:
-            return JsonResponse({'ok': False, 'repetido': True})
-
-        # Sumar estrella
-        publicacion.estrellas += 1
-        publicacion.save(using='conectati')
-
-        # Crear notificación si el comentario no es propio
-        if publicacion.usuario.id != user_id:
-            crear_notificacion(
-                usuario_destino=publicacion.usuario,
-                tipo="estrella",
-                contenido=" dio estrella a tu publicación",
-                emisor=Usuario.objects.using('conectati').get(id=user_id)
-            )
-        # Guardar registro
-        nueva = Estrella(usuario_id=user_id, publicacion_id=publicacion_id)
-        nueva.save(using='conectati')
-
-        return JsonResponse({'ok': True, 'nuevas_estrellas': publicacion.estrellas})
-    except Publicacion.DoesNotExist:
-        return JsonResponse({'error': 'No encontrada'}, status=404)
-
-
-# Logica para buscar usuarios
-def buscar_usuarios(request):
-    try:
-        # Verificar que el usuario esté autenticado mediante la sesión
-        if not request.session.get('usuario_id'):
-            return JsonResponse({'error': 'No autenticado'}, status=403)
-
-        # Obtener el término de búsqueda desde los parámetros GET y limpiarlo
-        query = request.GET.get('q', '').strip()
-        if not query:
-            # Si no hay término de búsqueda, retornar lista vacía
-            return JsonResponse({'usuarios': []})
-
-        # Obtener el ID del usuario actual para excluirlo de los resultados
-        usuario_actual_id = request.session['usuario_id']
-        
-        # Buscar usuarios que coincidan con el nombre o username, excluyendo al usuario actual
-        # Limitar a 10 resultados para optimizar rendimiento
-        resultados = Usuario.objects.using('conectati') \
-            .filter(Q(nombre__icontains=query) | Q(username__icontains=query)) \
-            .exclude(id=usuario_actual_id)[:10]
-
-        # Preparar lista para almacenar datos de usuarios encontrados
-        usuarios_data = []
-        for usuario in resultados:
-            # Para cada usuario encontrado, verificar si ya existe una relación de amistad
-            amistad = Amistad.objects.using('conectati').filter(
-                Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario.id) |
-                Q(de_usuario_id=usuario.id, para_usuario_id=usuario_actual_id)
-            ).first()
-            
-            # Verificar si ya existe una solicitud de chat
-            solicitud_chat = SolicitudChat.objects.using('conectati').filter(
-                Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario.id) |
-                Q(de_usuario_id=usuario.id, para_usuario_id=usuario_actual_id)
-            ).first()
-
-            # Determinar el estado de la solicitud de chat (pendiente, aceptada, etc.)
-            estado_chat = None
-            if solicitud_chat:
-                estado_chat = solicitud_chat.estado
-
-            # Determinar el estado de la amistad (pendiente, aceptada, etc.)
-            estado_amistad = None
-            if amistad:
-                estado_amistad = amistad.estado  # ← esto puede ser 'pendiente', 'aceptada', etc.
-
-            # Agregar datos del usuario a la lista de resultados
-            usuarios_data.append({
-                'id': usuario.id,
-                'nombre': usuario.nombre,
-                'username': usuario.username,
-                'foto': usuario.foto if usuario.foto else '/static/images/default_user.avif',
-                'estado_amistad': estado_amistad,
-                'estado_chat': estado_chat,
-            })
-
-        # Retornar los usuarios encontrados en formato JSON
-        return JsonResponse({'usuarios': usuarios_data})
-    
-    except Exception as e:
-        import traceback
-        print("ERROR en buscar_usuarios:", e)
-        traceback.print_exc()  # <-- muestra la traza completa en consola
-        return JsonResponse({'error': 'Error interno en la búsqueda'}, status=500)
-
-
-
-# Logica para enviar solicitud de amistad
-@csrf_exempt
-def enviar_solicitud_amistad(request):
-    # Verificar que sea una petición POST y que el usuario esté autenticado
-    if request.method == 'POST' and request.session.get('usuario_id'):
-        try:
-            # Parsear los datos JSON enviados en el cuerpo de la petición
-            data = json.loads(request.body)
-            de_id = request.session['usuario_id']  # ID del usuario que envía la solicitud
-            para_id = int(data.get('para_usuario_id'))  # ID del usuario que recibirá la solicitud
-
-            # Verificar si ya existe una solicitud de amistad entre estos usuarios
-            ya_existe = Amistad.objects.using('conectati').filter(
-                de_usuario_id=de_id,
-                para_usuario_id=para_id
-            ).exists()
-
-            if not ya_existe:
-                # Si no existe, crear nueva solicitud de amistad con estado 'pendiente'
-                Amistad.objects.using('conectati').create(
-                    de_usuario_id=de_id,
-                    para_usuario_id=para_id,
-                    estado='pendiente'
-                )
-                return JsonResponse({'ok': True})
-            else:
-                # Si ya existe, informar que no se puede crear duplicada
-                return JsonResponse({'ok': False, 'error': 'Ya existe'})
-        except Exception as e:
-            # Manejar errores durante el proceso de creación
-            print("❌ Error:", e)
-            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
-
-    # Si no es POST o no está autenticado, retornar error de método no permitido
-    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
-
-# Logica para aceptar una solicitud de amistad
-@csrf_exempt
-def aceptar_solicitud(request):
-    # Verificar que sea una petición POST y que el usuario esté autenticado
-    if request.method == 'POST' and request.session.get('usuario_id'):
-        try:
-            # Parsear los datos JSON para obtener el ID de la solicitud
-            data = json.loads(request.body)
-            solicitud_id = data.get('solicitud_id')
-            usuario_id = request.session['usuario_id']
-
-            # Buscar la solicitud de amistad específica dirigida al usuario actual
-            amistad = Amistad.objects.using('conectati').get(id=solicitud_id, para_usuario_id=usuario_id)
-            
-            # Cambiar el estado de la solicitud a 'aceptada' y actualizar la fecha
-            amistad.estado = 'aceptada'
-            amistad.fecha = timezone.now() 
-            amistad.save(using='conectati')
-
-            # Obtener datos del nuevo amigo para enviarlos de vuelta al frontend
-            amigo = amistad.de_usuario
-            amigo_data = {
-                'id': amigo.id,
-                'nombre': amigo.nombre,
-                'username': amigo.username,
-                'descripcion': amigo.descripcion or '',
-                'foto': amigo.foto or '/static/images/default_user.avif'
-            }
-
-            # Retornar confirmación exitosa junto con los datos del amigo
-            return JsonResponse({'ok': True, 'amigo': amigo_data})
-        except Exception as e:
-            # Manejar errores durante el proceso de aceptación
-            print("❌ Error aceptando:", e)
-            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
-    
-    # Si no es POST o no está autenticado, retornar error
-    return JsonResponse({'ok': False}, status=405)
-
-# Logica para rechazar una solicitud de amistad
-@csrf_exempt
-def rechazar_solicitud(request):
-    # Verificar que sea una petición POST y que el usuario esté autenticado
-    if request.method == 'POST' and request.session.get('usuario_id'):
-        try:
-            # Parsear los datos JSON para obtener el ID de la solicitud
-            data = json.loads(request.body)
-            solicitud_id = data.get('solicitud_id')
-            usuario_id = request.session['usuario_id']
-
-            # Buscar la solicitud de amistad específica dirigida al usuario actual
-            amistad = Amistad.objects.using('conectati').get(id=solicitud_id, para_usuario_id=usuario_id)
-            
-            # Eliminar completamente la solicitud de amistad de la base de datos
-            amistad.delete(using='conectati')
-
-            # Retornar confirmación exitosa
-            return JsonResponse({'ok': True})
-        except Exception as e:
-            # Manejar errores durante el proceso de rechazo
-            print("Error rechazando:", e)
-            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
-    
-    # Si no es POST o no está autenticado, retornar error
-    return JsonResponse({'ok': False}, status=405)
-
-# Logica para enviar solicitud de chat a otro usuario
-@csrf_exempt
-def enviar_solicitud_chat(request):
-    if request.method == 'POST' and request.session.get('usuario_id'):
-        try:
-            data = json.loads(request.body)
-            de_id = request.session['usuario_id']
-            para_id = int(data.get('para_usuario_id'))
-
-            if de_id == para_id:
-                return JsonResponse({'ok': False, 'error': 'No puedes enviarte solicitud a ti mismo'})
-
-            # Verifica si ya existe
-            ya_existe = SolicitudChat.objects.using('conectati').filter(
-                de_usuario_id=de_id, para_usuario_id=para_id
-            ).exists()
-
-            if ya_existe:
-                return JsonResponse({'ok': False, 'error': 'Ya existe solicitud'})
-
-            SolicitudChat.objects.using('conectati').create(
-                de_usuario_id=de_id,
-                para_usuario_id=para_id,
-                estado='pendiente'
-            )
-            return JsonResponse({'ok': True})
-        except Exception as e:
-            print("❌ Error solicitud chat:", e)
-            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
-
-    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
-
-@csrf_exempt
-def aceptar_solicitud_chat(request):
-    if request.method == 'POST' and request.session.get('usuario_id'):
-        try:
-            data = json.loads(request.body)
-            solicitud_id = int(data.get('solicitud_id'))
-
-            solicitud = SolicitudChat.objects.using('conectati').select_related('de_usuario', 'para_usuario').get(id=solicitud_id)
-
-            if solicitud.para_usuario.id != request.session['usuario_id']:
-                return JsonResponse({'ok': False, 'error': 'No autorizado'}, status=403)
-
-            solicitud.estado = 'aceptada'
-            solicitud.fecha_aceptada = timezone.now()
-            solicitud.save(using='conectati')
-
-            # Crear chat solo si aún no existe entre los dos usuarios
-            ya_existe_chat = Chat.objects.using('conectati').filter(
-                Q(usuario1=solicitud.de_usuario, usuario2=solicitud.para_usuario) |
-                Q(usuario1=solicitud.para_usuario, usuario2=solicitud.de_usuario)
-            ).exists()
-
-            if not ya_existe_chat:
-                nuevo_chat = Chat.objects.using('conectati').create(
-                    usuario1=solicitud.de_usuario,
-                    usuario2=solicitud.para_usuario,
-                    fecha_inicio=timezone.now()
-                )
-            else:
-                nuevo_chat = Chat.objects.using('conectati').get(
-                    Q(usuario1=solicitud.de_usuario, usuario2=solicitud.para_usuario) |
-                    Q(usuario1=solicitud.para_usuario, usuario2=solicitud.de_usuario)
-                )
-
-            return JsonResponse({
-                'ok': True,
-                'chat': {
-                    'id': nuevo_chat.id,
-                    'username': solicitud.de_usuario.username,
-                    'nombre': solicitud.de_usuario.nombre,
-                    'foto': solicitud.de_usuario.foto or '/static/images/default_user.avif'
-                }
-            })
-
-        except Exception as e:
-            print("❌ Error al aceptar solicitud de chat:", e)
-            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
-
-    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
-
-@csrf_exempt
-def rechazar_solicitud_chat(request):
-    if request.method == 'POST' and request.session.get('usuario_id'):
-        try:
-            data = json.loads(request.body)
-            solicitud_id = data.get('solicitud_id')
-            usuario_id = request.session['usuario_id']
-            solicitud = SolicitudChat.objects.using('conectati').get(id=solicitud_id, para_usuario_id=usuario_id, estado='pendiente')
-            solicitud.estado = 'rechazada'
-            solicitud.save(using='conectati')
-            return JsonResponse({'ok': True})
-        except Exception as e:
-            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
-    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
-
-# Logica para obtener conversacion
-def obtener_conversacion(request):
-    if not request.session.get('usuario_id'):
-        return JsonResponse({'error': 'No autenticado'}, status=403)
-
-    usuario_id = request.session['usuario_id']
-    chat_id = request.GET.get('chat_id')
-
-    try:
-        chat = Chat.objects.using('conectati').get(id=chat_id)
-        mensajes = Mensaje.objects.using('conectati').filter(chat=chat).order_by('fecha')
-
-        mensajes_data = []
-        for msg in mensajes:
-            mensajes_data.append({
-                'id': msg.id,
-                'texto': msg.texto,
-                'es_emisor': msg.emisor.id == usuario_id
-            })
-
-        return JsonResponse({'ok': True, 'mensajes': mensajes_data})
-    except Chat.DoesNotExist:
-        return JsonResponse({'error': 'Chat no encontrado'}, status=404)
-
-# Logica para ver perfil de otros usuarios (y propio)
-def ver_perfil_usuario(request, usuario_id):
-    # Verificar que el usuario esté autenticado
-    if not request.session.get('usuario_id'):
-        return redirect('login')
-
-    try:
-        # Obtener el usuario cuyo perfil se quiere ver
-        usuario_perfil = Usuario.objects.using('conectati').get(id=usuario_id)
-        
-        # Obtener el usuario actual para verificar relación de amistad
-        usuario_actual_id = request.session['usuario_id']
-
-        estrellas_usuario = Estrella.objects.using('conectati') \
-            .filter(usuario_id=usuario_id) \
-            .values_list('publicacion_id', flat=True)
-        
-        # Verificar si existe una relación de amistad
-        amistad = Amistad.objects.using('conectati').filter(
-            Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario_id) |
-            Q(de_usuario_id=usuario_id, para_usuario_id=usuario_actual_id)
-        ).first()
-
-        # Verificar si existe una solicitud de chat
-        solicitud_chat = SolicitudChat.objects.using('conectati').filter(
-            Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario_id) |
-            Q(de_usuario_id=usuario_id, para_usuario_id=usuario_actual_id)
-        ).first()
-
-        estado_chat = None
-        if solicitud_chat:
-            estado_chat = solicitud_chat.estado
-
-        estado_amistad = None
-        if amistad:
-            estado_amistad = amistad.estado
-        
-        # Contar amistades aceptadas del usuario del perfil
-        cantidad_amigos = Amistad.objects.using('conectati').filter(
-            Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id),
-            estado='aceptada'
-        ).count()
-        
-        # Obtener publicaciones del usuario (solo públicas si no son amigos)
-        if estado_amistad == 'aceptada' or usuario_actual_id == usuario_id:
-            # Si son amigos o es el mismo usuario, mostrar todas las publicaciones
-            publicaciones = Publicacion.objects.using('conectati').filter(usuario=usuario_perfil).annotate(num_comentarios=Count('comentario')).order_by('-fecha')
-        else:
-            # Si no son amigos, solo mostrar publicaciones públicas
-            publicaciones = Publicacion.objects.using('conectati').filter(
-                usuario=usuario_perfil, 
-                privacidad='publica'
-            ).annotate(num_comentarios=Count('comentario')).order_by('-fecha')
-        
-        return render(request, 'app/perfil.html', {
-            'usuario_perfil': usuario_perfil,
-            'publicaciones': publicaciones,
-            'cantidad_amigos': cantidad_amigos,
-            'estado_amistad': estado_amistad,
-            'estado_chat': estado_chat,
-            'es_propio_perfil': usuario_actual_id == usuario_id,
-            'no_area_info': True,
-            'estrellas_usuario': list(estrellas_usuario)
-        })
-        
-    except Usuario.DoesNotExist:
-        # Si el usuario no existe, redirigir al feed con un mensaje de error
-        messages.error(request, 'Usuario no encontrado.')
-        return redirect('feed')
-
-
-def obtener_mensajes_chat(request):
-    if not request.session.get('usuario_id'):
-        return JsonResponse({'error': 'No autenticado'}, status=403)
-
-    usuario_id = request.session['usuario_id']
-    otro_id = request.GET.get('usuario_id')
-
-    try:
-        chat = Chat.objects.using('conectati').get(
-            (Q(usuario1_id=usuario_id, usuario2_id=otro_id) |
-             Q(usuario1_id=otro_id, usuario2_id=usuario_id))
-        )
-        mensajes = Mensaje.objects.using('conectati').filter(chat=chat).order_by('fecha')
-        datos = [{
-            'texto': m.texto,
-            'propio': m.emisor_id == usuario_id
-        } for m in mensajes]
-        return JsonResponse({'ok': True, 'mensajes': datos})
-    except Chat.DoesNotExist:
-        return JsonResponse({'ok': True, 'mensajes': []})
-
-@csrf_exempt
-def crear_comentario(request):
-    if request.method == "POST" and request.session.get('usuario_id'):
-        try:
-            texto = request.POST.get("texto", "").strip()
-            publicacion_id = request.POST.get("publicacion_id")
-
-            if not texto:
-                return JsonResponse({"ok": False, "error": "Texto vacío"})
-
-            usuario = Usuario.objects.using('conectati').get(id=request.session["usuario_id"])
-            publicacion = Publicacion.objects.using('conectati').get(id=publicacion_id)
-
-            comentario = Comentario.objects.using('conectati').create(
-                usuario=usuario,
-                publicacion=publicacion,
-                texto=texto,
-                fecha=timezone.now()
-            )
-
-            # Crear notificación si el comentario no es propio      
-            if publicacion.usuario.id != usuario.id:
-                crear_notificacion(
-                    usuario_destino=publicacion.usuario,
-                    tipo="comentario",
-                    contenido="comentó tu publicación",
-                    emisor=usuario
-                )
-
-            nuevo_total = Comentario.objects.using('conectati').filter(publicacion=publicacion).count()
-
-            return JsonResponse({
-                "ok": True,
-                "nuevo_total": nuevo_total,
-                "comentario": {
-                    "texto": comentario.texto,
-                    "nombre": usuario.nombre,
-                    "username": usuario.username,
-                    "foto": usuario.foto if usuario.foto else '/static/images/default_user.avif',
-                    "fecha": comentario.fecha.strftime("%H:%M · %d/%m/%Y")
-                }
-            })
-
-        except Exception as e:
-            print("❌ Error al comentar:", e)
-            return JsonResponse({"ok": False, "error": str(e)})
-
-    return JsonResponse({"ok": False, "error": "No autorizado o método incorrecto"}, status=403)
-
-
-@csrf_exempt
-def eliminar_foto_perfil(request):
-    if request.method == "POST" and request.session.get("usuario_id"):
-        try:
-            usuario = Usuario.objects.using('conectati').get(id=request.session["usuario_id"])
-            if usuario.foto:
-                nombre_archivo = os.path.basename(usuario.foto)
-                ruta_completa = os.path.join(settings.MEDIA_ROOT, 'fotos_perfil', nombre_archivo)
-                if os.path.exists(ruta_completa):
-                    os.remove(ruta_completa)
-                usuario.foto = ''
-                usuario.save(using='conectati')
-            return JsonResponse({"ok": True})
-        except Exception as e:
-            return JsonResponse({"ok": False, "error": str(e)})
-    return JsonResponse({"ok": False, "error": "No autorizado"}, status=403)
-
-# Logica para marcar notificaciones como leidas
-@require_POST
-def marcar_notificaciones_leidas(request):
-    if not request.session.get('usuario_id'):
-        return JsonResponse({'ok': False}, status=403)
-
-    usuario_id = request.session['usuario_id']
-    Notificacion.objects.using('conectati').filter(usuario_id=usuario_id, leida=False).update(leida=True)
-    return JsonResponse({'ok': True})

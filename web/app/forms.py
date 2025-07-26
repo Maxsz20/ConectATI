@@ -3,13 +3,31 @@ from django import forms
 from .models import Usuario
 
 class RegistroForm(forms.Form):
-    nombre = forms.CharField(max_length=100)
-    username = forms.CharField(max_length=50)
-    email = forms.EmailField()
-    ci = forms.CharField(max_length=20)
-    telefono = forms.CharField(max_length=20)
-    contrasena = forms.CharField(widget=forms.PasswordInput)
-    confirmar_contrasena = forms.CharField(widget=forms.PasswordInput)
+    nombre = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={'placeholder': 'Nombre', 'required': True})
+    )
+    username = forms.CharField(
+        max_length=50,
+        widget=forms.TextInput(attrs={'placeholder': 'Nombre de Usuario', 'required': True})
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'placeholder': 'Correo', 'required': True})
+    )
+    ci = forms.CharField(
+        max_length=20,
+        widget=forms.TextInput(attrs={'placeholder': 'Cédula de identidad', 'required': True})
+    )
+    telefono = forms.CharField(
+        max_length=20,
+        widget=forms.TextInput(attrs={'placeholder': 'Teléfono', 'required': True})
+    )
+    contrasena = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Contraseña', 'id': 'password', 'required': True})
+    )
+    confirmar_contrasena = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Confirmar contraseña', 'id': 'confirm', 'required': True})
+    )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -18,7 +36,6 @@ class RegistroForm(forms.Form):
 
         if password != confirm:
             raise forms.ValidationError("Las contraseñas no coinciden")
-
         return cleaned_data
 
 class PublicacionForm(forms.Form):

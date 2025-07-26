@@ -46,6 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
     chatItems.forEach(item => {
       item.addEventListener("click", () => {
         const usuarioId = item.dataset.usuarioId;
+        const linkPerfil = document.getElementById("link-perfil-chat");
+        if (linkPerfil && usuarioId) {
+          linkPerfil.setAttribute("href", `/app/usuario/${usuarioId}/`);
+        }
+
         // Buscar el chat id asociado (puede estar en data-chat-id si lo agregas en Django)
         let chatId = item.dataset.chatId;
         if (!chatId && item.getAttribute('data-chat-id')) chatId = item.getAttribute('data-chat-id');
@@ -57,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
           .then(res => res.json())
           .then(data => {
             // --- Actualizar encabezado Desktop ---
+
             if (item.querySelector('img')) {
               avatarDesktop.src = item.querySelector('img').src;
               avatarDesktop.alt = item.querySelector('img').alt;
@@ -94,6 +100,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 div.textContent = msg.texto;
                 mensajesContainer.appendChild(div);
               });
+            }
+
+            const linkPerfil = document.getElementById("link-perfil-chat");
+            if (linkPerfil && usuarioId) {
+              linkPerfil.href = `/app/usuario/${usuarioId}/`;
             }
 
             // --- Mostrar input ---
