@@ -35,4 +35,5 @@ urlpatterns = [
     path('obtener-mensajes-chat/', views.obtener_mensajes_chat, name='obtener_mensajes_chat'),
     path('comentar/', views.crear_comentario, name='crear_comentario'),
     path('eliminar-foto-perfil/', views.eliminar_foto_perfil, name='eliminar_foto_perfil'),
+    path('notificaciones/marcar_leidas/', views.marcar_notificaciones_leidas, name='marcar_leidas'),
 ]

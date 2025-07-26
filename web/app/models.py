@@ -97,11 +97,12 @@ class Mensaje(models.Model):
 
 
 class Notificacion(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)  # receptor
+    emisor = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True, blank=True, related_name='notificaciones_emitidas')  # nuevo campo
     tipo = models.TextField(blank=True, null=True)
     contenido = models.TextField(blank=True, null=True)
-    leida = models.BooleanField(blank=True, null=True)
-    por_correo = models.BooleanField(blank=True, null=True)
+    leida = models.BooleanField(blank=True, null=True, default=False)
+    por_correo = models.BooleanField(blank=True, null=True, default=False)
     fecha = models.DateTimeField(blank=True, null=True)
 
     class Meta:

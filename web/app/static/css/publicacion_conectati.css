@@ -345,6 +345,9 @@ a, a:visited {
   flex-shrink: 0;
   white-space: nowrap; 
 }
+.btn-responder:hover {
+  background-color: #4a3bd1;
+}
 
 /* Comentarios */
 .comentarios h3 {

@@ -234,8 +234,6 @@ a, a:visited {
 .item-notif .icono-envuelto {
   position: absolute;
   top: 8px;
-  left: 0px;
-  width: 20px;
   display: flex;
   justify-content: center;
 }
@@ -268,6 +266,11 @@ a, a:visited {
   font-weight: 600;
   color: #212121;
 }
+.item-notif.no-leida {
+  background-color: var(--lavanda-translucido);
+  border-left: 4px solid var(--color-iconos);
+  border-radius: 12px;  
+}
 
 .item-notif .meta {
   font-size: 0.95rem;
@@ -284,13 +287,26 @@ a, a:visited {
   color: #c67be8;
 }
 
-.item-notif .star {
-  color: #f5c100;
+.acciones-globales {
+  padding: 1rem;
+  text-align: right;
 }
 
-.item-notif .reply {
-  color: #6c63ff;
+#btnMarcarLeidas {
+  background-color: var(--color-iconos);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
 }
+
+#btnMarcarLeidas:hover {
+  background-color: #4a3bd1;
+}
+
 
 /* PANEL DERECHO */
 .panel-lateral {

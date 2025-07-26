@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import RegistroForm, PublicacionForm, EditarPerfilForm
 from django.utils import timezone
-from .models import Usuario, Publicacion, Estrella, Amistad, SolicitudChat, Chat, Mensaje, Comentario
+from .models import Usuario, Publicacion, Estrella, Amistad, SolicitudChat, Chat, Mensaje, Comentario, Notificacion
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
@@ -11,7 +11,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db.models import Q, Count
 from django.http import JsonResponse
-
+from datetime import timedelta
+from django.views.decorators.http import require_POST
+from .utils import crear_notificacion, procesar_publicacion
 
 # Create your views here.
 def InicioRedirectView(request):
@@ -202,7 +204,38 @@ def FeedView(request):
 
 
 def NotifyView(request):
-    return render(request, 'app/notificaciones.html', {})
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+
+    usuario_id = request.session['usuario_id']
+
+    ahora = timezone.now()
+    hoy = ahora.date()
+    ayer = hoy - timedelta(days=1)
+    semana_pasada = hoy - timedelta(days=7)
+
+    # Cargar todas las notificaciones del usuario
+    notificaciones = Notificacion.objects.using('conectati').filter(
+        usuario_id=usuario_id
+    ).order_by('-fecha')
+
+    grupo_hoy = []
+    grupo_ayer = []
+    grupo_semana = []
+
+    for n in notificaciones:
+        if n.fecha.date() == hoy:
+            grupo_hoy.append(n)
+        elif n.fecha.date() == ayer:
+            grupo_ayer.append(n)
+        elif n.fecha.date() >= semana_pasada:
+            grupo_semana.append(n)
+
+    return render(request, 'app/notificaciones.html', {
+        'grupo_hoy': grupo_hoy,
+        'grupo_ayer': grupo_ayer,
+        'grupo_semana': grupo_semana,
+    })
 
 def ChatView(request):
     if not request.session.get('usuario_id'):
@@ -339,40 +372,6 @@ def ReplyMobileView(request, publicacion_id):
 def SearchMobileView(request):
     return render(request, 'app/busqueda_mobile.html', {'no_area_info': True})
 
-# Logica para procesar publicaciones
-def procesar_publicacion(request, form):
-    if not form.is_valid():
-        return None  # O maneja errores si quieres mostrar mensajes
-
-    data = form.cleaned_data
-    archivo_obj = request.FILES.get('archivo')
-    archivo_nombre = None
-
-    if archivo_obj:
-        ruta_media = os.path.join(settings.MEDIA_ROOT, 'publicaciones')
-        os.makedirs(ruta_media, exist_ok=True)
-
-        archivo_nombre = archivo_obj.name
-        ruta_completa = os.path.join(ruta_media, archivo_nombre)
-
-        with open(ruta_completa, 'wb+') as destino:
-            for chunk in archivo_obj.chunks():
-                destino.write(chunk)
-
-    if not data['texto'] and not archivo_nombre:
-        return None  # O agrega lógica para errores personalizados
-
-    usuario = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
-    nueva = Publicacion(
-        usuario=usuario,
-        texto=data['texto'],
-        archivo_nombre=archivo_nombre,
-        privacidad=data['privacidad'].lower(),
-        fecha=timezone.now()
-    )
-    nueva.save(using='conectati')
-    return nueva
-
 
 # Lógica para dar estrellas a una publicación
 def dar_estrella(request, publicacion_id):
@@ -392,6 +391,14 @@ def dar_estrella(request, publicacion_id):
         publicacion.estrellas += 1
         publicacion.save(using='conectati')
 
+        # Crear notificación si el comentario no es propio
+        if publicacion.usuario.id != user_id:
+            crear_notificacion(
+                usuario_destino=publicacion.usuario,
+                tipo="estrella",
+                contenido=" dio estrella a tu publicación",
+                emisor=Usuario.objects.using('conectati').get(id=user_id)
+            )
         # Guardar registro
         nueva = Estrella(usuario_id=user_id, publicacion_id=publicacion_id)
         nueva.save(using='conectati')
@@ -804,6 +811,15 @@ def crear_comentario(request):
                 fecha=timezone.now()
             )
 
+            # Crear notificación si el comentario no es propio      
+            if publicacion.usuario.id != usuario.id:
+                crear_notificacion(
+                    usuario_destino=publicacion.usuario,
+                    tipo="comentario",
+                    contenido="comentó tu publicación",
+                    emisor=usuario
+                )
+
             nuevo_total = Comentario.objects.using('conectati').filter(publicacion=publicacion).count()
 
             return JsonResponse({
@@ -817,7 +833,6 @@ def crear_comentario(request):
                     "fecha": comentario.fecha.strftime("%H:%M · %d/%m/%Y")
                 }
             })
-
 
         except Exception as e:
             print("❌ Error al comentar:", e)
@@ -842,3 +857,13 @@ def eliminar_foto_perfil(request):
         except Exception as e:
             return JsonResponse({"ok": False, "error": str(e)})
     return JsonResponse({"ok": False, "error": "No autorizado"}, status=403)
+
+# Logica para marcar notificaciones como leidas
+@require_POST
+def marcar_notificaciones_leidas(request):
+    if not request.session.get('usuario_id'):
+        return JsonResponse({'ok': False}, status=403)
+
+    usuario_id = request.session['usuario_id']
+    Notificacion.objects.using('conectati').filter(usuario_id=usuario_id, leida=False).update(leida=True)
+    return JsonResponse({'ok': True})

@@ -1,5 +1,6 @@
 {% extends "app/base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}Notificaciones{% endblock %}
 
@@ -13,88 +14,37 @@
 {% block contenido2 %}
 <div class="contenedor-info">
     <section class="notificaciones">
+        <div class="acciones-globales">
+            <form method="POST" action="{% url 'marcar_leidas' %}">
+                {% csrf_token %}
+                <button id="btnMarcarLeidas" type="button">Marcar todas como leídas</button>
+            </form>
+        </div>
         <div class="grupo">
-            <h3>Hoy</h3>
-            <div class="item-notif">
-                <div class="icono-envuelto"><i class="fas fa-star star"></i></div>
-                <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
-                <div class="contenido">
-                <strong>@anag</strong> le gustan 2 de tus posts
-                <div class="meta">Hace 2 horas</div>
-                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-                </div>
-            </div>
-            <div class="item-notif">
-                <div class="icono-envuelto"><i class="fas fa-heart like"></i></div>
-                <img src="https://i.pravatar.cc/150?img=8" alt="Carlos" />
-                <div class="contenido">
-                <strong>@carlosm</strong> le gusta 1 de tus posts
-                <div class="meta">Hace 3 horas</div>
-                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-                </div>
-            </div>
+        <h3>Hoy</h3>
+        {% for notif in grupo_hoy %}
+            {% include "app/_item_notificacion.html" with n=notif %}
+        {% empty %}
+            <div style="color: #888; text-align: center; padding: 1rem 0;">Sin notificaciones recientes.</p>
+        {% endfor %}
         </div>
 
         <div class="grupo">
         <h3>Ayer</h3>
-            <div class="item-notif">
-                <div class="icono-envuelto"><i class="fas fa-reply reply"></i></div>
-                <img src="https://i.pravatar.cc/150?img=12" alt="danroj" />
-                <div class="contenido">
-                <strong>@danroj</strong> respondió tu comentario
-                <div class="meta">Ayer</div>
-                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-                </div>
-            </div>
-            <div class="item-notif">
-                <div class="icono-envuelto"><i class="fas fa-heart like"></i></div>
-                <img src="https://i.pravatar.cc/150?img=21" alt="valenng" />
-                <div class="contenido">
-                <strong>@valenng</strong> le gusta tu comentario
-                <div class="meta">Ayer</div>
-                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit. orem ipsum dolor sit amet, consectetur adipiscing elit. orem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-                </div>
-            </div>
-            <div class="item-notif">
-                <div class="icono-envuelto"><i class="fas fa-heart like"></i></div>
-                <img src="https://i.pravatar.cc/150?img=6" alt="juanp" />
-                <div class="contenido">
-                <strong>@juanp</strong> le gusta 1 de tus posts
-                <div class="meta">Ayer</div>
-                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-                </div>
-            </div>
+        {% for notif in grupo_ayer %}
+            {% include "app/_item_notificacion.html" with n=notif %}
+        {% empty %}
+            <div style="color: #888; text-align: center; padding: 1rem 0;">Sin notificaciones ayer.</div>
+        {% endfor %}
         </div>
 
         <div class="grupo">
-            <h3>Últimos 7 días</h3>
-            <div class="item-notif">
-                <div class="icono-envuelto"><i class="fas fa-star star"></i></div>
-                <img src="https://i.pravatar.cc/150?img=15" alt="jorges" />
-                <div class="contenido">
-                <strong>@jorges</strong> respondió tu comentario
-                <div class="meta">Hace 3 días</div>
-                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-                </div>
-            </div>
-            <div class="item-notif">
-                <div class="icono-envuelto"><i class="fas fa-star star"></i></div>
-                <img src="https://i.pravatar.cc/150?img=47" alt="dania" />
-                <div class="contenido">
-                <strong>@dania</strong> respondió tu comentario
-                <div class="meta">Hace 5 días</div>
-                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-                </div>
-            </div>
-            <div class="item-notif">
-                <div class="icono-envuelto"><i class="fas fa-star star"></i></div>
-                <img src="https://i.pravatar.cc/150?img=15" alt="jorges" />
-                <div class="contenido">
-                <strong>@jorges</strong> respondió tu comentario
-                <div class="meta">Hace 3 días</div>
-                <div class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-                </div>
-            </div>
+        <h3>Últimos 7 días</h3>
+        {% for notif in grupo_semana %}
+            {% include "app/_item_notificacion.html" with n=notif %}
+        {% empty %}
+            <div style="color: #888; text-align: center; padding: 1rem 0;">No hay más notificaciones esta semana.</div>
+        {% endfor %}
         </div>
     </section>
     {% block panel_lateral %}
@@ -149,17 +99,19 @@
 
 {% block extra_js %}
 <script>
-    /* const input = document.getElementById('inputBusqueda');
-    const dropdown = document.getElementById('dropdownBuscador');
-
-    input.addEventListener('focus', () => {
-        dropdown.classList.remove('oculto');
-    });
-
-    document.addEventListener('click', function (e) {
-        if (!document.querySelector('.buscador').contains(e.target)) {
-            dropdown.classList.add('oculto');
+  document.getElementById('btnMarcarLeidas').addEventListener('click', () => {
+    fetch("{% url 'marcar_leidas' %}", {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/json'
+      }
+    }).then(resp => resp.json())
+      .then(data => {
+        if (data.ok) {
+          document.querySelectorAll('.item-notif.no-leida').forEach(el => el.classList.remove('no-leida'));
         }
-    }); */
+      });
+  });
 </script>
 {% endblock %}

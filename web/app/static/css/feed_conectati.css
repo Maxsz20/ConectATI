@@ -302,7 +302,7 @@ a, a:visited {
 }
 
 .crear-post .btn-postear:hover {
-  background-color: #6c6c8a;
+  background-color: #4a3bd1;
 }
 .selector-toggle {
   position: relative;
@@ -491,6 +491,9 @@ a, a:visited {
     font-weight: bold;
     font-size: 0.95rem;
     cursor: pointer;
+  }
+  .btn-subir:hover {
+    background-color: #4a3bd1;
   }
 
   .publicacion-respuesta {

@@ -55,7 +55,7 @@
     </article>
 
     <div class="form-respuesta">
-        <img src="{% static 'images/default_user.avif' %}" alt="Mi perfil" />
+        <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Mi perfil" />
         <input type="text" placeholder="Postea tu respuesta" id="respuestaRapida" />
         <button class="btn-responder" id="btnResponderRapido" data-publicacion-id="{{ publicacion.id }}">Responder</button>
     </div>
