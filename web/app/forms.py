@@ -33,3 +33,33 @@ class PublicacionForm(forms.Form):
         required=True
     )
 
+class EditarPerfilForm(forms.ModelForm):
+    foto_archivo = forms.ImageField(required=False)
+
+    class Meta:
+        model = Usuario
+        fields = [
+            'nombre', 'username', 'descripcion', 'fecha_nacimiento',
+            'genero', 'color_favorito', 'libro_favorito', 'musica_favorita',
+            'videojuegos', 'lenguajes'
+        ]
+        widgets = {
+            'fecha_nacimiento': forms.DateInput(attrs={'type': 'date'}),
+            'descripcion': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def save(self, commit=True, using=None):
+        instance = super().save(commit=False)
+
+        archivo = self.cleaned_data.get('foto_archivo')
+        if archivo:
+            from django.core.files.storage import default_storage
+            from django.core.files.base import ContentFile
+
+            ruta = f'fotos_perfil/{archivo.name}'
+            default_storage.save(ruta, ContentFile(archivo.read()))
+            instance.foto = ruta  # Se guarda la ruta como texto
+
+        if commit:
+            instance.save(using=using)
+        return instance

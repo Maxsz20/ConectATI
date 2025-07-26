@@ -16,7 +16,6 @@ urlpatterns = [
     path('chat/', views.ChatView, name='chat'),
     path('settings/', views.SettingsView, name='settings'),
     path('publicacion/<int:publicacion_id>/', views.PostView, name='post'),
-    path('search/', views.SearchView, name='search'),
     path('search_mobile/', views.SearchMobileView, name='search_mobile'),
     path('profile/', views.ProfileView, name='profile'),
     path('editprofile/', views.EditProfileView, name='editprofile'),
@@ -35,5 +34,5 @@ urlpatterns = [
     path('obtener-conversacion/', views.obtener_conversacion, name='obtener_conversacion'),
     path('obtener-mensajes-chat/', views.obtener_mensajes_chat, name='obtener_mensajes_chat'),
     path('comentar/', views.crear_comentario, name='crear_comentario'),
-
+    path('eliminar-foto-perfil/', views.eliminar_foto_perfil, name='eliminar_foto_perfil'),
 ]

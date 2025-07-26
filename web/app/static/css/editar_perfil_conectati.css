@@ -63,6 +63,13 @@ aside {
   z-index: 900;
 }
 
+input,
+textarea,
+select,
+.input-campo {
+  font-family: 'Segoe UI', sans-serif;
+}
+
 aside .logo-conectati {
   display: flex;
   align-items: center;
@@ -195,24 +202,21 @@ a, a:visited {
 /* --- Common elements from previous refactoring --- */
 /* --- Profile Picture with Overlay --- */
 .perfil-foto-editable {
-  position: relative; /* Needed for absolute positioning of overlay */
-  width: 120px; /* Same as the image dimensions */
-  height: 120px;
-  border-radius: 50%;
-  overflow: hidden; /* Ensures overlay doesn't spill out */
-  margin: 0 auto 2rem; /* Center and add space below */
-  cursor: pointer; /* Indicates it's clickable */
-  border: 4px solid var(--lavanda-translucido); /* Border from original image */
-  box-shadow: var(--sombra-ligera); /* Shadow from original image */
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: auto;
 }
 
 .perfil-foto-editable img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   border-radius: 50%;
-  display: block; /* Remove extra space below image */
-  filter: brightness(1) blur(0px); /* Base state for image filter */
-  transition: filter 0.3s ease; /* Smooth transition for hover effect */
+  border: 4px solid rgba(188, 190, 255, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: block;
+  transition: filter 0.3s ease;
 }
 
 .overlay-foto {
@@ -221,33 +225,58 @@ a, a:visited {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(188, 190, 255, 0.4); /* Lavanda translúcido */
   border-radius: 50%;
+  background-color: rgba(188, 190, 255, 0.4);
   display: flex;
-  flex-direction: column; /* Stack icons vertically */
   justify-content: center;
   align-items: center;
-  opacity: 0; /* Hidden by default */
-  transition: opacity 0.3s ease, filter 0.3s ease; /* Smooth transition */
-  color: white; /* Icons color */
-  pointer-events: none; /* Allows clicks to pass through to the container */
-  filter: opacity(0); /* Start with opacity 0 filter */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 5;
 }
 
-.perfil-foto-editable:hover img {
-  filter: brightness(0.7) blur(2px); /* Darken and blur image on hover */
+/* Solo activar overlay al hacer hover sobre la imagen, no sobre el botón */
+.perfil-foto-editable img:hover + .overlay-foto,
+.perfil-foto-editable .overlay-foto:hover {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.perfil-foto-editable:hover .overlay-foto {
-  opacity: 1; /* Show overlay on hover */
-  pointer-events: auto; /* Enable clicks on overlay when visible */
-  filter: opacity(1); /* Ensure filter opacity is 1 on hover */
+.perfil-foto-editable img:hover {
+  filter: brightness(0.7) blur(2px);
 }
 
 .overlay-foto i {
-  font-size: 2.2rem; /* Size of the icons */
-  margin: 0.3rem 0; /* Space between icons */
-  text-shadow: 0 0 5px rgba(0,0,0,0.5); /* Slight shadow for visibility */
+  font-size: 2.2rem;
+  color: white;
+  cursor: pointer;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Botón de eliminar */
+.btn-eliminar-foto {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 10; /* por encima del overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
+}
+
+.btn-eliminar-foto:hover {
+  background-color: #e60000;
 }
 
 /* --- Modal (Popup) Styles --- */
@@ -382,13 +411,8 @@ a, a:visited {
 }
 
 .perfil-formulario label {
-  display: flex;
-  flex-direction: row; /* Mantiene la etiqueta y el campo en la misma fila */
-  align-items: center; /* Alinea verticalmente los elementos de la etiqueta */
-  gap: 1.5rem; /* Espacio entre el texto de la etiqueta y el campo */
-  font-weight: 600;
-  color: var(--color-texto-medio);
-  font-size: 1.05rem;
+  font-size: 1rem;
+  gap: 0.5rem;
 }
 
 .perfil-formulario label:has(textarea) {
@@ -398,15 +422,10 @@ a, a:visited {
 .perfil-formulario input,
 .perfil-formulario textarea,
 .perfil-formulario select {
-  flex: 1; /* Permite que el campo de entrada ocupe el espacio restante */
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  border: 1px solid var(--color-bordes);
-  border-radius: 8px;
-  background-color: var(--color-fondo-inputs);
-  resize: vertical;
-  color: var(--color-texto-oscuro);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.97rem;
+  border-radius: 5px;
 }
 
 .perfil-formulario input:focus,
@@ -418,7 +437,8 @@ a, a:visited {
 }
 
 .perfil-formulario textarea {
-  min-height: 100px;
+  min-height: 60px;
+  font-size: 0.97rem;
 }
 
 /* Botón Guardar */
@@ -520,6 +540,26 @@ a, a:visited {
 .boton-publicar-mobile{
     display: none;
 }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 2rem; /* espacio entre columnas y filas */
+}
+
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+}
+
+.form-grid input,
+.form-grid textarea,
+.form-grid select {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.9rem;
+}
+
 
 
 /* --- Responsive Design (Media Queries) --- */
@@ -644,6 +684,11 @@ a, a:visited {
     font-size: 0.9rem;
     padding: 0.7rem 1.2rem;
   }
+
+  .form-grid {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 /* --- Alineación de etiquetas y inputs --- */
@@ -677,11 +722,47 @@ a, a:visited {
   color: #6c63ff;
 }
 
-
-
 .perfil-detalle-link {
   text-decoration: none; /* Elimina el subrayado predeterminado del enlace */
   color: inherit; /* Hereda el color del texto de sus hijos o de su contenedor */
   display: block; /* Ocupa todo el ancho disponible para que toda el área sea clicable */
 }
 
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem 2rem;
+  margin-bottom: 1rem;
+}
+
+.form-columna label {
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+.input-campo {
+  width: 100%;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  background-color: var(--lavanda-translucido);
+}
+
+.input-campo:focus {
+  outline: none;
+  border-color: #8888ff;
+  box-shadow: 0 0 0 2px #dcdcff;
+}
+
+.form-foto {
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

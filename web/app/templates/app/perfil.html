@@ -14,11 +14,15 @@
     <div class="area-perfil">
       <div class="perfil-header">
         <div class="franja-azul">
+          
           <img class="avatar" src="{% if usuario_perfil.foto %}{{ usuario_perfil.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_perfil.nombre }}" />
+          <div class="contenedor-info-principal">
           <div class="info-texto">
             <h2>{{ usuario_perfil.nombre }}</h2>
             <p class="usuario">@{{ usuario_perfil.username }}</p>
-            <p class="bio">{{ usuario_perfil.descripcion }}</p>
+            {% if usuario_perfil.descripcion %}
+              <p class="bio">{{ usuario_perfil.descripcion }}</p>
+            {% endif %}
           </div>
           {% if es_propio_perfil %}
           <a class="editar-perfil" href="{% url 'editprofile' %}">
@@ -55,6 +59,32 @@
             </div>
           {% endif %}
         </div>
+        </div>
+        {% if usuario_perfil.fecha_nacimiento or usuario_perfil.genero or usuario_perfil.color_favorito or usuario_perfil.libro_favorito or usuario_perfil.musica_favorita or usuario_perfil.videojuegos or usuario_perfil.lenguajes %}
+          <div class="info-extra">
+            {% if usuario_perfil.fecha_nacimiento %}
+              <div><strong>Nacimiento:</strong> {{ usuario_perfil.fecha_nacimiento|date:"d/m/Y" }}</div>
+            {% endif %}
+            {% if usuario_perfil.genero %}
+              <div><strong>Género:</strong> {{ usuario_perfil.genero }}</div>
+            {% endif %}
+            {% if usuario_perfil.color_favorito %}
+              <div><strong>Color favorito:</strong> {{ usuario_perfil.color_favorito }}</div>
+            {% endif %}
+            {% if usuario_perfil.libro_favorito %}
+              <div><strong>Libro favorito:</strong> {{ usuario_perfil.libro_favorito }}</div>
+            {% endif %}
+            {% if usuario_perfil.musica_favorita %}
+              <div><strong>Música favorita:</strong> {{ usuario_perfil.musica_favorita }}</div>
+            {% endif %}
+            {% if usuario_perfil.videojuegos %}
+              <div><strong>Videojuegos:</strong> {{ usuario_perfil.videojuegos }}</div>
+            {% endif %}
+            {% if usuario_perfil.lenguajes %}
+              <div><strong>Lenguajes:</strong> {{ usuario_perfil.lenguajes }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
         <div class="barra-inferior">
           <span><strong>{{ cantidad_amigos }}</strong> Amigos</span>
         </div>

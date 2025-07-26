@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import RegistroForm, PublicacionForm
+from .forms import RegistroForm, PublicacionForm, EditarPerfilForm
 from django.utils import timezone
 from .models import Usuario, Publicacion, Estrella, Amistad, SolicitudChat, Chat, Mensaje, Comentario
 from django.contrib import messages
@@ -105,8 +105,14 @@ def RegisterView(request):
     return render(request, 'app/registrarse.html', {'form': form})
 
 def LogoutView(request):
-    request.session.flush()  # ← borra todos los datos de sesión
+    # Limpiar sesión o hacer logout
+    request.session.flush()  # o logout(request) si usas django.contrib.auth
+
+    # Limpiar mensajes pendientes
+    list(messages.get_messages(request))
+
     return redirect('login')
+
 
 def ForgottenPassView(request):
     return render(request, 'app/forgotten_password.html', {})
@@ -123,78 +129,47 @@ def ProfileView(request):
     usuario_id = request.session['usuario_id']
     return ver_perfil_usuario(request, usuario_id)
 
-# Vista para ver perfil de otros usuarios (y propio)
-def ver_perfil_usuario(request, usuario_id):
-    # Verificar que el usuario esté autenticado
+def EditProfileView(request):
     if not request.session.get('usuario_id'):
         return redirect('login')
 
-    try:
-        # Obtener el usuario cuyo perfil se quiere ver
-        usuario_perfil = Usuario.objects.using('conectati').get(id=usuario_id)
-        
-        # Obtener el usuario actual para verificar relación de amistad
-        usuario_actual_id = request.session['usuario_id']
+    usuario = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
 
-        estrellas_usuario = Estrella.objects.using('conectati') \
-            .filter(usuario_id=usuario_id) \
-            .values_list('publicacion_id', flat=True)
-        
-        # Verificar si existe una relación de amistad
-        amistad = Amistad.objects.using('conectati').filter(
-            Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario_id) |
-            Q(de_usuario_id=usuario_id, para_usuario_id=usuario_actual_id)
-        ).first()
+    # Si es una solicitud AJAX con archivo
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.FILES.get('foto_archivo'):
+        archivo = request.FILES['foto_archivo']
+        nombre_archivo = f"{timezone.now().strftime('%Y%m%d%H%M%S')}_{archivo.name}"
+        ruta_guardado = os.path.join(settings.MEDIA_ROOT, 'fotos_perfil', nombre_archivo)
 
-        # Verificar si existe una solicitud de chat
-        solicitud_chat = SolicitudChat.objects.using('conectati').filter(
-            Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario_id) |
-            Q(de_usuario_id=usuario_id, para_usuario_id=usuario_actual_id)
-        ).first()
+        os.makedirs(os.path.dirname(ruta_guardado), exist_ok=True)
+        with open(ruta_guardado, 'wb+') as destino:
+            for chunk in archivo.chunks():
+                destino.write(chunk)
 
-        estado_chat = None
-        if solicitud_chat:
-            estado_chat = solicitud_chat.estado
+        # Guardamos solo el path relativo como texto
+        usuario.foto = f"/media/fotos_perfil/{nombre_archivo}"
+        usuario.save(using='conectati')
 
-        estado_amistad = None
-        if amistad:
-            estado_amistad = amistad.estado
-        
-        # Contar amistades aceptadas del usuario del perfil
-        cantidad_amigos = Amistad.objects.using('conectati').filter(
-            Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id),
-            estado='aceptada'
-        ).count()
-        
-        # Obtener publicaciones del usuario (solo públicas si no son amigos)
-        if estado_amistad == 'aceptada' or usuario_actual_id == usuario_id:
-            # Si son amigos o es el mismo usuario, mostrar todas las publicaciones
-            publicaciones = Publicacion.objects.using('conectati').filter(usuario=usuario_perfil).annotate(num_comentarios=Count('comentario')).order_by('-fecha')
-        else:
-            # Si no son amigos, solo mostrar publicaciones públicas
-            publicaciones = Publicacion.objects.using('conectati').filter(
-                usuario=usuario_perfil, 
-                privacidad='publica'
-            ).annotate(num_comentarios=Count('comentario')).order_by('-fecha')
-        
-        return render(request, 'app/perfil.html', {
-            'usuario_perfil': usuario_perfil,
-            'publicaciones': publicaciones,
-            'cantidad_amigos': cantidad_amigos,
-            'estado_amistad': estado_amistad,
-            'estado_chat': estado_chat,
-            'es_propio_perfil': usuario_actual_id == usuario_id,
-            'no_area_info': True,
-            'estrellas_usuario': list(estrellas_usuario)
+        return JsonResponse({
+            "ok": True,
+            "foto_url": usuario.foto
         })
-        
-    except Usuario.DoesNotExist:
-        # Si el usuario no existe, redirigir al feed con un mensaje de error
-        messages.error(request, 'Usuario no encontrado.')
-        return redirect('feed')
 
-def EditProfileView(request):
-    return render(request, 'app/editarPerfil.html', {'no_area_info': True})
+    # Si es envío normal (POST)
+    if request.method == 'POST':
+        form = EditarPerfilForm(request.POST, request.FILES, instance=usuario)
+        if form.is_valid():
+            form.save(using='conectati')
+            messages.success(request, "Perfil actualizado correctamente.")
+            return redirect('profile')
+    else:
+        form = EditarPerfilForm(instance=usuario)
+
+    return render(request, 'app/editar_perfil.html', {
+        'form': form,
+        'usuario_logueado': usuario,
+        'no_area_info': True
+    })
 
 def FeedView(request):
     if not request.session.get('usuario_id'):
@@ -361,13 +336,10 @@ def ReplyMobileView(request, publicacion_id):
         'no_area_info': True
     })
 
-def SearchView(request):
-    return render(request, 'app/busqueda.html', {})
-
 def SearchMobileView(request):
     return render(request, 'app/busqueda_mobile.html', {'no_area_info': True})
 
-# Función para procesar publicaciones
+# Logica para procesar publicaciones
 def procesar_publicacion(request, form):
     if not form.is_valid():
         return None  # O maneja errores si quieres mostrar mensajes
@@ -720,6 +692,77 @@ def obtener_conversacion(request):
     except Chat.DoesNotExist:
         return JsonResponse({'error': 'Chat no encontrado'}, status=404)
 
+# Logica para ver perfil de otros usuarios (y propio)
+def ver_perfil_usuario(request, usuario_id):
+    # Verificar que el usuario esté autenticado
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+
+    try:
+        # Obtener el usuario cuyo perfil se quiere ver
+        usuario_perfil = Usuario.objects.using('conectati').get(id=usuario_id)
+        
+        # Obtener el usuario actual para verificar relación de amistad
+        usuario_actual_id = request.session['usuario_id']
+
+        estrellas_usuario = Estrella.objects.using('conectati') \
+            .filter(usuario_id=usuario_id) \
+            .values_list('publicacion_id', flat=True)
+        
+        # Verificar si existe una relación de amistad
+        amistad = Amistad.objects.using('conectati').filter(
+            Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario_id) |
+            Q(de_usuario_id=usuario_id, para_usuario_id=usuario_actual_id)
+        ).first()
+
+        # Verificar si existe una solicitud de chat
+        solicitud_chat = SolicitudChat.objects.using('conectati').filter(
+            Q(de_usuario_id=usuario_actual_id, para_usuario_id=usuario_id) |
+            Q(de_usuario_id=usuario_id, para_usuario_id=usuario_actual_id)
+        ).first()
+
+        estado_chat = None
+        if solicitud_chat:
+            estado_chat = solicitud_chat.estado
+
+        estado_amistad = None
+        if amistad:
+            estado_amistad = amistad.estado
+        
+        # Contar amistades aceptadas del usuario del perfil
+        cantidad_amigos = Amistad.objects.using('conectati').filter(
+            Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id),
+            estado='aceptada'
+        ).count()
+        
+        # Obtener publicaciones del usuario (solo públicas si no son amigos)
+        if estado_amistad == 'aceptada' or usuario_actual_id == usuario_id:
+            # Si son amigos o es el mismo usuario, mostrar todas las publicaciones
+            publicaciones = Publicacion.objects.using('conectati').filter(usuario=usuario_perfil).annotate(num_comentarios=Count('comentario')).order_by('-fecha')
+        else:
+            # Si no son amigos, solo mostrar publicaciones públicas
+            publicaciones = Publicacion.objects.using('conectati').filter(
+                usuario=usuario_perfil, 
+                privacidad='publica'
+            ).annotate(num_comentarios=Count('comentario')).order_by('-fecha')
+        
+        return render(request, 'app/perfil.html', {
+            'usuario_perfil': usuario_perfil,
+            'publicaciones': publicaciones,
+            'cantidad_amigos': cantidad_amigos,
+            'estado_amistad': estado_amistad,
+            'estado_chat': estado_chat,
+            'es_propio_perfil': usuario_actual_id == usuario_id,
+            'no_area_info': True,
+            'estrellas_usuario': list(estrellas_usuario)
+        })
+        
+    except Usuario.DoesNotExist:
+        # Si el usuario no existe, redirigir al feed con un mensaje de error
+        messages.error(request, 'Usuario no encontrado.')
+        return redirect('feed')
+
+
 def obtener_mensajes_chat(request):
     if not request.session.get('usuario_id'):
         return JsonResponse({'error': 'No autenticado'}, status=403)
@@ -781,3 +824,21 @@ def crear_comentario(request):
             return JsonResponse({"ok": False, "error": str(e)})
 
     return JsonResponse({"ok": False, "error": "No autorizado o método incorrecto"}, status=403)
+
+
+@csrf_exempt
+def eliminar_foto_perfil(request):
+    if request.method == "POST" and request.session.get("usuario_id"):
+        try:
+            usuario = Usuario.objects.using('conectati').get(id=request.session["usuario_id"])
+            if usuario.foto:
+                nombre_archivo = os.path.basename(usuario.foto)
+                ruta_completa = os.path.join(settings.MEDIA_ROOT, 'fotos_perfil', nombre_archivo)
+                if os.path.exists(ruta_completa):
+                    os.remove(ruta_completa)
+                usuario.foto = ''
+                usuario.save(using='conectati')
+            return JsonResponse({"ok": True})
+        except Exception as e:
+            return JsonResponse({"ok": False, "error": str(e)})
+    return JsonResponse({"ok": False, "error": "No autorizado"}, status=403)

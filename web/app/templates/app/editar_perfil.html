@@ -1,102 +1,167 @@
 {% extends 'app/base.html' %}
 {% load static %}
 
-{% block title %}EditarPerfil{% endblock %}
+{% block title %}Editar Perfil{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/editar_perfil_conectati.css' %}">
 {% endblock %}
 
-
-
 {% block contenido %}
+<main class="perfil-editar">
+  <div class="perfil-container">
+    <a href="{% url 'profile' %}" class="volver-atras-link">
+      <i class="fas fa-chevron-left"></i>
+    </a>
 
 
-  <main class="perfil-editar">
-    <div class="perfil-container">
-      <a href="/app/profile" class="volver-atras-link">
+    <!-- Formulario de edición -->
+    <form class="perfil-formulario" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
 
-        <i class="fas fa-chevron-left"></i>
-        </button>
-      </a>
       <div class="perfil-foto-editable">
-        <img src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" id="profileImage" />
+        <!-- Imagen de preview -->
+        <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" 
+            id="profileImage" 
+            alt="Foto de perfil" />
+
+        <!-- Botón para subir nueva imagen -->
         <div class="overlay-foto">
-          <i class="fas fa-pencil-alt icono-editar"></i>
+          <label for="inputFotoArchivo">
+            <i class="fas fa-pencil-alt icono-editar"></i>
+          </label>
+          <input type="file" id="inputFotoArchivo" name="foto" accept="image/*" hidden>
+        </div>
+
+        <!-- Botón para eliminar foto (X) -->
+        <button type="button" class="btn-eliminar-foto" id="btnEliminarFoto" title="Eliminar foto">&times;</button>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-columna">
+          <label for="id_nombre">Nombre:</label>
+          <input type="text" name="nombre" id="id_nombre" value="{{ form.nombre.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_username">Usuario:</label>
+          <input type="text" name="username" id="id_username" value="{{ form.username.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_descripcion">Descripción:</label>
+          <textarea name="descripcion" id="id_descripcion" rows="3" class="input-campo">{{ form.descripcion.value|default_if_none:'' }}</textarea>
+
+          <label for="id_genero">Género:</label>
+          <input type="text" name="genero" id="id_genero" value="{{ form.genero.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_fecha_nacimiento">Nacimiento:</label>
+          <input type="date" name="fecha_nacimiento" id="id_fecha_nacimiento" value="{{ form.fecha_nacimiento.value|default_if_none:'' }}" class="input-campo" />
+        </div>
+
+        <div class="form-columna">
+          <label for="id_color_favorito">Color favorito:</label>
+          <input type="text" name="color_favorito" id="id_color_favorito" value="{{ form.color_favorito.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_libro_favorito">Libro favorito:</label>
+          <input type="text" name="libro_favorito" id="id_libro_favorito" value="{{ form.libro_favorito.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_musica_favorita">Música favorita:</label>
+          <input type="text" name="musica_favorita" id="id_musica_favorita" value="{{ form.musica_favorita.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_videojuegos">Videojuegos favoritos:</label>
+          <input type="text" name="videojuegos" id="id_videojuegos" value="{{ form.videojuegos.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_lenguajes">Lenguajes:</label>
+          <input type="text" name="lenguajes" id="id_lenguajes" value="{{ form.lenguajes.value|default_if_none:'' }}" class="input-campo" />
         </div>
       </div>
 
-      <div id="editPhotoModal" class="modal">
-        <div class="modal-content">
-          <span class="close-button">&times;</span>
-          <h2>Editar foto de perfil</h2>
-          <input type="file" id="newProfilePhotoInput" accept="image/*">
-          <button id="uploadPhotoButton">Subir foto</button>
-          <button id="removePhotoButton">Eliminar foto</button>
-        </div>
-      </div>
+      <button type="submit" class="btn-guardar">Guardar</button>
+    </form>
 
-      <form class="perfil-formulario">
-        <label>
-          <span class="label-text">Nombre:</span>
-          <input type="text" value="Daniela Rojas" />
-        </label>
+    
+  </div>
+</main>
 
-        <label>
-          <span class="label-text">Usuario:</span>
-          <input type="text" value="@danroj" />
-        </label>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const eliminarBtn = document.getElementById('btnEliminarFoto'); 
+  const profileImage = document.getElementById('profileImage');
+  const inputFoto = document.getElementById('inputFotoArchivo');
+  let valorFotoOriginal = "{{ usuario_logueado.foto|default:'' }}";
 
-        <label>
-          <span class="label-text">Descripción:</span>
-          <textarea>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</textarea>
-        </label>
+  // Lógica para subir y preview de nueva imagen
+  if (inputFoto && profileImage) {
+    inputFoto.addEventListener('change', () => {
+      const archivo = inputFoto.files[0];
+      if (archivo) {
+        // Preview
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          profileImage.src = e.target.result;
+        };
+        reader.readAsDataURL(archivo);
 
-        <label>
-          <span class="label-text">Locación:</span>
-          <input type="text" value="Caracas, Venezuela" />
-        </label>
+        // Subir al backend
+        const formData = new FormData();
+        formData.append('foto_archivo', archivo);
 
-        <label>
-          <span class="label-text">Cumpleaños:</span>
-          <input type="date" value="1999-02-10" />
-        </label>
-
-        <label>
-          <span class="label-text">Género:</span>
-          <select>
-            <option>Masculino</option>
-            <option selected>Femenino</option>
-            <option>Otro</option>
-          </select>
-        </label>
-
-        <button type="submit" class="btn-guardar" onclick="location.href='/app/profile'; return false;">Guardar</button>
-
-      </form>
-    </div>
-  </main>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const editPencilIcon = document.querySelector('.overlay-foto .icono-editar');
-      const editPhotoModal = document.getElementById('editPhotoModal');
-      const closeButton = document.querySelector('.modal .close-button');
-
-      editPencilIcon.addEventListener('click', (event) => {
-        event.stopPropagation();
-        editPhotoModal.style.display = 'flex';
-      });
-
-      closeButton.addEventListener('click', () => {
-        editPhotoModal.style.display = 'none';
-      });
-
-      window.addEventListener('click', (event) => {
-        if (event.target === editPhotoModal) {
-          editPhotoModal.style.display = 'none';
-        }
-      });
+        fetch("{% url 'editprofile' %}", {
+          method: "POST",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+          },
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.ok && data.foto_url) {
+            profileImage.src = data.foto_url + "?t=" + new Date().getTime();
+            valorFotoOriginal = data.foto_url; // actualizar la referencia
+          } else {
+            alert("Error al subir la foto");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert("Error al comunicarse con el servidor");
+        });
+      }
     });
-  </script>
+  }
+
+  // Lógica para eliminar foto
+  if (eliminarBtn) {
+    eliminarBtn.addEventListener('click', () => {
+      if (inputFoto.files.length > 0) {
+        inputFoto.value = "";
+        if (valorFotoOriginal !== "") {
+          profileImage.src = valorFotoOriginal;
+        } else {
+          profileImage.src = "{% static 'images/default_user.avif' %}";
+        }
+      } else if (valorFotoOriginal !== "") {
+        fetch("{% url 'eliminar_foto_perfil' %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.ok) {
+            profileImage.src = "{% static 'images/default_user.avif' %}";
+            valorFotoOriginal = "";
+          } else {
+            alert("Error al eliminar la foto");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert("Error al comunicarse con el servidor");
+        });
+      }
+    });
+  }
+});
+</script>
 
 {% endblock %}
