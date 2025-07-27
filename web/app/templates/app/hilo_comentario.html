@@ -1,0 +1,246 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}Comentario{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/publicacion_conectati.css' %}">
+<link rel="stylesheet" href="{% static 'css/hilo_comentario.css' %}">
+{% endblock %}
+
+{% block titulo_pagina %}Comentario{% endblock %}
+{% block titulo_pagina_mobile %}Comentario{% endblock %}
+
+{% block contenido2 %}
+<div class="contenedor-info">
+  <section class="publicacion">
+    <!-- PUBLICACIÓN ORIGINAL -->
+    <article class="post-principal">
+      <div class="usuario">
+        <img src="{{ publicacion.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ publicacion.usuario.nombre }}" />
+        <div class="datos">
+          <strong>{{ publicacion.usuario.nombre }}</strong>
+          <span>@{{ publicacion.usuario.username }} · {{ publicacion.fecha|timesince }}</span>
+        </div>
+      </div>
+      <p class="contenido-post">{{ publicacion.texto }}</p>
+      {% if publicacion.archivo_nombre %}
+        <img class="imagen-post" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="Imagen de la publicación">
+      {% endif %}
+      <div class="acciones">
+        <span class="estrella {% if publicacion.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ publicacion.id }}">
+            <i class="fas fa-star"></i> <span class="contador">{{ publicacion.estrellas }}</span>
+        </span>
+        <span class="comentario-contenedor">
+          <i class="far fa-comment comentario-btn"
+              data-id="{{ publicacion.id }}"
+              data-texto="{{ publicacion.texto|escapejs }}"
+              data-nombre="{{ publicacion.usuario.nombre }}"
+              data-username="@{{ publicacion.usuario.username }}"
+              data-foto="{% if publicacion.usuario.foto %}{{ publicacion.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}"
+              data-imagen="{% if publicacion.archivo_nombre %}/media/publicaciones/{{ publicacion.archivo_nombre }}{% endif %}">
+          </i><span class="contador-comentarios">{{ num_comentarios }}</span>
+        </span>
+      </div>
+      <div class="meta">{{ publicacion.fecha|time:"H:i" }} · {{ publicacion.fecha|date:"d/m/Y" }}</div>
+      <div class="linea-hilo"></div> 
+    </article>
+
+    <!-- HILO ANTERIOR (PADRES DEL COMENTARIO ACTUAL) -->
+    {% if hilo %}
+      {% for c in hilo %}
+        <div class="comentario hilo-anterior">
+          <img src="{{ c.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ c.usuario.nombre }}">
+          <div class="contenido">
+            <div class="usuario">
+              <strong>{{ c.usuario.nombre }}</strong>
+              <span>@{{ c.usuario.username }} · {{ c.fecha|timesince }}</span>
+            </div>
+            <p>{{ c.texto }}</p>
+            <div class="acciones">
+              <span>
+                  <i class="far fa-comment comentario-btn"
+                  data-id="{{ c.id }}"
+                  data-publicacion-id="{{ publicacion.id }}"
+                  data-texto="{{ c.texto|escapejs }}"
+                  data-nombre="{{ c.usuario.nombre }}"
+                  data-username="@{{ c.usuario.username }}"
+                  data-foto="{% if c.usuario.foto %}{{ c.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+                  </i>{{ c.num_comentarios }}</span>
+            </div>
+            <div class="meta">{{ c.fecha|time:"H:i" }} · {{ c.fecha|date:"d/m/Y" }}</div>
+          </div>
+        </div>
+        <div class="linea-hilo"></div> <!-- ESTA LÍNEA VA ENTRE COMENTARIOS -->
+      {% endfor %}
+    {% endif %}
+
+    <!-- COMENTARIO ACTUAL (último en la cadena) -->
+    <div class="comentario comentario-principal">
+      <img src="{{ comentario.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ comentario.usuario.nombre }}">
+      <div class="contenido">
+        <div class="usuario">
+          <strong>{{ comentario.usuario.nombre }}</strong>
+          <span>@{{ comentario.usuario.username }} · {{ comentario.fecha|timesince }}</span>
+        </div>
+        <p>{{ comentario.texto }}</p>
+        <div class="acciones">
+          <span>
+              <i class="far fa-comment comentario-btn"
+              data-id="{{ comentario.id }}"
+              data-publicacion-id="{{ publicacion.id }}"
+              data-texto="{{ comentario.texto|escapejs }}"
+              data-nombre="{{ comentario.usuario.nombre }}"
+              data-username="@{{ comentario.usuario.username }}"
+              data-foto="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+              </i>{{ comentario.num_comentarios }}</span>
+        </div>
+        <div class="meta">{{ comentario.fecha|time:"H:i" }} · {{ comentario.fecha|date:"d/m/Y" }}</div>
+      </div>
+    </div>
+
+    <div class="form-respuesta">
+        <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Mi perfil" />
+        <input type="text" placeholder="Postea tu respuesta" id="respuestaRapida" />
+        <button class="btn-responder"
+              id="btnResponderRapido"
+              data-publicacion-id="{{ publicacion.id }}"
+              {% if comentario.id %}data-comentario-id="{{ comentario.id }}"{% endif %}>
+          Responder
+        </button>
+    </div>
+
+    <!-- RESPUESTAS -->
+    <div class="comentarios">
+      <h3>Respuestas</h3>
+      {% if respuestas %}
+        {% for r in respuestas %}
+          <div class="comentario respuesta">
+            <img src="{{ r.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ r.usuario.nombre }}">
+            <div class="contenido">
+              <div class="usuario">
+                <strong>{{ r.usuario.nombre }}</strong>
+                <span>@{{ r.usuario.username }} · {{ r.fecha|timesince }}</span>
+              </div>
+
+              <a href="{% url 'comentario_hilo' r.id %}" class="comentario comentario-clickable">
+                <p>{{ r.texto }}</p>
+              </a>
+              <div class="acciones">
+                <span>
+                  <i class="far fa-comment comentario-btn"
+                      data-id="{{ r.id }}"
+                      data-publicacion-id="{{ publicacion.id }}"
+                      data-texto="{{ r.texto|escapejs }}"
+                      data-nombre="{{ r.usuario.nombre }}"
+                      data-username="@{{ r.usuario.username }}"
+                      data-foto="{% if r.usuario.foto %}{{ r.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+                  </i>
+                  <span class="contador-respuestas" data-id="{{ r.id }}">{{ r.num_comentarios }}</span>
+                </span>
+              </div>
+
+              <a href="{% url 'comentario_hilo' r.id %}" class="comentario comentario-clickable">    
+                <div class="meta">{{ r.fecha|time:"H:i" }} · {{ r.fecha|date:"d/m/Y" }}</div>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+
+      {% else %}
+        <p class="respuestas-vacias" style="color: #666; text-align: center;">No hay respuestas aún.</p>
+      {% endif %}
+    </div>
+  </section>
+  {% block panel_lateral %}
+  <div class="panel-lateral">
+      <h3>Mensajes</h3>
+      {% if chats %}
+          {% for chat in chats %}
+          <a href="{% url 'chat' %}">
+              <div class="mensaje-preview">
+              <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
+              <div class="mensaje-info">
+                  <div class="usuario">
+                  <span class="nombre">{{ chat.nombre }}</span>
+                  <span>@{{ chat.username }}</span>
+                  </div>
+                  <p>Haz clic para conversar</p>
+              </div>
+              <i class="fas fa-envelope"></i>
+              </div>
+          </a>
+          {% endfor %}
+      {% else %}
+          <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">No hay mensajes.</div>
+      {% endif %}
+
+      <h3>Solicitudes de mensajes</h3>
+      {% if solicitudes_chat_pendientes %}
+          {% for solicitud in solicitudes_chat_pendientes %}
+          <div class="solicitud-preview">
+          <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
+          <div class="mensaje-info">
+              <div class="usuario">
+              <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
+              <span>@{{ solicitud.de_usuario.username }}</span>
+              </div>
+              <p>¿Podemos hablar por aquí?</p>
+          </div>
+          <div class="acciones">
+              <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
+              <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
+          </div>
+          </div>
+          {% endfor %}
+      {% else %}
+          <div style="color: #888; text-align: center; padding: 1rem 0;">No tienes solicitudes de chat pendientes.</div>
+      {% endif %}
+  </div>
+  {% endblock %}
+{% endblock %}
+
+{% block extra_body_content %}
+<div class="modal-respuesta" id="modalRespuesta">
+  <div class="contenido-modal">
+    <!-- Barra superior del modal -->
+    <div class="barra-superior-modal">
+      <a href="#" class="cancelar-modal" id="btnCancelarModal">Cancelar</a>
+      <button class="btn-subir" id="btnEnviarComentario">Subir</button>
+    </div>
+
+    <!-- Publicación o comentario al que se responde -->
+    <div class="publicacion-respuesta">
+      <img class="imagen-avatar" id="avatarPublicacion" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Avatar del autor" />
+      <div class="contenido">
+        <strong id="nombreAutor">Nombre del autor</strong>
+        <p id="textoOriginal">Texto original de la publicación o comentario</p>
+        <img id="imagen-publicacion" class="imagen-mini" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="Imagen adjunta" style="display: none;" />
+      </div>
+    </div>
+
+    <!-- Campo para responder -->
+    <div class="campo-respuesta">
+      <img class="imagen-avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Mi perfil" />
+      <div class="respuesta-input">
+        <span class="respondiendo-a">Respondiendo a <span id="usuarioMencionado">@usuario</span></span>
+        <textarea id="inputRespuesta" placeholder="Escribe tu respuesta"></textarea>
+        <input type="hidden" id="idPadreRespuesta" value="">  <!-- Aquí se guarda el ID del post o comentario -->
+        <input type="hidden" id="tipoPadre" value="">  <!-- Aquí se guarda el tipo del post o comentario -->
+        <input type="hidden" id="idPublicacionOriginal" value="{{ publicacion.id }}">
+      </div>
+    </div>
+
+    <!-- Iconos opcionales -->
+    <div class="acciones-respuesta">
+      <i class="fas fa-camera"></i>
+      <i class="fas fa-image"></i>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="{% static 'js/publicacion_conectati.js' %}"></script>
+{% endblock %}

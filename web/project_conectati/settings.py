@@ -124,13 +124,35 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-USE_L10N = True 
+# Configuración de internacionalización
+LANGUAGE_CODE = 'es-ve'  # Código de idioma por defecto
+TIME_ZONE = 'America/Caracas'  # Zona horaria de Venezuela
+USE_I18N = True  # Activar sistema de internacionalización
+USE_L10N = True  # Activar formato de números y fechas localizados
 USE_TZ = True
+
+# Idiomas soportados
+LANGUAGES = [
+    ('es', 'Español'),
+    ('en', 'English'),
+]
+
+# Directorio donde se guardarán los archivos de traducción
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'web', 'locale'),
+]
+
+# Middleware para detectar el idioma del usuario
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',  # Importante que esté después de SessionMiddleware
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
 
 # Static files (CSS, JavaScript, Images)

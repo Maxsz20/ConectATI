@@ -18,7 +18,7 @@ from datetime import timedelta
 from .utils import (crear_notificacion, procesar_publicacion, eliminar_foto_perfil, marcar_notificaciones_leidas, 
 obtener_mensajes_chat, crear_comentario, dar_estrella, buscar_usuarios, obtener_conversacion,
 enviar_solicitud_chat, aceptar_solicitud_chat, rechazar_solicitud_chat, enviar_solicitud_amistad, aceptar_solicitud, 
-rechazar_solicitud, eliminar_amistad, eliminar_chat)
+rechazar_solicitud, eliminar_amistad, eliminar_chat, obtener_hilo_completo)
 
 # Create your views here.
 def InicioRedirectView(request):
@@ -357,7 +357,7 @@ def PostView(request, publicacion_id):
     
     try:
         publicacion = Publicacion.objects.using('conectati').select_related('usuario').get(id=publicacion_id)
-        comentarios = Comentario.objects.using('conectati').filter(publicacion=publicacion).select_related('usuario').order_by('fecha')
+        comentarios = Comentario.objects.using('conectati').filter(publicacion=publicacion, respuesta_a__isnull=True).select_related('usuario').order_by('fecha')
 
         usuario_id = request.session['usuario_id']
         estrellas_usuario = Estrella.objects.using('conectati') \
@@ -376,6 +376,9 @@ def PostView(request, publicacion_id):
             if amistad:
                 estado_amistad = amistad.estado
 
+        for comentario in comentarios:
+            comentario.num_comentarios = Comentario.objects.filter(respuesta_a=comentario).count()
+
         return render(request, 'app/publicacion.html', {
             'publicacion': publicacion,
             'comentarios': comentarios,
@@ -388,6 +391,42 @@ def PostView(request, publicacion_id):
     except Publicacion.DoesNotExist:
         messages.error(request, 'Publicación no encontrada.')
         return redirect('feed')
+
+def CommentThreadView(request, comentario_id):
+    comentario = Comentario.objects.select_related('publicacion', 'usuario', 'respuesta_a').get(id=comentario_id)
+    respuestas = Comentario.objects.filter(respuesta_a=comentario).order_by('fecha')
+    usuario = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
+
+    estrellas_usuario = Estrella.objects.using('conectati') \
+            .filter(usuario_id=usuario) \
+            .values_list('publicacion_id', flat=True)
+
+    # Número total de comentarios directos a la publicación original
+    num_comentarios = Comentario.objects.filter(publicacion=comentario.publicacion, respuesta_a__isnull=True).count()
+
+    # Obtener cantidad de respuestas del comentario actual
+    comentario.num_comentarios = Comentario.objects.filter(respuesta_a=comentario).count()
+
+    # Hilo de padres (desde el más antiguo hasta el comentario padre directo)
+    hilo = obtener_hilo_completo(comentario)  # devuelve lista [padre, abuelo, ...]
+
+    # Anotar a cada comentario del hilo su número de respuestas
+    for c in hilo:
+        c.num_comentarios = Comentario.objects.filter(respuesta_a=c).count()
+
+    # Anotar a cada comentario nuevo su número de respuestas
+    for r in respuestas:
+        r.num_comentarios = Comentario.objects.filter(respuesta_a=r).count()
+    
+    return render(request, 'app/hilo_comentario.html', {
+        'comentario': comentario,
+        'respuestas': respuestas,
+        'num_comentarios': num_comentarios,
+        'hilo': hilo,
+        'publicacion': comentario.publicacion,
+        'usuario_logueado': usuario,
+        'estrellas_usuario': list(estrellas_usuario),
+    })
 
     
 def PostMobileView(request):
@@ -547,3 +586,5 @@ def cambiar_password(request):
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
     
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
+
+

@@ -18,7 +18,7 @@
         <img src="{% if publicacion.usuario.foto %}{{ publicacion.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ publicacion.usuario.nombre }}" />
         <div class="datos">
             <strong>{{ publicacion.usuario.nombre }}</strong>
-            <span>@{{ publicacion.usuario.username }}</span>
+            <span>@{{ publicacion.usuario.username }} · {{ publicacion.fecha|timesince }}</span>
         </div>
 
         {% if not es_propia %}
@@ -62,23 +62,33 @@
 
     <div class="comentarios">
         <h3>Comentarios</h3>
-
         {% if comentarios %}
             {% for comentario in comentarios %}
             <div class="comentario">
-            <img src="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ comentario.usuario.nombre }}" />
-            <div class="contenido">
-                <div class="usuario">
-                <strong>{{ comentario.usuario.nombre }}</strong>
-                <span>@{{ comentario.usuario.username }} · {{ comentario.fecha|timesince }}</span>
+                <img src="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ comentario.usuario.nombre }}" />
+                <div class="contenido">
+                    <div class="usuario">
+                        <strong>{{ comentario.usuario.nombre }}</strong>
+                        <span>@{{ comentario.usuario.username }} · {{ comentario.fecha|timesince }}</span>
+                    </div>
+                    <a href="{% url 'comentario_hilo' comentario.id %}" class="comentario comentario-clickable">
+                        <p>{{ comentario.texto }}</p>
+                    </a>
+                    <div class="acciones">
+                        <span>
+                            <i class="far fa-comment comentario-btn"
+                            data-id="{{ comentario.id }}"
+                            data-publicacion-id="{{ publicacion.id }}"
+                            data-texto="{{ comentario.texto|escapejs }}"
+                            data-nombre="{{ comentario.usuario.nombre }}"
+                            data-username="@{{ comentario.usuario.username }}"
+                            data-foto="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+                            </i>{{ comentario.num_comentarios }}</span>
+                    </div>
+                    <a href="{% url 'comentario_hilo' comentario.id %}" class="comentario comentario-clickable">    
+                        <div class="meta">{{ comentario.fecha|time:"H:i" }} · {{ comentario.fecha|date:"d/m/Y" }}</div>
+                    </a>
                 </div>
-                <p>{{ comentario.texto }}</p>
-                <div class="acciones">
-                <span><i class="far fa-star"></i> 0</span>
-                <span><i class="far fa-comment comentario-btn" data-usuario="@{{ comentario.usuario.username }}"></i> 0</span>
-                </div>
-                <div class="meta">{{ comentario.fecha|time:"H:i" }} · {{ comentario.fecha|date:"d/m/Y" }}</div>
-            </div>
             </div>
             {% endfor %}
         {% else %}
@@ -149,7 +159,7 @@
       <div class="contenido">
         <strong id="nombreAutor">Nombre del autor</strong>
         <p id="textoOriginal">Texto original de la publicación o comentario</p>
-        <img id="imagen-publicacion" class="imagen-mini" src="media/publicaciones/{{ publicacion.archivo_nombre }}" alt="Imagen adjunta" style="display: none;" />
+        <img id="imagen-publicacion" class="imagen-mini" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="Imagen adjunta" style="display: none;" />
       </div>
     </div>
 

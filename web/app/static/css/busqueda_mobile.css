@@ -1,6 +1,6 @@
 
 @media (min-width: 770px) {
-  
+
 }
 
 @media (max-width: 876px) {
@@ -26,6 +26,8 @@
     background-color: var(--color-fondo);
     padding-top: 70px;
     padding-bottom: 60px;
+    display: flex;
+    flex-direction: column;
     }
 
     /* Encabezado */
@@ -70,21 +72,23 @@
     font-size: 1.3rem;
     }
     .header-mobile img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-        }
-
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
 
     /* Buscador */
+
     .buscador-busqueda {
     display: flex;
+    position: relative;
     align-items: center;
+    width: 100%;  
     padding: 1rem;
     gap: 1rem;
     }
-
+  
     .campo-busqueda {
     flex: 1;
     display: flex;
@@ -132,46 +136,7 @@
     text-decoration: none;
     color: #666;
     }
-
-    /* Resultados */
-    .busqueda-contenido {
-    padding: 0.8rem 1rem;
-    }
-
-    .usuario-busqueda {
-    display: flex;
-    align-items: center;
-    padding: 0.6rem 0;
-    border-bottom: 1px solid #ccc;
-    }
-
-    .usuario-busqueda img {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    margin-right: 0.8rem;
-    }
-
-    .usuario-busqueda .info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    }
-
-    .usuario-busqueda strong {
-    font-size: 1.2rem;
-    color: #212121;
-    }
-
-    .usuario-busqueda small {
-    color: #666;
-    font-size: 0.90rem;
-    }
-
-    /* Icono eliminar */
-    .usuario-busqueda i {
-    cursor: pointer;
-    }
+  
 
     /* Menú mobile */
     .menu-mobile {
@@ -193,5 +158,57 @@
       font-size: 1.4rem;
       text-decoration: none;
       
+    }
+
+    #dropdownBuscador {
+      margin-top: 0.6rem;
+      padding: 0.5rem 1rem;
+      background-color: transparent;
+      box-shadow: none;
+      border-radius: 0;
+      position: static;
+      z-index: auto;
+    }
+
+    .usuarios-buscados {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .usuario-busqueda {
+      display: flex;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .usuario-busqueda img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      margin-right: 0.8rem;
+    }
+
+    .usuario-busqueda .info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      color: #212121;
+    }
+
+    .usuario-busqueda strong {
+      font-size: 1.2rem;
+      color: #212121;
+    }
+
+    .usuario-busqueda small {
+      color: #666;
+    }
+
+    .sin-resultados {
+      color: #666;
+      text-align: center;
+      padding: 1rem 0;
     }
 }

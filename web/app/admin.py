@@ -45,7 +45,7 @@ class ChatAdmin(admin.ModelAdmin):
 
 @admin.register(Comentario)
 class ComentarioAdmin(admin.ModelAdmin):
-    list_display = ('id', 'publicacion_id', 'usuario_nombre', 'texto_corto', 'fecha')
+    list_display = ('id', 'publicacion_id', 'usuario_nombre', 'texto_corto', 'fecha', 'respuesta_a')
     search_fields = ('texto',)
     list_filter = ('fecha',)
     ordering = ('-fecha',)

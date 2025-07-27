@@ -113,11 +113,12 @@ def obtener_mensajes_chat(request):
 
 @csrf_exempt
 def crear_comentario(request):
-    """Funcion de utilidad para crear comentarios"""
+    """Función para crear comentarios o respuestas"""
     if request.method == "POST" and request.session.get('usuario_id'):
         try:
             texto = request.POST.get("texto", "").strip()
             publicacion_id = request.POST.get("publicacion_id")
+            comentario_id = request.POST.get("comentario_id")  # Nuevo
 
             if not texto:
                 return JsonResponse({"ok": False, "error": "Texto vacío"})
@@ -125,21 +126,39 @@ def crear_comentario(request):
             usuario = Usuario.objects.using('conectati').get(id=request.session["usuario_id"])
             publicacion = Publicacion.objects.using('conectati').get(id=publicacion_id)
 
-            comentario = Comentario.objects.using('conectati').create(
+            comentario = Comentario(
                 usuario=usuario,
                 publicacion=publicacion,
                 texto=texto,
                 fecha=timezone.now()
             )
 
-            # Crear notificación si el comentario no es propio      
-            if publicacion.usuario.id != usuario.id:
-                crear_notificacion(
-                    usuario_destino=publicacion.usuario,
-                    tipo="comentario",
-                    contenido="comentó tu publicación",
-                    emisor=usuario
-                )
+            # Si es respuesta a otro comentario
+            if comentario_id:
+                comentario_padre = Comentario.objects.using('conectati').get(id=comentario_id)
+                comentario.respuesta_a = comentario_padre
+
+            comentario.save(using='conectati')
+
+            # Notificación
+            if comentario_id:
+                # Notificar al autor del comentario si no es el mismo usuario
+                if comentario_padre.usuario.id != usuario.id:
+                    crear_notificacion(
+                        usuario_destino=comentario_padre.usuario,
+                        tipo="respuesta",
+                        contenido="respondió tu comentario",
+                        emisor=usuario
+                    )
+            else:
+                # Comentario directo a publicación
+                if publicacion.usuario.id != usuario.id:
+                    crear_notificacion(
+                        usuario_destino=publicacion.usuario,
+                        tipo="comentario",
+                        contenido="comentó tu publicación",
+                        emisor=usuario
+                    )
 
             nuevo_total = Comentario.objects.using('conectati').filter(publicacion=publicacion).count()
 
@@ -147,19 +166,22 @@ def crear_comentario(request):
                 "ok": True,
                 "nuevo_total": nuevo_total,
                 "comentario": {
+                    "id": comentario.id,
                     "texto": comentario.texto,
                     "nombre": usuario.nombre,
                     "username": usuario.username,
                     "foto": usuario.foto if usuario.foto else '/static/images/default_user.avif',
-                    "fecha": comentario.fecha.strftime("%H:%M · %d/%m/%Y")
+                    "fecha": comentario.fecha.strftime("%H:%M · %d/%m/%Y"),
+                    "publicacion_id": publicacion.id
                 }
             })
 
         except Exception as e:
-            print("❌ Error al comentar:", e)
+            print("Error al comentar:", e)
             return JsonResponse({"ok": False, "error": str(e)})
 
     return JsonResponse({"ok": False, "error": "No autorizado o método incorrecto"}, status=403)
+
 
 
 def dar_estrella(request, publicacion_id):
@@ -550,3 +572,14 @@ def eliminar_chat(request):
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
+
+def obtener_hilo_completo(comentario):
+    """Función de utilidad para obtener el hilo completo de una publicación o comentario"""
+    hilo = []
+    actual = comentario
+
+    while actual.respuesta_a is not None:
+        hilo.insert(0, actual.respuesta_a)
+        actual = actual.respuesta_a
+
+    return hilo

@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const idPadreRespuesta = document.getElementById("idPadreRespuesta");
   const imagenPublicacion = document.getElementById("imagen-publicacion");
 
+  // Función para mostrar un toast
   function mostrarToast(mensaje) {
     const toast = document.getElementById("toast");
     const mensajeEl = document.getElementById("toastMensaje");
@@ -19,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 
+  // Función para abrir el modal de respuesta
   document.querySelectorAll(".comentario-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -68,25 +70,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Cerrar modal al presionar la tecla Esc
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       cerrarModal();
     }
   });
 
+  // Funciones para abrir y cerrar el modal
   function abrirModalRespuesta() {
     modal.style.display = "flex";
   }
-
+  
   function cerrarModal() {
     modal.style.display = "none";
   }
 
+  // Enviar comentario desde el modal
   const btnEnviarComentario = document.getElementById("btnEnviarComentario");
   if (btnEnviarComentario) {
     btnEnviarComentario.addEventListener("click", () => {
       const texto = document.getElementById("inputRespuesta").value.trim();
-      const publicacionId = document.getElementById("idPadreRespuesta").value;
+      const publicacionId = document.getElementById("idPublicacionOriginal").value;
+      const comentarioId = document.getElementById("idPadreRespuesta").value;
+
       if (!texto) {
         mostrarToast("Debes escribir algo para responder.");
         return;
@@ -95,6 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData();
       formData.append("texto", texto);
       formData.append("publicacion_id", publicacionId);
+      if (comentarioId) {
+        formData.append("comentario_id", comentarioId);
+      }
 
       fetch("/app/comentar/", {
         method: "POST",
@@ -162,6 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnRapido.addEventListener("click", () => {
       const texto = inputRapido.value.trim();
       const publicacionId = btnRapido.dataset.publicacionId;
+      const comentarioId = btnRapido.dataset.comentarioId;
 
       if (!texto) {
         mostrarToast("Debes escribir algo para responder.");
@@ -171,6 +182,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData();
       formData.append("texto", texto);
       formData.append("publicacion_id", publicacionId);
+      if (comentarioId) {
+        formData.append("comentario_id", comentarioId);
+      }
 
       fetch("/app/comentar/", {
         method: "POST",
@@ -192,7 +206,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (contenedorComentarios && data.comentario) {
             const nuevoComentario = document.createElement("div");
-            nuevoComentario.classList.add("comentario");
+            const respuestasVacias = contenedorComentarios.querySelector(".respuestas-vacias");
+            if (respuestasVacias) {
+              respuestasVacias.remove();
+            }
+            nuevoComentario.classList.add("comentario", "respuesta");
             nuevoComentario.innerHTML = `
               <img src="${data.comentario.foto}" alt="${data.comentario.nombre}" />
               <div class="contenido">
@@ -200,12 +218,16 @@ document.addEventListener("DOMContentLoaded", () => {
                   <strong>${data.comentario.nombre}</strong>
                   <span>@${data.comentario.username} · ahora</span>
                 </div>
-                <p>${data.comentario.texto}</p>
+                <a href="/app/comentario/${data.comentario.id}/" class="comentario comentario-clickable">
+                  <p>${data.comentario.texto}</p>
+                </a>
                 <div class="acciones">
                   <span><i class="far fa-star"></i> 0</span>
                   <span><i class="far fa-comment comentario-btn" data-usuario="@${data.comentario.username}"></i> 0</span>
                 </div>
-                <div class="meta">${data.comentario.fecha}</div>
+                <a href="/app/comentario/${data.comentario.id}/" class="comentario comentario-clickable"> 
+                  <div class="meta">${data.comentario.fecha}</div>
+                </a>
               </div>
             `;
 
@@ -236,10 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
-
-
-
-
+  // Dar Estrellas
   document.querySelectorAll('.estrella').forEach(el => {
     el.addEventListener('click', function () {
       if (this.classList.contains('marcada')) return;
@@ -262,6 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Función para obtener el CSRF token desde cookies
   function getCSRFToken() {
     const name = "csrftoken";
     const cookies = document.cookie.split(";");

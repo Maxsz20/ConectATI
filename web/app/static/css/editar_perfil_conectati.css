@@ -50,18 +50,6 @@ img {
 }
 
 /* --- Sidebar (aside) --- */
-aside {
-  width: 440px; /* Ancho fijo para la sidebar */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1.5rem 1rem;
-  height: 100vh;
-  position: fixed; /* Fija la sidebar */
-  border-right: 1px solid var(--color-bordes);
-  
-  z-index: 900;
-}
 
 input,
 textarea,
@@ -69,113 +57,8 @@ select,
 .input-campo {
   font-family: 'Segoe UI', sans-serif;
 }
-
-aside .logo-conectati {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-weight: bold;
-  font-size: 3rem;
-  color: var(--color-texto-oscuro);
-  margin-bottom: 4rem;
-}
-
-a, a:visited {
-  text-decoration: none; /* opcional */
-}
-
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.menu a {
-  display: flex;
-  align-items: center;
-  font-weight: 700;
-  text-decoration: none;
-  font-size: 1.5rem;
-  color: var(--color-texto-medio);
-  margin-left: 0.3rem;
-  gap: 0.8rem;
-}
-
-.menu .icono {
-  min-width: 28px;
-  display: flex;
-  justify-content: center;
-}
-
-.menu .icono i {
-  color: var(--color-iconos);
-}
-
-.perfil-contenedor {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 2rem;
-}
-
-.cerrar-sesion {
-  background-color: transparent;
-  border: 2px solid var(--color-iconos);
-  color: #212121;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cerrar-sesion:hover {
-  background-color: var(--lavanda-translucido);
-  color: var(--color-iconos);
-}
-.perfil-detalle-a{
-  text-decoration: none;
-  color: inherit;
-  width: 70%;
-}
-
-.perfil-detalle {
-  background-color: var(--lavanda-translucido);
-  padding: 0.6rem 1rem;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  width: 100%;
-}
-
-.perfil-detalle img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
-.perfil-detalle .info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex: 1;
-}
-
-.perfil-detalle .nombre {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.perfil-detalle .puntos {
-  font-size: 1.2rem;
-  color: var(--color-iconos);
-  letter-spacing: 2px;
-  margin-left: 0.5rem;
-  font-weight: normal;
+.perfil-formulario a, .perfil-formulario a:visited {
+  color: white;
 }
 
 /* Main content area for profile editing */

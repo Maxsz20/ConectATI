@@ -61,7 +61,7 @@
                         <img src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" class="profile-pic">
                         <div class="datos">
                             <strong>{{ post.usuario.nombre }}</strong>
-                            <span>@{{ post.usuario.username }}</span>
+                            <span>@{{ post.usuario.username }} · {{ post.fecha|timesince }}</span>
                         </div>
                     </a>
                     </div>

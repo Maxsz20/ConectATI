@@ -40,4 +40,5 @@ urlpatterns = [
     path('verificar-codigo/', views.verificar_codigo, name='verificar_codigo'),
     path('enviar-codigo/', views.enviar_codigo, name='enviar_codigo'),
     path('cambiar-clave/', views.cambiar_password, name='cambiar-clave'),
+    path('comentario/<int:comentario_id>/', views.CommentThreadView, name='comentario_hilo'),
 ]

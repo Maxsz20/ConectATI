@@ -1,0 +1,28 @@
+.respuesta .contenido{
+    padding-bottom: 0px;
+}
+.linea-hilo {
+  height: 90px;
+  width: 2px;
+  background-color: #666;
+  margin-left: 22px; /* Alineado con el centro del avatar (40px ancho) */
+  margin-top: -50px; /* opcional: acercar a la card anterior */
+  margin-bottom: -25px; /* opcional: quitar espacio extra */
+}
+.contenido-post{
+    margin-left: 65px;
+}
+.post-principal .imagen-post{
+    margin-left: 65px;
+    width: 80%;
+}
+.post-principal .usuario img{
+    margin-bottom: -40px;
+}
+
+@media (max-width: 876px) {
+    .post-principal{
+        margin-left: 0px;
+        padding-left: 0px;
+    }
+}
