@@ -41,4 +41,6 @@ urlpatterns = [
     path('enviar-codigo/', views.enviar_codigo, name='enviar_codigo'),
     path('cambiar-clave/', views.cambiar_password, name='cambiar-clave'),
     path('comentario/<int:comentario_id>/', views.CommentThreadView, name='comentario_hilo'),
+    path("guardar-idioma/", views.guardar_idioma, name="guardar_idioma"),
+    path("marcar_leida_individual/", views.marcar_notificacion_individual, name="marcar_leida_individual"),
 ]

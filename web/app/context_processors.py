@@ -1,7 +1,8 @@
 # web/app/context_processors.py
 
-from .models import Usuario, Chat, SolicitudChat
+from .models import Usuario, Chat, SolicitudChat, Configuracion
 from django.db.models import Q
+from django.utils import translation
 
 def usuario_actual(request):
     usuario = None

@@ -1,13 +1,13 @@
 {% extends "app/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Amistades{% endblock %}
+{% block title %}{% trans "Amistades" %}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/amistades_conectati.css' %}">
 {% endblock %}
 
-{% block titulo_pagina %}Amistades{% endblock %}
-{% block titulo_pagina_mobile %}Amistades{% endblock %}
+{% block titulo_pagina %}{% trans "Amistades" %}{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Amistades" %}{% endblock %}
 
 {% block contenido2 %}
 <div class="contenedor-info">
@@ -24,19 +24,19 @@
               </div>
             </a>
             <div class="acciones-amigos">
-              <i class="fas fa-user-slash eliminar" data-id="{{ amigo.amistad_id }}"></i>
+              <i class="fas fa-user-slash eliminar" title="{% trans 'Eliminar amigo' %}" data-id="{{ amigo.amistad_id }}"></i>
             </div>
           </div>
         {% endfor %}
       {% else %}
         <div class="mensaje-vacio-chat" id="mensaje-sin-amigos" style="color: #888; text-align: center; padding: 1rem 0;">
-          No tienes amigos aún.
+          {% trans "No tienes amigos aún." %}
         </div>
       {% endif %}
     </section>
 
     <section class="solicitudes">
-      <h3>Solicitudes de Amistad</h3>
+      <h3>{% trans "Solicitudes de Amistad" %}</h3>
       {% if solicitudes %}
         {% for solicitud in solicitudes %}
           {% with usuario=solicitud.de_usuario %}
@@ -47,15 +47,15 @@
                 <p>{{ usuario.descripcion|default:"" }}</p>
               </div>
               <div class="acciones">
-                <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
-                <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
               </div>
             </div>
           {% endwith %}
         {% endfor %}
       {% else %}
         <div class="mensaje-vacio-solicitudes" id="mensaje-sin-solicitudes" style="color: #888; text-align: center; padding: 1rem 0;">
-          No tienes solicitudes de amistad.
+          {% trans "No tienes solicitudes de amistad." %}
         </div>
       {% endif %}
     </section>
@@ -64,7 +64,7 @@
 
   {% block panel_lateral %}
   <div class="panel-lateral">
-      <h3>Mensajes</h3>
+      <h3>{% trans "Mensajes" %}</h3>
       {% if chats %}
           {% for chat in chats %}
           <a href="{% url 'chat' %}">
@@ -75,17 +75,19 @@
                   <span class="nombre">{{ chat.nombre }}</span>
                   <span>@{{ chat.username }}</span>
                   </div>
-                  <p>Haz clic para conversar</p>
+                  <p>{% trans "Haz clic para conversar" %}</p>
               </div>
               <i class="fas fa-envelope"></i>
               </div>
           </a>
           {% endfor %}
       {% else %}
-          <div id="mensaje-sin-mensajes" class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">No hay mensajes.</div>
+          <div id="mensaje-sin-mensajes" class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">
+            {% trans "No hay mensajes." %}
+          </div>
       {% endif %}
 
-      <h3>Solicitudes de mensajes</h3>
+      <h3>{% trans "Solicitudes de mensajes" %}</h3>
       {% if solicitudes_chat_pendientes %}
           {% for solicitud in solicitudes_chat_pendientes %}
           <div class="solicitud-preview">
@@ -95,16 +97,18 @@
               <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
               <span>@{{ solicitud.de_usuario.username }}</span>
               </div>
-              <p>¿Podemos hablar por aquí?</p>
+              <p>{% trans "¿Podemos hablar por aquí?" %}</p>
           </div>
           <div class="acciones">
-              <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
-              <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
+              <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+              <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
           </div>
           </div>
           {% endfor %}
       {% else %}
-          <div style="color: #888; text-align: center; padding: 1rem 0;">No tienes solicitudes de chat pendientes.</div>
+          <div style="color: #888; text-align: center; padding: 1rem 0;">
+            {% trans "No tienes solicitudes de chat pendientes." %}
+          </div>
       {% endif %}
   </div>
   {% endblock %}
@@ -114,4 +118,5 @@
 
 {% block extra_js %}
 <script src="{% static 'js/amistades_conectati.js' %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 {% endblock %}

@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const { gettext } = window;
   document.querySelectorAll('.aceptar').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
               mensajeVacioSolicitudes.style.color = '#888';
               mensajeVacioSolicitudes.style.textAlign = 'center';
               mensajeVacioSolicitudes.style.padding = '1rem 0';
-              mensajeVacioSolicitudes.textContent = 'No tienes solicitudes de amistad.';
+              mensajeVacioSolicitudes.textContent = gettext('No tienes solicitudes de amistad.');
               const solicitudesSection = document.querySelector('.solicitudes');
               solicitudesSection.appendChild(mensajeVacioSolicitudes);
             }
@@ -90,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
               let vacio = solicitudesSection.querySelector('p');
               if (!vacio) {
                 vacio = document.createElement('p');
-                vacio.textContent = 'No tienes nuevas solicitudes de amistad.';
+                vacio.textContent = gettext('No tienes nuevas solicitudes de amistad.');
                 solicitudesSection.appendChild(vacio);
               }
             }

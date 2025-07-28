@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const gettext = django.gettext;
   const isMobile = () => window.innerWidth <= 876;
 
   const chatList = document.querySelector(".chat-list");
@@ -92,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
             mensajesContainer.innerHTML = "";
             let mensajes = data.mensajes || [];
             if (mensajes.length === 0) {
-              mensajesContainer.innerHTML = `<div style=\"color:#888; text-align:center; padding:1rem;\">No hay mensajes aún.</div>`;
+              mensajesContainer.innerHTML = `<div style=\"color:#888; text-align:center; padding:1rem;\">${gettext("No hay mensajes aún.")}</div>`;
             } else {
               mensajes.forEach(msg => {
                 const div = document.createElement("div");
@@ -159,24 +160,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 vacio.style.color = '#888';
                 vacio.style.textAlign = 'center';
                 vacio.style.padding = '1rem 0';
-                vacio.textContent = 'No hay mensajes.';
+                vacio.textContent = gettext("No hay mensajes.");
                 document.querySelector('.chat-list').appendChild(vacio);
 
                 // Reiniciar vista derecha
-                document.getElementById('chat-nombre-desktop').textContent = 'Sin chat seleccionado';
+                document.getElementById('chat-nombre-desktop').textContent = gettext("Sin chat seleccionado");
                 document.getElementById('chat-usuario-desktop').textContent = '';
                 document.getElementById('chat-avatar-desktop').src = '/static/images/default_user.avif';
-                document.getElementById('chat-avatar-desktop').alt = 'Sin chat seleccionado';
+                document.getElementById('chat-avatar-desktop').alt = gettext("Sin chat seleccionado");
 
                 // También para mobile
-                document.getElementById('chat-nombre').textContent = 'Sin chat seleccionado';
+                document.getElementById('chat-nombre').textContent = gettext("Sin chat seleccionado");
                 document.getElementById('chat-usuario').textContent = '';
                 document.getElementById('chat-avatar').src = '/static/images/default_user.avif';
-                document.getElementById('chat-avatar').alt = 'Sin chat seleccionado';
+                document.getElementById('chat-avatar').alt = gettext("Sin chat seleccionado");
 
                 // Limpiar mensajes
                 if (chatVacio) {
-                  chatVacio.innerHTML = `<div style="color:#888; text-align:center; padding:1rem;">Selecciona un chat para comenzar a conversar.</div>`;
+                  chatVacio.innerHTML = `<div style="color:#888; text-align:center; padding:1rem;">${gettext("Selecciona un chat para comenzar a conversar.")}</div>`;
                 }
 
                 // Ocultar input
@@ -235,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
             vacio.style.color = '#888';
             vacio.style.textAlign = 'center';
             vacio.style.padding = '1rem 0';
-            vacio.textContent = 'No tienes solicitudes de chat pendientes.';
+            vacio.textContent = gettext("No tienes solicitudes de chat pendientes.");
             solicitudesSection.appendChild(vacio);
           }
 
@@ -274,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
             nombreMobile.textContent = data.chat.nombre;
             if (chatInput) chatInput.style.display = 'flex';
             if (mensajesContainer) {
-              mensajesContainer.innerHTML = `<div style="color:#888; text-align:center; padding:1rem;">No hay mensajes aún.</div>`;
+              mensajesContainer.innerHTML = `<div style="color:#888; text-align:center; padding:1rem;">${gettext("No hay mensajes aún.")}</div>`;
             }
           }
         }
@@ -303,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
             vacio.style.color = '#888';
             vacio.style.textAlign = 'center';
             vacio.style.padding = '1rem 0';
-            vacio.textContent = 'No tienes solicitudes de chat pendientes.';
+            vacio.textContent = gettext("No tienes solicitudes de chat pendientes.");
             solicitudesSection.appendChild(vacio);
           }
         }

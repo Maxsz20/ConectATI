@@ -1,19 +1,19 @@
 {% extends "app/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Chat{% endblock %}
+{% block title %}{% trans "Chat" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/chat_conectati.css' %}">
 {% endblock %}
 
-{% block titulo_pagina %}Mensajes{% endblock %}
-{% block titulo_pagina_mobile %}Mensajes{% endblock %}
+{% block titulo_pagina %}{% trans "Mensajes" %}{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Mensajes" %}{% endblock %}
 
 {% block encabezado_unificado %}
 <div class="fila-encabezados">
   <div class="encabezado-lista">
-    <h2>Mensajes</h2>
+    <h2>{% trans "Mensajes" %}</h2>
   </div>
   <div class="encabezado-chat">
     {% if primer_chat %}
@@ -23,15 +23,15 @@
       <small id="chat-usuario-desktop">@{{ primer_chat.username }}</small>
     </a>
     {% else %}
-      <img id="chat-avatar-desktop" src="/static/images/default_user.avif" alt="Sin chat seleccionado" />
-      <strong id="chat-nombre-desktop">Sin chat seleccionado</strong>
+      <img id="chat-avatar-desktop" src="/static/images/default_user.avif" alt="{% trans 'Sin chat seleccionado' %}" />
+      <strong id="chat-nombre-desktop">{% trans "Sin chat seleccionado" %}</strong>
       <small id="chat-usuario-desktop">&nbsp;</small>
     {% endif %}
   </div>
 </div>
 
 <div class="titulo-mobile">
-  <h2>Mensajes</h2>
+  <h2>{% trans "Mensajes" %}</h2>
 </div>
 {% endblock %}
 
@@ -51,33 +51,33 @@
             </span>
           </div>
           <div class="acciones-chat">
-            <i class="fas fa-trash eliminar-chat" title="Eliminar chat"></i>
+            <i class="fas fa-trash eliminar-chat" title="{% trans 'Eliminar chat' %}"></i>
           </div>
         </div>
         {% endfor %}
       {% else %}
-        <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">No hay mensajes.</div>
+        <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay mensajes." %}</div>
       {% endif %}
     </section>
 
     <section class="solicitudes-chat">
-      <h3>Solicitudes de Mensajes</h3>
+      <h3>{% trans "Solicitudes de Mensajes" %}</h3>
       {% if solicitudes_chat_pendientes %}
         {% for solicitud in solicitudes_chat_pendientes %}
         <div class="item-solicitud">
           <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
           <div class="contenido">
             <strong>@{{ solicitud.de_usuario.username }}</strong> <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
-            <p>¿Podemos hablar por aquí?</p>
+            <p>{% trans "¿Podemos hablar por aquí?" %}</p>
           </div>
           <div class="acciones">
-            <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
-            <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
+            <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+            <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
           </div>
         </div>
         {% endfor %}
       {% else %}
-        <div style="color: #888; text-align: center; padding: 1rem 0;">No tienes solicitudes de chat pendientes.</div>
+        <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
       {% endif %}
     </section>
   </div>
@@ -93,16 +93,16 @@
             </div>
           {% endfor %}
         {% else %}
-          <div style="color:#888; text-align:center; padding:1rem;">No hay mensajes aún.</div>
+          <div style="color:#888; text-align:center; padding:1rem;">{% trans "No hay mensajes aún." %}</div>
         {% endif %}
       {% else %}
-        <div style="color:#888; text-align:center; padding:1rem;">Selecciona un chat para comenzar a conversar.</div>
+        <div style="color:#888; text-align:center; padding:1rem;">{% trans "Selecciona un chat para comenzar a conversar." %}</div>
       {% endif %}
     </div>
 
     <div class="chat-input" {% if not primer_chat %}style="display: none;"{% endif %}>
       <i class="fas fa-camera"></i>
-      <input type="text" placeholder="Escribir mensaje..." />
+      <input type="text" placeholder="{% trans 'Escribir mensaje...' %}" />
       <i class="fas fa-microphone"></i>
       <i class="fas fa-image"></i>
       <i class="fas fa-paper-plane"></i>
@@ -112,9 +112,9 @@
 <!-- Encabezado alternativo mobile -->
 <div class="encabezado-chat-mobile" style="display: none;">
   <i class="fas fa-arrow-left btn-volver-chat"></i>
-  <img id="chat-avatar" src="" alt="Avatar usuario" />
+  <img id="chat-avatar" src="" alt="{% trans 'Avatar usuario' %}" />
   <div class="nombre-chat-info">
-    <strong id="chat-nombre">Nombre</strong>
+    <strong id="chat-nombre">{% trans "Nombre" %}</strong>
     <small id="chat-usuario">@usuario</small>
   </div>
 </div>
@@ -122,4 +122,5 @@
 
 {% block extra_js %}
 <script src="{% static 'js/chat_conectati.js' %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 {% endblock %}

@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const gettext = django.gettext;
   const modal = document.getElementById("modalRespuesta");
   const avatarPublicacion = document.getElementById("avatarPublicacion");
   const nombreAutor = document.getElementById("nombreAutor");
@@ -105,7 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData();
       formData.append("texto", texto);
       formData.append("publicacion_id", publicacionId);
-      console.log("➡ Enviando comentario:", { texto, publicacionId });
       fetch("/app/comentar/", {
         method: "POST",
         body: formData,
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(response => response.json())
       .then(data => {
         if (data.ok) {
-          mostrarToast("Comentario publicado");
+          mostrarToast(gettext("Comentario publicado"));
           cerrarModal();
           document.getElementById("inputRespuesta").value = "";
           const iconoComentario = document.querySelector(`.comentario-btn[data-id="${publicacionId}"]`);
@@ -127,11 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           }
         } else {
-          alert("Error: " + (data.error || "No se pudo comentar"));
+          alert(gettext("Error: " + (data.error || "No se pudo comentar")));
         }
       })
       .catch(() => {
-        alert("Error de red al intentar comentar");
+        alert(gettext("Error de red al intentar comentar"));
       });
     });
   }
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("valorPrivacidad").textContent = valor;
     document.getElementById("togglePrivacidad").checked = false;
     const inputPriv = document.getElementById("inputPrivacidad");
-    if (inputPriv) inputPriv.value = valor === "Público" ? "publica" : "privada";
+    if (inputPriv) inputPriv.value = valor === gettext("Público") ? "publica" : "privada";
   };
 
   // Marcar estrella (like)
@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!texto && !archivo) {
         e.preventDefault();
-        alert("Debe escribir un texto o subir una imagen para publicar.");
+        alert(gettext("Debe escribir un texto o subir una imagen para publicar."));
       }
     });
   }

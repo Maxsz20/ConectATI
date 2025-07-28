@@ -1,15 +1,15 @@
 {% extends "app/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Comentario{% endblock %}
+{% block title %}{% trans "Comentario" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/publicacion_conectati.css' %}">
 <link rel="stylesheet" href="{% static 'css/hilo_comentario.css' %}">
 {% endblock %}
 
-{% block titulo_pagina %}Comentario{% endblock %}
-{% block titulo_pagina_mobile %}Comentario{% endblock %}
+{% block titulo_pagina %}{% trans "Comentario" %}{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Comentario" %}{% endblock %}
 
 {% block contenido2 %}
 <div class="contenedor-info">
@@ -25,7 +25,7 @@
       </div>
       <p class="contenido-post">{{ publicacion.texto }}</p>
       {% if publicacion.archivo_nombre %}
-        <img class="imagen-post" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="Imagen de la publicación">
+        <img class="imagen-post" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
       {% endif %}
       <div class="acciones">
         <span class="estrella {% if publicacion.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ publicacion.id }}">
@@ -34,6 +34,7 @@
         <span class="comentario-contenedor">
           <i class="far fa-comment comentario-btn"
               data-id="{{ publicacion.id }}"
+              data-tipo="publicacion"
               data-texto="{{ publicacion.texto|escapejs }}"
               data-nombre="{{ publicacion.usuario.nombre }}"
               data-username="@{{ publicacion.usuario.username }}"
@@ -61,6 +62,7 @@
               <span>
                   <i class="far fa-comment comentario-btn"
                   data-id="{{ c.id }}"
+                  data-tipo="comentario"
                   data-publicacion-id="{{ publicacion.id }}"
                   data-texto="{{ c.texto|escapejs }}"
                   data-nombre="{{ c.usuario.nombre }}"
@@ -71,11 +73,11 @@
             <div class="meta">{{ c.fecha|time:"H:i" }} · {{ c.fecha|date:"d/m/Y" }}</div>
           </div>
         </div>
-        <div class="linea-hilo"></div> <!-- ESTA LÍNEA VA ENTRE COMENTARIOS -->
+        <div class="linea-hilo"></div>
       {% endfor %}
     {% endif %}
 
-    <!-- COMENTARIO ACTUAL (último en la cadena) -->
+    <!-- COMENTARIO ACTUAL -->
     <div class="comentario comentario-principal">
       <img src="{{ comentario.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ comentario.usuario.nombre }}">
       <div class="contenido">
@@ -88,6 +90,7 @@
           <span>
               <i class="far fa-comment comentario-btn"
               data-id="{{ comentario.id }}"
+              data-tipo="comentario"
               data-publicacion-id="{{ publicacion.id }}"
               data-texto="{{ comentario.texto|escapejs }}"
               data-nombre="{{ comentario.usuario.nombre }}"
@@ -100,19 +103,19 @@
     </div>
 
     <div class="form-respuesta">
-        <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Mi perfil" />
-        <input type="text" placeholder="Postea tu respuesta" id="respuestaRapida" />
+        <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
+        <input type="text" placeholder="{% trans 'Postea tu respuesta' %}" id="respuestaRapida" />
         <button class="btn-responder"
               id="btnResponderRapido"
               data-publicacion-id="{{ publicacion.id }}"
               {% if comentario.id %}data-comentario-id="{{ comentario.id }}"{% endif %}>
-          Responder
+          {% trans "Responder" %}
         </button>
     </div>
 
     <!-- RESPUESTAS -->
     <div class="comentarios">
-      <h3>Respuestas</h3>
+      <h3>{% trans "Respuestas" %}</h3>
       {% if respuestas %}
         {% for r in respuestas %}
           <div class="comentario respuesta">
@@ -122,7 +125,6 @@
                 <strong>{{ r.usuario.nombre }}</strong>
                 <span>@{{ r.usuario.username }} · {{ r.fecha|timesince }}</span>
               </div>
-
               <a href="{% url 'comentario_hilo' r.id %}" class="comentario comentario-clickable">
                 <p>{{ r.texto }}</p>
               </a>
@@ -130,6 +132,7 @@
                 <span>
                   <i class="far fa-comment comentario-btn"
                       data-id="{{ r.id }}"
+                      data-tipo="comentario"
                       data-publicacion-id="{{ publicacion.id }}"
                       data-texto="{{ r.texto|escapejs }}"
                       data-nombre="{{ r.usuario.nombre }}"
@@ -139,22 +142,21 @@
                   <span class="contador-respuestas" data-id="{{ r.id }}">{{ r.num_comentarios }}</span>
                 </span>
               </div>
-
               <a href="{% url 'comentario_hilo' r.id %}" class="comentario comentario-clickable">    
                 <div class="meta">{{ r.fecha|time:"H:i" }} · {{ r.fecha|date:"d/m/Y" }}</div>
               </a>
             </div>
           </div>
         {% endfor %}
-
       {% else %}
-        <p class="respuestas-vacias" style="color: #666; text-align: center;">No hay respuestas aún.</p>
+        <p class="respuestas-vacias" style="color: #666; text-align: center;">{% trans "No hay respuestas aún." %}</p>
       {% endif %}
     </div>
   </section>
+
   {% block panel_lateral %}
   <div class="panel-lateral">
-      <h3>Mensajes</h3>
+      <h3>{% trans "Mensajes" %}</h3>
       {% if chats %}
           {% for chat in chats %}
           <a href="{% url 'chat' %}">
@@ -165,17 +167,17 @@
                   <span class="nombre">{{ chat.nombre }}</span>
                   <span>@{{ chat.username }}</span>
                   </div>
-                  <p>Haz clic para conversar</p>
+                  <p>{% trans "Haz clic para conversar" %}</p>
               </div>
               <i class="fas fa-envelope"></i>
               </div>
           </a>
           {% endfor %}
       {% else %}
-          <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">No hay mensajes.</div>
+          <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay mensajes." %}</div>
       {% endif %}
 
-      <h3>Solicitudes de mensajes</h3>
+      <h3>{% trans "Solicitudes de mensajes" %}</h3>
       {% if solicitudes_chat_pendientes %}
           {% for solicitud in solicitudes_chat_pendientes %}
           <div class="solicitud-preview">
@@ -185,16 +187,16 @@
               <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
               <span>@{{ solicitud.de_usuario.username }}</span>
               </div>
-              <p>¿Podemos hablar por aquí?</p>
+              <p>{% trans "¿Podemos hablar por aquí?" %}</p>
           </div>
           <div class="acciones">
-              <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
-              <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
+              <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+              <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
           </div>
           </div>
           {% endfor %}
       {% else %}
-          <div style="color: #888; text-align: center; padding: 1rem 0;">No tienes solicitudes de chat pendientes.</div>
+          <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
       {% endif %}
   </div>
   {% endblock %}
@@ -203,35 +205,28 @@
 {% block extra_body_content %}
 <div class="modal-respuesta" id="modalRespuesta">
   <div class="contenido-modal">
-    <!-- Barra superior del modal -->
     <div class="barra-superior-modal">
-      <a href="#" class="cancelar-modal" id="btnCancelarModal">Cancelar</a>
-      <button class="btn-subir" id="btnEnviarComentario">Subir</button>
+      <a href="#" class="cancelar-modal" id="btnCancelarModal">{% trans "Cancelar" %}</a>
+      <button class="btn-subir" id="btnEnviarComentario">{% trans "Subir" %}</button>
     </div>
-
-    <!-- Publicación o comentario al que se responde -->
     <div class="publicacion-respuesta">
-      <img class="imagen-avatar" id="avatarPublicacion" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Avatar del autor" />
+      <img class="imagen-avatar" id="avatarPublicacion" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Avatar del autor' %}" />
       <div class="contenido">
-        <strong id="nombreAutor">Nombre del autor</strong>
-        <p id="textoOriginal">Texto original de la publicación o comentario</p>
-        <img id="imagen-publicacion" class="imagen-mini" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="Imagen adjunta" style="display: none;" />
+        <strong id="nombreAutor">{% trans "Nombre del autor" %}</strong>
+        <p id="textoOriginal">{% trans "Texto original de la publicación o comentario" %}</p>
+        <img id="imagen-publicacion" class="imagen-mini" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen adjunta' %}" style="display: none;" />
       </div>
     </div>
-
-    <!-- Campo para responder -->
     <div class="campo-respuesta">
-      <img class="imagen-avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Mi perfil" />
+      <img class="imagen-avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
       <div class="respuesta-input">
-        <span class="respondiendo-a">Respondiendo a <span id="usuarioMencionado">@usuario</span></span>
-        <textarea id="inputRespuesta" placeholder="Escribe tu respuesta"></textarea>
-        <input type="hidden" id="idPadreRespuesta" value="">  <!-- Aquí se guarda el ID del post o comentario -->
-        <input type="hidden" id="tipoPadre" value="">  <!-- Aquí se guarda el tipo del post o comentario -->
+        <span class="respondiendo-a">{% trans "Respondiendo a" %} <span id="usuarioMencionado">@usuario</span></span>
+        <textarea id="inputRespuesta" placeholder="{% trans 'Escribe tu respuesta' %}"></textarea>
+        <input type="hidden" id="idPadreRespuesta" value="">
+        <input type="hidden" id="tipoPadre" value="">
         <input type="hidden" id="idPublicacionOriginal" value="{{ publicacion.id }}">
       </div>
     </div>
-
-    <!-- Iconos opcionales -->
     <div class="acciones-respuesta">
       <i class="fas fa-camera"></i>
       <i class="fas fa-image"></i>
@@ -239,7 +234,6 @@
   </div>
 </div>
 {% endblock %}
-
 
 {% block extra_js %}
 <script src="{% static 'js/publicacion_conectati.js' %}"></script>

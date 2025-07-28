@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'app',
 ]
 
@@ -70,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
                 'django.contrib.messages.context_processors.messages',
                 'app.context_processors.usuario_actual',
                 'app.context_processors.datos_chat_context',
@@ -146,11 +148,12 @@ LOCALE_PATHS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',  # Importante que esté después de SessionMiddleware
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'app.middleware.idioma_usuario.IdiomaUsuarioMiddleware', 
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 

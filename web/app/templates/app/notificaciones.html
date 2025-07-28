@@ -2,14 +2,14 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}Notificaciones{% endblock %}
+{% block title %}{% trans "Notificaciones" %}{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/notificaciones_conectati.css' %}" />
 {% endblock %}
 
-{% block titulo_pagina %}Notificaciones{% endblock %}
-{% block titulo_pagina_mobile %}Notificaciones{% endblock %}
+{% block titulo_pagina %}{% trans "Notificaciones" %}{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Notificaciones" %}{% endblock %}
 
 {% block contenido2 %}
 <div class="contenedor-info">
@@ -17,39 +17,39 @@
         <div class="acciones-globales">
             <form method="POST" action="{% url 'marcar_leidas' %}">
                 {% csrf_token %}
-                <button id="btnMarcarLeidas" type="button">Marcar todas como leídas</button>
+                <button id="btnMarcarLeidas" type="button">{% trans "Marcar todas como leídas" %}</button>
             </form>
         </div>
         <div class="grupo">
-        <h3>Hoy</h3>
+        <h3>{% trans "Hoy" %}</h3>
         {% for notif in grupo_hoy %}
             {% include "app/_item_notificacion.html" with n=notif %}
         {% empty %}
-            <div style="color: #888; text-align: center; padding: 1rem 0;">Sin notificaciones recientes.</p>
+            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "Sin notificaciones recientes." %}</div>
         {% endfor %}
         </div>
 
         <div class="grupo">
-        <h3>Ayer</h3>
+        <h3>{% trans "Ayer" %}</h3>
         {% for notif in grupo_ayer %}
             {% include "app/_item_notificacion.html" with n=notif %}
         {% empty %}
-            <div style="color: #888; text-align: center; padding: 1rem 0;">Sin notificaciones ayer.</div>
+            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "Sin notificaciones ayer." %}</div>
         {% endfor %}
         </div>
 
         <div class="grupo">
-        <h3>Últimos 7 días</h3>
+        <h3>{% trans "Últimos 7 días" %}</h3>
         {% for notif in grupo_semana %}
             {% include "app/_item_notificacion.html" with n=notif %}
         {% empty %}
-            <div style="color: #888; text-align: center; padding: 1rem 0;">No hay más notificaciones esta semana.</div>
+            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay más notificaciones esta semana." %}</div>
         {% endfor %}
         </div>
     </section>
     {% block panel_lateral %}
     <div class="panel-lateral">
-        <h3>Mensajes</h3>
+        <h3>{% trans "Mensajes" %}</h3>
         {% if chats %}
             {% for chat in chats %}
             <a href="{% url 'chat' %}">
@@ -60,17 +60,17 @@
                     <span class="nombre">{{ chat.nombre }}</span>
                     <span>@{{ chat.username }}</span>
                     </div>
-                    <p>Haz clic para conversar</p>
+                    <p>{% trans "Haz clic para conversar" %}</p>
                 </div>
                 <i class="fas fa-envelope"></i>
                 </div>
             </a>
             {% endfor %}
         {% else %}
-            <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">No hay mensajes.</div>
+            <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay mensajes." %}</div>
         {% endif %}
 
-        <h3>Solicitudes de mensajes</h3>
+        <h3>{% trans "Solicitudes de mensajes" %}</h3>
         {% if solicitudes_chat_pendientes %}
             {% for solicitud in solicitudes_chat_pendientes %}
             <div class="solicitud-preview">
@@ -80,20 +80,19 @@
                 <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
                 <span>@{{ solicitud.de_usuario.username }}</span>
                 </div>
-                <p>¿Podemos hablar por aquí?</p>
+                <p>{% trans "¿Podemos hablar por aquí?" %}</p>
             </div>
             <div class="acciones">
-                <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
-                <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
             </div>
             </div>
             {% endfor %}
         {% else %}
-            <div style="color: #888; text-align: center; padding: 1rem 0;">No tienes solicitudes de chat pendientes.</div>
+            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
         {% endif %}
     </div>
     {% endblock %}
-
 </div> 
 {% endblock %}
 
@@ -112,6 +111,24 @@
           document.querySelectorAll('.item-notif.no-leida').forEach(el => el.classList.remove('no-leida'));
         }
       });
+  });
+  document.querySelectorAll('.item-notif').forEach(el => {
+    el.addEventListener('click', function(e) {
+      e.preventDefault();  // Prevenir redirección inmediata
+      const id = this.dataset.id;
+      const destino = this.getAttribute('href');
+
+      fetch("{% url 'marcar_leida_individual' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ id: id })
+      }).then(() => {
+        window.location.href = destino;
+      });
+    });
   });
 </script>
 {% endblock %}

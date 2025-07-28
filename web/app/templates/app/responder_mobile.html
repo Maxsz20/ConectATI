@@ -1,25 +1,26 @@
 {% extends "app/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Responder{% endblock %}
+{% block title %}{% trans "Responder" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/responder_mobile.css' %}">
 {% endblock %}
 
-{% block titulo_pagina_mobile %}Responder{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Responder" %}{% endblock %}
 
 {% block contenido %}
   {% if error %}
     <div class="alert alert-danger">{{ error }}</div>
   {% endif %}
-  <!-- Área principal -->
+
   <main class="area-responder">
     <!-- Barra superior de acción -->
     <div class="barra-superior">
-      <a href="{% url 'post' publicacion.id %}" class="cancelar">Cancelar</a>
-      <button class="btn-subir" form="form-responder" type="submit">Subir</button>
+      <a href="{% url 'post' publicacion.id %}" class="cancelar">{% trans "Cancelar" %}</a>
+      <button class="btn-subir" form="form-responder" type="submit">{% trans "Subir" %}</button>
     </div>
+
     <!-- Publicación a la que se responde -->
     <div class="publicacion-original">
       <img class="imagen-perfil" src="{{ autor.foto|default:'/static/images/default_user.avif' }}" alt="{{ autor.nombre }}" />
@@ -28,25 +29,28 @@
         <span class="username">@{{ autor.username }}</span>
         <p>{{ publicacion.texto }}</p>
         {% if publicacion.archivo_nombre %}
-          <img class="imagen-mini" src="{% if publicacion.archivo_nombre %}/media/publicaciones/{{ publicacion.archivo_nombre }}{% endif %}" alt="Imagen de la publicación" class="img-publicacion" />
+          <img class="imagen-mini" src="{% if publicacion.archivo_nombre %}/media/publicaciones/{{ publicacion.archivo_nombre }}{% endif %}" alt="{% trans 'Imagen de la publicación' %}" class="img-publicacion" />
         {% endif %}
       </div>
     </div>
+
     <!-- Campo para responder -->
     <form id="form-responder" method="post" class="campo-respuesta">
       {% csrf_token %}
       <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
       <div class="respuesta-input">
-        <span class="respondiendo-a">Respondiendo a <span>@{{ autor.username }}</span></span>
-        <textarea name="texto" placeholder="Escribe tu respuesta" required></textarea>
+        <span class="respondiendo-a">{% trans "Respondiendo a" %} <span>@{{ autor.username }}</span></span>
+        <textarea name="texto" placeholder="{% trans 'Escribe tu respuesta' %}" required></textarea>
       </div>
     </form>
+
     <!-- Iconos -->
     <div class="acciones-respuesta">
       <i class="fas fa-camera"></i>
       <i class="fas fa-image"></i>
     </div>
   </main>
+
   <!-- Menú inferior -->
   <nav class="menu-mobile">
     <a href="/feed.html"><i class="fas fa-home"></i></a>
@@ -55,6 +59,7 @@
     <a href="/chat.html"><i class="fas fa-envelope"></i></a>
   </nav>
 {% endblock %}
+
 {% block extra_js %}
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -64,10 +69,8 @@
         this.style.height = "auto";
         this.style.height = (this.scrollHeight) + "px";
       });
-      // Opcional: ajustar altura inicial si ya hay texto
       textarea.style.height = (textarea.scrollHeight) + "px";
     }
   });
 </script>
 {% endblock %}
-

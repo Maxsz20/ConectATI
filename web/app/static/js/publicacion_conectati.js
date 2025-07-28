@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const gettext = django.gettext;
   const modal = document.getElementById("modalRespuesta");
   const avatarPublicacion = document.getElementById("avatarPublicacion");
   const nombreAutor = document.getElementById("nombreAutor");
@@ -43,6 +44,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (textoOriginal) textoOriginal.textContent = texto;
       if (avatarPublicacion) avatarPublicacion.src = foto;
       if (idPadreRespuesta) idPadreRespuesta.value = postId;
+      const tipoPadreInput = document.getElementById("tipoPadre");
+      if (tipoPadreInput) tipoPadreInput.value = btn.dataset.tipo || "publicacion";
+      
       if (imagenUrl && imagenPublicacion) {
         imagenPublicacion.src = imagenUrl;
         imagenPublicacion.style.display = "block";
@@ -95,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const comentarioId = document.getElementById("idPadreRespuesta").value;
 
       if (!texto) {
-        mostrarToast("Debes escribir algo para responder.");
+        mostrarToast(gettext("Debes escribir algo para responder."));
         return;
       }
 
@@ -114,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(response => response.json())
       .then(data => {
         if (data.ok) {
-          mostrarToast("Comentario publicado");
+          mostrarToast(gettext("Comentario publicado"));
           cerrarModal();
           document.getElementById("inputRespuesta").value = "";
 
@@ -140,26 +144,63 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
             `;
 
-            // Insertarlo justo después del título <h3>Comentarios</h3>
-            const h3 = contenedorComentarios.querySelector("h3");
-            if (h3) {
-              h3.insertAdjacentElement("afterend", nuevoComentario);
+            const tipoPadre = document.getElementById("tipoPadre")?.value || "publicacion";
+            if (comentarioId) {
+              // Solo mostramos visualmente si:
+              // - tipoPadre = comentario y estamos en hilo_comentario
+              // - tipoPadre = publicacion (no hacemos nada en ese caso)
+
+              const esHilo = document.getElementById("hilo_comentario_activo") !== null;
+              const esPrincipalComentario = esHilo && tipoPadre === "comentario";
+
+              if (esPrincipalComentario) {
+                const contenedor = document.querySelector(".comentarios");
+                if (contenedor) {
+                  const h3 = contenedor.querySelector("h3");
+                  if (h3) {
+                    h3.insertAdjacentElement("afterend", nuevoComentario);
+                  } else {
+                    contenedor.appendChild(nuevoComentario);
+                  }
+
+                  // Eliminar mensaje de vacío
+                  const mensajeVacio = contenedor.querySelector("p");
+                  if (mensajeVacio && mensajeVacio.textContent.includes(gettext("No hay respuestas aún."))) {
+                    mensajeVacio.remove();  
+                  }
+                }
+              }
+              // Si no es respuesta al comentario principal del hilo no se inserta visualmente
             } else {
-              contenedorComentarios.appendChild(nuevoComentario);
+              // Comentario a la publicación entonces si se muestra
+              const contenedor = document.querySelector(".comentarios");
+              if (contenedor) {
+                const h3 = contenedor.querySelector("h3");
+                if (h3) {
+                  h3.insertAdjacentElement("afterend", nuevoComentario);
+                } else {
+                  contenedor.appendChild(nuevoComentario);
+                }
+
+                const mensajeVacio = contenedor.querySelector("p");
+                if (mensajeVacio && mensajeVacio.textContent.includes(gettext("Sin comentarios"))) {
+                  mensajeVacio.remove();  
+                }
+              }
             }
 
             // Eliminar mensaje de "Sin comentarios"
             const mensajeVacio = contenedorComentarios.querySelector("p");
-            if (mensajeVacio && mensajeVacio.textContent.includes("Sin comentarios")) {
-              mensajeVacio.remove();
+            if (mensajeVacio && mensajeVacio.textContent.includes(gettext("Sin comentarios"))) {
+              mensajeVacio.remove();  
             }
           }
         } else {
-          alert("Error: " + (data.error || "No se pudo comentar"));
+          alert(gettext("Error: " + (data.error || "No se pudo comentar")));
         }
       })
       .catch(() => {
-        alert("Error de red al intentar comentar");
+        alert(gettext("Error de red al intentar comentar"));
       });
     });
   }
@@ -245,16 +286,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Eliminar mensaje de "Sin comentarios"
             const mensajeVacio = contenedorComentarios.querySelector("p");
-            if (mensajeVacio && mensajeVacio.textContent.includes("Sin comentarios")) {
+            if (mensajeVacio && mensajeVacio.textContent.includes(gettext("Sin comentarios"))) {
               mensajeVacio.remove();
             }
           }
         } else {
-          alert("Error: " + (data.error || "No se pudo comentar"));
+          alert(gettext("Error: " + (data.error || "No se pudo comentar")));
         }
       })
       .catch(() => {
-        alert("Error de red al intentar comentar");
+        alert(gettext("Error de red al intentar comentar"));
       });
     });
   }

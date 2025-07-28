@@ -1,7 +1,7 @@
 {% extends 'app/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Busqueda{% endblock %}
+{% block title %}{% trans "Busqueda" %}{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/busqueda_mobile.css' %}">
@@ -12,13 +12,13 @@
   <div class="buscador-busqueda">
     <div class="campo-busqueda">
       <i class="fas fa-search"></i>
-      <input type="text" id="inputBusqueda" placeholder="Buscar..." autocomplete="off" />
+      <input type="text" id="inputBusqueda" placeholder="{% trans 'Buscar...' %}" autocomplete="off" />
     </div>
   </div>
 
   <div class="filtro">
-    <span>Recientes</span>
-    <a href="#">Ver todo</a>
+    <span>{% trans "Recientes" %}</span>
+    <a href="#">{% trans "Ver todo" %}</a>
   </div>
 
   <div class="busqueda-contenido" id="dropdownBuscador">
@@ -26,7 +26,6 @@
       <!-- Se insertan con JS -->
     </div>
   </div>
-
 
   <!-- Menú mobile -->
   <div class="menu-mobile">

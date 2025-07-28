@@ -1,0 +1,144 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-27 20:03-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+#: .\web\app\static\js\amistades_conectati.js:61
+msgid "No tienes solicitudes de amistad."
+msgstr ""
+
+#: .\web\app\static\js\amistades_conectati.js:94
+msgid "No tienes nuevas solicitudes de amistad."
+msgstr ""
+
+#: .\web\app\static\js\base.js:15
+msgid "Escribe algo para buscar"
+msgstr ""
+
+#: .\web\app\static\js\base.js:24
+msgid "Sin resultados"
+msgstr ""
+
+#: .\web\app\static\js\base.js:42
+msgid "Ya son amigos"
+msgstr ""
+
+#: .\web\app\static\js\base.js:44
+msgid "Pendiente"
+msgstr ""
+
+#: .\web\app\static\js\base.js:45
+msgid "Añadir"
+msgstr ""
+
+#: .\web\app\static\js\base.js:49 .\web\app\static\js\base.js:52
+msgid "Chatear"
+msgstr ""
+
+#: .\web\app\static\js\base.js:51
+msgid "Chat Pendiente"
+msgstr ""
+
+#: .\web\app\static\js\base.js:86
+msgid "Enviada"
+msgstr ""
+
+#: .\web\app\static\js\base.js:88
+msgid "Ya enviada"
+msgstr ""
+
+#: .\web\app\static\js\base.js:147
+msgid "Haz clic aquí para conversar"
+msgstr ""
+
+#: .\web\app\static\js\base.js:154 .\web\app\static\js\base.js:175
+#: .\web\app\static\js\chat_conectati.js:239
+#: .\web\app\static\js\chat_conectati.js:307
+msgid "No tienes solicitudes de chat pendientes."
+msgstr ""
+
+#: .\web\app\static\js\chat_conectati.js:96
+#: .\web\app\static\js\chat_conectati.js:278
+msgid "No hay mensajes aún."
+msgstr ""
+
+#: .\web\app\static\js\chat_conectati.js:163
+msgid "No hay mensajes."
+msgstr ""
+
+#: .\web\app\static\js\chat_conectati.js:167
+#: .\web\app\static\js\chat_conectati.js:170
+#: .\web\app\static\js\chat_conectati.js:173
+#: .\web\app\static\js\chat_conectati.js:176
+msgid "Sin chat seleccionado"
+msgstr ""
+
+#: .\web\app\static\js\chat_conectati.js:180
+msgid "Selecciona un chat para comenzar a conversar."
+msgstr ""
+
+#: .\web\app\static\js\editar_perfil.js:46
+msgid "Foto subida exitosamente"
+msgstr ""
+
+#: .\web\app\static\js\editar_perfil.js:48
+msgid "Error al subir la foto"
+msgstr ""
+
+#: .\web\app\static\js\editar_perfil.js:53
+#: .\web\app\static\js\editar_perfil.js:86
+msgid "Error al comunicarse con el servidor"
+msgstr ""
+
+#: .\web\app\static\js\editar_perfil.js:81
+msgid "Error al eliminar la foto"
+msgstr ""
+
+#: .\web\app\static\js\feed_conectati.js:119
+#: .\web\app\static\js\publicacion_conectati.js:118
+msgid "Comentario publicado"
+msgstr ""
+
+#: .\web\app\static\js\feed_conectati.js:130
+#: .\web\app\static\js\publicacion_conectati.js:159
+#: .\web\app\static\js\publicacion_conectati.js:254
+msgid "Error: "
+msgstr ""
+
+#: .\web\app\static\js\feed_conectati.js:134
+#: .\web\app\static\js\publicacion_conectati.js:163
+#: .\web\app\static\js\publicacion_conectati.js:258
+msgid "Error de red al intentar comentar"
+msgstr ""
+
+#: .\web\app\static\js\feed_conectati.js:153
+msgid "Público"
+msgstr ""
+
+#: .\web\app\static\js\feed_conectati.js:210
+msgid "Debe escribir un texto o subir una imagen para publicar."
+msgstr ""
+
+#: .\web\app\static\js\publicacion_conectati.js:99
+msgid "Debes escribir algo para responder."
+msgstr ""
+
+#: .\web\app\static\js\publicacion_conectati.js:154
+#: .\web\app\static\js\publicacion_conectati.js:249
+msgid "Sin comentarios"
+msgstr ""

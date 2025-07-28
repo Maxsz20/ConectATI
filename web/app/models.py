@@ -106,6 +106,8 @@ class Notificacion(models.Model):
     leida = models.BooleanField(blank=True, null=True, default=False)
     por_correo = models.BooleanField(blank=True, null=True, default=False)
     fecha = models.DateTimeField(blank=True, null=True)
+    publicacion_id = models.IntegerField(blank=True, null=True)
+    comentario_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False

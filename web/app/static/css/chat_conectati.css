@@ -288,7 +288,9 @@
   width: 0;
   height: 0;
 }
-
+.encabezado-chat-mobile{
+  display: none;
+}
 
 /* MENÚ MOBILE */
 

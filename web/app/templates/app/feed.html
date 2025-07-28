@@ -1,62 +1,60 @@
 {% extends "app/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Inicio{% endblock %} 
+{% block title %}{% trans "Inicio" %}{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/feed_conectati.css' %}" /> {# Specific CSS for the feed page #}
+    <link rel="stylesheet" href="{% static 'css/feed_conectati.css' %}" />
 {% endblock %}
 
-{% block titulo_pagina %}Feed{% endblock %}
-{% block titulo_pagina_mobile %}Feed{% endblock %}
+{% block titulo_pagina %}{% trans "Feed" %}{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Feed" %}{% endblock %}
 
 {% block contenido2 %}
-    <div class="contenedor-info">
-        <section class="feed">
-            <form method="POST" enctype="multipart/form-data" class="crear-post">
-                {% csrf_token %} 
-                <div class="top-line">
-                    <img style="width: 50px; height: 50px; border-radius: 50%;" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
-                    <div class="selector-toggle">
-                        <input type="checkbox" id="togglePrivacidad" hidden>
-                        <input type="hidden" name="privacidad" id="inputPrivacidad" value="publica">
-                        <label for="togglePrivacidad" class="btn-privacidad">
-                            <span id="valorPrivacidad">Público</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </label>
-                        <ul class="menu-privacidad">
-                            <li onclick="seleccionarPrivacidad('Público')">Público</li>
-                            <li onclick="seleccionarPrivacidad('Privado')">Privado</li>
-                        </ul>
-                    </div>
+<div class="contenedor-info">
+    <section class="feed">
+        <form method="POST" enctype="multipart/form-data" class="crear-post">
+            {% csrf_token %}
+            <div class="top-line">
+                <img style="width: 50px; height: 50px; border-radius: 50%;" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
+                <div class="selector-toggle">
+                    <input type="checkbox" id="togglePrivacidad" hidden>
+                    <input type="hidden" name="privacidad" id="inputPrivacidad" value="publica">
+                    <label for="togglePrivacidad" class="btn-privacidad">
+                        <span id="valorPrivacidad">{% trans "Público" %}</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </label>
+                    <ul class="menu-privacidad">
+                        <li onclick="seleccionarPrivacidad('publico')">{% trans "Público" %}</li>
+                        <li onclick="seleccionarPrivacidad('privado')">{% trans "Privado" %}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="post-input">
+                <textarea name="texto" placeholder="{% trans '¿Qué estás pensando?' %}" rows="1">{{ form.texto.value|default_if_none:'' }}</textarea>
+            </div>
+
+            <div class="preview-imagen" id="previewImagen" style="margin-top: 10px; display: none;">
+                <img id="imagenPreview" src="#" alt="{% trans 'Vista previa' %}" style="max-width: 100%; max-height: 200px; border-radius: 10px;" />
+            </div>
+
+            <div class="bottom-line">
+                <div class="iconos">
+                    <i class="fas fa-camera"></i>
+                    <label for="archivoInput" style="cursor: pointer;">
+                        <i class="fas fa-image"></i>
+                    </label>
+                    <input type="file" id="archivoInput" name="archivo" accept="image/*" style="display: none;" />
                 </div>
 
-                <div class="post-input">
-                    <textarea name="texto" placeholder="¿Qué estás pensando?" rows="1">{{ form.texto.value|default_if_none:'' }}</textarea>
-                </div>
+                <button type="submit" class="btn-postear">{% trans "Postear" %}</button>
+            </div>
+        </form>
 
-                <div class="preview-imagen" id="previewImagen" style="margin-top: 10px; display: none;">
-                    <img id="imagenPreview" src="#" alt="Vista previa" style="max-width: 100%; max-height: 200px; border-radius: 10px;" />
-                </div>
-
-                <div class="bottom-line">
-
-                    <div class="iconos">
-                        <i class="fas fa-camera"></i>
-
-                        <label for="archivoInput" style="cursor: pointer;">
-                            <i class="fas fa-image"></i>
-                        </label>
-                        <input type="file" id="archivoInput" name="archivo" accept="image/*" style="display: none;" />
-                    </div>
-
-                    <button type="submit" class="btn-postear">Postear</button>
-                </div>
-            </form>
-
-            {% for post in publicaciones %}
-                <article class="post-container">
-                    <div class="usuario">
+        {% for post in publicaciones %}
+            <article class="post-container">
+                <div class="usuario">
                     <a href="{% url 'ver_perfil_usuario' post.usuario.id %}" style="display:flex;align-items:center;text-decoration:none;color:inherit;">
                         <img src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" class="profile-pic">
                         <div class="datos">
@@ -64,116 +62,111 @@
                             <span>@{{ post.usuario.username }} · {{ post.fecha|timesince }}</span>
                         </div>
                     </a>
-                    </div>
-                    <a href="{% url 'post' post.id %}" style="text-decoration: none; color: inherit;">
-                        <p class="contenido-post">{{ post.texto }}</p>
-                        {% if post.archivo_nombre %}
-                            <img class="imagen-post" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="Imagen de la publicación">
-                        {% endif %}
-                    </a>
-                    <div class="acciones">
-                        <span class="estrella {% if post.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ post.id }}">
-                            <i class="fas fa-star"></i> <span class="contador">{{ post.estrellas }}</span>
-                        </span>                               
-                        <span><i class="far fa-comment comentario-btn"
-                            data-id="{{ post.id }}"
-                            data-texto="{{ post.texto|escapejs }}"
-                            data-nombre="{{ post.usuario.nombre }}"
-                            data-username="@{{ post.usuario.username }}"
-                            data-foto="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}"
-                            data-imagen="{% if post.archivo_nombre %}/media/publicaciones/{{ post.archivo_nombre }}{% endif %}">
-                            </i><span class="contador-comentarios">{{ post.num_comentarios }}</span>
-                        </span>
-                    </div>
-                    <a href="{% url 'post' post.id %}" style="text-decoration: none; color: inherit;">
-                        <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
-                    </a>
-                    </article>
-                {% empty %}
-                <p style="text-align:center;">No hay publicaciones aún.</p>
-            {% endfor %}
-        </section>
-
-        {% block panel_lateral %}
-        <div class="panel-lateral">
-            <h3>Mensajes</h3>
-            {% if chats %}
-                {% for chat in chats %}
-                <a href="{% url 'chat' %}">
-                    <div class="mensaje-preview">
-                    <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
-                    <div class="mensaje-info">
-                        <div class="usuario">
-                        <span class="nombre">{{ chat.nombre }}</span>
-                        <span>@{{ chat.username }}</span>
-                        </div>
-                        <p>Haz clic para conversar</p>
-                    </div>
-                    <i class="fas fa-envelope"></i>
-                    </div>
+                </div>
+                <a href="{% url 'post' post.id %}" style="text-decoration: none; color: inherit;">
+                    <p class="contenido-post">{{ post.texto }}</p>
+                    {% if post.archivo_nombre %}
+                        <img class="imagen-post" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
+                    {% endif %}
                 </a>
-                {% endfor %}
-            {% else %}
-                <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">No hay mensajes.</div>
-            {% endif %}
+                <div class="acciones">
+                    <span class="estrella {% if post.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ post.id }}">
+                        <i class="fas fa-star"></i> <span class="contador">{{ post.estrellas }}</span>
+                    </span>                               
+                    <span><i class="far fa-comment comentario-btn"
+                        data-id="{{ post.id }}"
+                        data-texto="{{ post.texto|escapejs }}"
+                        data-nombre="{{ post.usuario.nombre }}"
+                        data-username="@{{ post.usuario.username }}"
+                        data-foto="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}"
+                        data-imagen="{% if post.archivo_nombre %}/media/publicaciones/{{ post.archivo_nombre }}{% endif %}">
+                        </i><span class="contador-comentarios">{{ post.num_comentarios }}</span>
+                    </span>
+                </div>
+                <a href="{% url 'post' post.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
+                </a>
+            </article>
+        {% empty %}
+            <p style="text-align:center;">{% trans "No hay publicaciones aún." %}</p>
+        {% endfor %}
+    </section>
 
-            <h3>Solicitudes de mensajes</h3>
-            {% if solicitudes_chat_pendientes %}
-                {% for solicitud in solicitudes_chat_pendientes %}
-                <div class="solicitud-preview">
-                <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
+    {% block panel_lateral %}
+    <div class="panel-lateral">
+        <h3>{% trans "Mensajes" %}</h3>
+        {% if chats %}
+            {% for chat in chats %}
+            <a href="{% url 'chat' %}">
+                <div class="mensaje-preview">
+                <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
                 <div class="mensaje-info">
                     <div class="usuario">
-                    <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
-                    <span>@{{ solicitud.de_usuario.username }}</span>
+                    <span class="nombre">{{ chat.nombre }}</span>
+                    <span>@{{ chat.username }}</span>
                     </div>
-                    <p>¿Podemos hablar por aquí?</p>
+                    <p>{% trans "Haz clic para conversar" %}</p>
                 </div>
-                <div class="acciones">
-                    <i class="fas fa-check aceptar" title="Aceptar" data-id="{{ solicitud.id }}"></i>
-                    <i class="fas fa-times rechazar" title="Rechazar" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-envelope"></i>
                 </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div style="color: #888; text-align: center; padding: 1rem 0;">No tienes solicitudes de chat pendientes.</div>
-            {% endif %}
-        </div>
-        {% endblock %}
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay mensajes." %}</div>
+        {% endif %}
 
+        <h3>{% trans "Solicitudes de mensajes" %}</h3>
+        {% if solicitudes_chat_pendientes %}
+            {% for solicitud in solicitudes_chat_pendientes %}
+            <div class="solicitud-preview">
+            <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
+            <div class="mensaje-info">
+                <div class="usuario">
+                <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
+                <span>@{{ solicitud.de_usuario.username }}</span>
+                </div>
+                <p>{% trans "¿Podemos hablar por aquí?" %}</p>
+            </div>
+            <div class="acciones">
+                <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
+            </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
+        {% endif %}
     </div>
+    {% endblock %}
+</div>
 {% endblock %}
 
 {% block extra_body_content %}
 <div class="modal-respuesta" id="modalRespuesta">
   <div class="contenido-modal">
-    <!-- Barra superior del modal -->
     <div class="barra-superior-modal">
-      <a href="#" class="cancelar-modal" id="btnCancelarModal">Cancelar</a>
-      <button class="btn-subir" id="btnEnviarComentario">Subir</button>
+      <a href="#" class="cancelar-modal" id="btnCancelarModal">{% trans "Cancelar" %}</a>
+      <button class="btn-subir" id="btnEnviarComentario">{% trans "Subir" %}</button>
     </div>
 
-    <!-- Publicación o comentario al que se responde -->
     <div class="publicacion-respuesta">
-      <img class="imagen-avatar" id="avatarPublicacion" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Avatar del autor" />
+      <img class="imagen-avatar" id="avatarPublicacion" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Avatar del autor' %}" />
       <div class="contenido">
-        <strong id="nombreAutor">Nombre del autor</strong>
-        <p id="textoOriginal">Texto original de la publicación o comentario</p>
-        <img id="imagen-publicacion" class="imagen-mini" src="media/publicaciones/{{ publicacion.archivo_nombre }}" alt="Imagen adjunta" style="display: none;" />
+        <strong id="nombreAutor">{% trans "Nombre del autor" %}</strong>
+        <p id="textoOriginal">{% trans "Texto original de la publicación o comentario" %}</p>
+        <img id="imagen-publicacion" class="imagen-mini" src="media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen adjunta' %}" style="display: none;" />
       </div>
     </div>
 
-    <!-- Campo para responder -->
     <div class="campo-respuesta">
-      <img class="imagen-avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Mi perfil" />
+      <img class="imagen-avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
       <div class="respuesta-input">
-        <span class="respondiendo-a">Respondiendo a <span id="usuarioMencionado">@usuario</span></span>
-        <textarea id="inputRespuesta" placeholder="Escribe tu respuesta"></textarea>
-        <input type="hidden" id="idPadreRespuesta" value="">  <!-- Aquí se guarda el ID del post o comentario -->
+        <span class="respondiendo-a">{% trans "Respondiendo a" %} <span id="usuarioMencionado">@usuario</span></span>
+        <textarea id="inputRespuesta" placeholder="{% trans 'Escribe tu respuesta' %}"></textarea>
+        <input type="hidden" id="idPadreRespuesta" value="">
       </div>
     </div>
 
-    <!-- Iconos opcionales -->
     <div class="acciones-respuesta">
       <i class="fas fa-camera"></i>
       <i class="fas fa-image"></i>
@@ -182,11 +175,8 @@
 </div>
 {% endblock %}
 
-
 {% block extra_js %}
-<script src="{% static 'js/feed_conectati.js' %}"> 
-    function cerrarModal() {
-    modal.style.display = "none"; 
-  }
-</script>
+<script src="{% static 'js/feed_conectati.js' %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 {% endblock %}
+

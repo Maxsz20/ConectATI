@@ -1,0 +1,712 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-27 22:19-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: .\app\templates\app\_item_notificacion.html:17
+msgid "Usuario"
+msgstr ""
+
+#: .\app\templates\app\_item_notificacion.html:22
+#, python-format
+msgid "%(tiempo)s"
+msgstr ""
+
+#: .\app\templates\app\_item_notificacion.html:26
+msgid "También se te envió esta notificación por correo."
+msgstr ""
+
+#: .\app\templates\app\amistades.html:4 .\app\templates\app\amistades.html:9
+#: .\app\templates\app\amistades.html:10 .\app\templates\app\base.html:44
+msgid "Amistades"
+msgstr ""
+
+#: .\app\templates\app\amistades.html:27
+msgid "Eliminar amigo"
+msgstr ""
+
+#: .\app\templates\app\amistades.html:33
+msgid "No tienes amigos aún."
+msgstr ""
+
+#: .\app\templates\app\amistades.html:39
+msgid "Solicitudes de Amistad"
+msgstr ""
+
+#: .\app\templates\app\amistades.html:50 .\app\templates\app\amistades.html:103
+#: .\app\templates\app\chat.html:74 .\app\templates\app\configuracion.html:124
+#: .\app\templates\app\feed.html:131
+#: .\app\templates\app\hilo_comentario.html:189
+#: .\app\templates\app\notificaciones.html:86
+#: .\app\templates\app\publicacion.html:135
+msgid "Aceptar"
+msgstr ""
+
+#: .\app\templates\app\amistades.html:51 .\app\templates\app\amistades.html:104
+#: .\app\templates\app\chat.html:75 .\app\templates\app\configuracion.html:125
+#: .\app\templates\app\feed.html:132
+#: .\app\templates\app\hilo_comentario.html:190
+#: .\app\templates\app\notificaciones.html:87
+#: .\app\templates\app\publicacion.html:136
+msgid "Rechazar"
+msgstr ""
+
+#: .\app\templates\app\amistades.html:58
+msgid "No tienes solicitudes de amistad."
+msgstr ""
+
+#: .\app\templates\app\amistades.html:67 .\app\templates\app\base.html:45
+#: .\app\templates\app\chat.html:10 .\app\templates\app\chat.html:11
+#: .\app\templates\app\chat.html:16 .\app\templates\app\chat.html:34
+#: .\app\templates\app\configuracion.html:90 .\app\templates\app\feed.html:97
+#: .\app\templates\app\hilo_comentario.html:155
+#: .\app\templates\app\notificaciones.html:52
+#: .\app\templates\app\publicacion.html:101
+msgid "Mensajes"
+msgstr ""
+
+#: .\app\templates\app\amistades.html:78
+#: .\app\templates\app\configuracion.html:101 .\app\templates\app\feed.html:108
+#: .\app\templates\app\hilo_comentario.html:166
+#: .\app\templates\app\notificaciones.html:63
+#: .\app\templates\app\publicacion.html:112
+msgid "Haz clic para conversar"
+msgstr ""
+
+#: .\app\templates\app\amistades.html:86 .\app\templates\app\chat.html:59
+#: .\app\templates\app\configuracion.html:108 .\app\templates\app\feed.html:115
+#: .\app\templates\app\hilo_comentario.html:173
+#: .\app\templates\app\notificaciones.html:70
+#: .\app\templates\app\publicacion.html:119
+msgid "No hay mensajes."
+msgstr ""
+
+#: .\app\templates\app\amistades.html:90
+#: .\app\templates\app\configuracion.html:111 .\app\templates\app\feed.html:118
+#: .\app\templates\app\hilo_comentario.html:176
+#: .\app\templates\app\notificaciones.html:73
+#: .\app\templates\app\publicacion.html:122
+msgid "Solicitudes de mensajes"
+msgstr ""
+
+#: .\app\templates\app\amistades.html:100 .\app\templates\app\chat.html:71
+#: .\app\templates\app\configuracion.html:121 .\app\templates\app\feed.html:128
+#: .\app\templates\app\hilo_comentario.html:186
+#: .\app\templates\app\notificaciones.html:83
+#: .\app\templates\app\publicacion.html:132
+msgid "¿Podemos hablar por aquí?"
+msgstr ""
+
+#: .\app\templates\app\amistades.html:110 .\app\templates\app\chat.html:80
+#: .\app\templates\app\configuracion.html:130 .\app\templates\app\feed.html:137
+#: .\app\templates\app\hilo_comentario.html:195
+#: .\app\templates\app\notificaciones.html:92
+#: .\app\templates\app\publicacion.html:141
+msgid "No tienes solicitudes de chat pendientes."
+msgstr ""
+
+#: .\app\templates\app\base.html:16
+msgid "¡Comentario publicado!"
+msgstr ""
+
+#: .\app\templates\app\base.html:42 .\app\templates\app\feed.html:4
+msgid "Inicio"
+msgstr ""
+
+#: .\app\templates\app\base.html:43 .\app\templates\app\configuracion.html:72
+#: .\app\templates\app\notificaciones.html:5
+#: .\app\templates\app\notificaciones.html:11
+#: .\app\templates\app\notificaciones.html:12
+msgid "Notificaciones"
+msgstr ""
+
+#: .\app\templates\app\base.html:46 .\app\templates\app\configuracion.html:4
+#: .\app\templates\app\configuracion.html:10
+#: .\app\templates\app\configuracion.html:11
+msgid "Configuración"
+msgstr ""
+
+#: .\app\templates\app\base.html:51
+msgid "Cerrar Sesión"
+msgstr ""
+
+#: .\app\templates\app\base.html:81 .\app\templates\app\busqueda_mobile.html:15
+msgid "Buscar..."
+msgstr ""
+
+#: .\app\templates\app\base.html:84 .\app\templates\app\busqueda_mobile.html:20
+msgid "Recientes"
+msgstr ""
+
+#: .\app\templates\app\base.html:85 .\app\templates\app\busqueda_mobile.html:21
+msgid "Ver todo"
+msgstr ""
+
+#: .\app\templates\app\base.html:110 .\app\templates\app\publicar_mobile.html:4
+msgid "Publicar"
+msgstr ""
+
+#: .\app\templates\app\busqueda_mobile.html:4
+msgid "Busqueda"
+msgstr ""
+
+#: .\app\templates\app\change_password.html:7
+msgid "Cambiar Contraseña"
+msgstr ""
+
+#: .\app\templates\app\change_password.html:23
+msgid "Nueva contraseña"
+msgstr ""
+
+#: .\app\templates\app\change_password.html:28
+msgid "Confirmar nueva contraseña"
+msgstr ""
+
+#: .\app\templates\app\change_password.html:32
+#: .\app\templates\app\editar_perfil.html:77
+msgid "Guardar"
+msgstr ""
+
+#: .\app\templates\app\change_password.html:69
+msgid "Debes completar ambos campos."
+msgstr ""
+
+#: .\app\templates\app\change_password.html:74
+msgid "Las contraseñas no coinciden."
+msgstr ""
+
+#: .\app\templates\app\change_password.html:86
+msgid "Contraseña cambiada exitosamente."
+msgstr ""
+
+#: .\app\templates\app\change_password.html:90
+msgid "Error al cambiar la contraseña."
+msgstr ""
+
+#: .\app\templates\app\change_password.html:94
+#: .\app\templates\app\check_code.html:55
+#: .\app\templates\app\forgotten_password.html:55
+msgid "Error de red."
+msgstr ""
+
+#: .\app\templates\app\chat.html:4
+msgid "Chat"
+msgstr ""
+
+#: .\app\templates\app\chat.html:26 .\app\templates\app\chat.html:27
+msgid "Sin chat seleccionado"
+msgstr ""
+
+#: .\app\templates\app\chat.html:54
+msgid "Eliminar chat"
+msgstr ""
+
+#: .\app\templates\app\chat.html:64
+msgid "Solicitudes de Mensajes"
+msgstr ""
+
+#: .\app\templates\app\chat.html:96
+msgid "No hay mensajes aún."
+msgstr ""
+
+#: .\app\templates\app\chat.html:99
+msgid "Selecciona un chat para comenzar a conversar."
+msgstr ""
+
+#: .\app\templates\app\chat.html:105
+msgid "Escribir mensaje..."
+msgstr ""
+
+#: .\app\templates\app\chat.html:115
+msgid "Avatar usuario"
+msgstr ""
+
+#: .\app\templates\app\chat.html:117
+msgid "Nombre"
+msgstr ""
+
+#: .\app\templates\app\check_code.html:7
+msgid "Verificar Código"
+msgstr ""
+
+#: .\app\templates\app\check_code.html:19
+msgid "Verifica tu código"
+msgstr ""
+
+#: .\app\templates\app\check_code.html:20
+msgid "Por favor, introduce el código que recibiste por correo electrónico."
+msgstr ""
+
+#: .\app\templates\app\check_code.html:23
+msgid "Código recibido"
+msgstr ""
+
+#: .\app\templates\app\check_code.html:24
+msgid "Confirmar"
+msgstr ""
+
+#: .\app\templates\app\check_code.html:35
+msgid "Por favor, ingresa el código."
+msgstr ""
+
+#: .\app\templates\app\check_code.html:51
+msgid "Código incorrecto."
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:18
+msgid "Tema"
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:22
+#: .\app\templates\app\configuracion.html:26
+msgid "Claro"
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:27
+msgid "Oscuro"
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:34
+msgid "Idioma"
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:40
+#: .\app\templates\app\configuracion.html:49
+msgid "EN"
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:42
+#: .\app\templates\app\configuracion.html:48
+msgid "ES"
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:56
+msgid "Privacidad"
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:60
+#: .\app\templates\app\configuracion.html:64 .\app\templates\app\feed.html:29
+#: .\app\templates\app\publicar_mobile.html:26
+msgid "Privado"
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:65 .\app\templates\app\feed.html:24
+#: .\app\templates\app\feed.html:28 .\app\templates\app\publicar_mobile.html:21
+#: .\app\templates\app\publicar_mobile.html:25
+#: .\app\templates\app\publicar_mobile.html:56
+msgid "Público"
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:76
+#: .\app\templates\app\configuracion.html:80
+msgid "Sí"
+msgstr ""
+
+#: .\app\templates\app\configuracion.html:81
+msgid "No"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:4
+msgid "Editar Perfil"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:25
+msgid "Foto de perfil"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:30
+msgid "Editar foto"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:36
+msgid "Eliminar foto"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:41
+msgid "Nombre:"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:44
+msgid "Usuario:"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:47
+msgid "Descripción:"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:50
+msgid "Género:"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:53
+msgid "Nacimiento:"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:58
+msgid "Color favorito:"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:61
+msgid "Libro favorito:"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:64
+msgid "Música favorita:"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:67
+msgid "Videojuegos favoritos:"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:70
+msgid "Lenguajes:"
+msgstr ""
+
+#: .\app\templates\app\editar_perfil.html:76 .\app\templates\app\feed.html:148
+#: .\app\templates\app\hilo_comentario.html:205
+#: .\app\templates\app\publicacion.html:151
+#: .\app\templates\app\publicar_mobile.html:15
+#: .\app\templates\app\responder_mobile.html:20
+msgid "Cancelar"
+msgstr ""
+
+#: .\app\templates\app\feed.html:10 .\app\templates\app\feed.html:11
+msgid "Feed"
+msgstr ""
+
+#: .\app\templates\app\feed.html:35
+msgid "¿Qué estás pensando?"
+msgstr ""
+
+#: .\app\templates\app\feed.html:39 .\app\templates\app\publicar_mobile.html:39
+msgid "Vista previa"
+msgstr ""
+
+#: .\app\templates\app\feed.html:51
+msgid "Postear"
+msgstr ""
+
+#: .\app\templates\app\feed.html:69 .\app\templates\app\hilo_comentario.html:28
+#: .\app\templates\app\perfil.html:106 .\app\templates\app\publicacion.html:37
+#: .\app\templates\app\responder_mobile.html:32
+msgid "Imagen de la publicación"
+msgstr ""
+
+#: .\app\templates\app\feed.html:91
+msgid "No hay publicaciones aún."
+msgstr ""
+
+#: .\app\templates\app\feed.html:149
+#: .\app\templates\app\hilo_comentario.html:206
+#: .\app\templates\app\publicacion.html:152
+#: .\app\templates\app\publicar_mobile.html:30
+#: .\app\templates\app\responder_mobile.html:21
+msgid "Subir"
+msgstr ""
+
+#: .\app\templates\app\feed.html:153
+#: .\app\templates\app\hilo_comentario.html:209
+#: .\app\templates\app\publicacion.html:156
+msgid "Avatar del autor"
+msgstr ""
+
+#: .\app\templates\app\feed.html:155
+#: .\app\templates\app\hilo_comentario.html:211
+#: .\app\templates\app\publicacion.html:158
+msgid "Nombre del autor"
+msgstr ""
+
+#: .\app\templates\app\feed.html:156
+#: .\app\templates\app\hilo_comentario.html:212
+#: .\app\templates\app\publicacion.html:159
+msgid "Texto original de la publicación o comentario"
+msgstr ""
+
+#: .\app\templates\app\feed.html:157
+#: .\app\templates\app\hilo_comentario.html:213
+#: .\app\templates\app\publicacion.html:160
+msgid "Imagen adjunta"
+msgstr ""
+
+#: .\app\templates\app\feed.html:162
+#: .\app\templates\app\hilo_comentario.html:103
+#: .\app\templates\app\hilo_comentario.html:217
+#: .\app\templates\app\publicacion.html:58
+#: .\app\templates\app\publicacion.html:165
+#: .\app\templates\app\publicar_mobile.html:34
+msgid "Mi perfil"
+msgstr ""
+
+#: .\app\templates\app\feed.html:164
+#: .\app\templates\app\hilo_comentario.html:219
+#: .\app\templates\app\publicacion.html:167
+#: .\app\templates\app\responder_mobile.html:42
+msgid "Respondiendo a"
+msgstr ""
+
+#: .\app\templates\app\feed.html:165
+#: .\app\templates\app\hilo_comentario.html:220
+#: .\app\templates\app\publicacion.html:168
+#: .\app\templates\app\responder_mobile.html:43
+msgid "Escribe tu respuesta"
+msgstr ""
+
+#: .\app\templates\app\forgotten_password.html:7
+#: .\app\templates\app\forgotten_password.html:19
+msgid "Recuperar Contraseña"
+msgstr ""
+
+#: .\app\templates\app\forgotten_password.html:20
+msgid "Por favor, introduce tu correo para poder restablecer tu contraseña."
+msgstr ""
+
+#: .\app\templates\app\forgotten_password.html:23
+msgid "Ingresa tu correo"
+msgstr ""
+
+#: .\app\templates\app\forgotten_password.html:24
+msgid "Enviar código"
+msgstr ""
+
+#: .\app\templates\app\forgotten_password.html:34
+msgid "Por favor, introduce tu correo."
+msgstr ""
+
+#: .\app\templates\app\forgotten_password.html:51
+msgid "Error al enviar el código."
+msgstr ""
+
+#: .\app\templates\app\hilo_comentario.html:4
+#: .\app\templates\app\hilo_comentario.html:11
+#: .\app\templates\app\hilo_comentario.html:12
+msgid "Comentario"
+msgstr ""
+
+#: .\app\templates\app\hilo_comentario.html:104
+#: .\app\templates\app\publicacion.html:59
+msgid "Postea tu respuesta"
+msgstr ""
+
+#: .\app\templates\app\hilo_comentario.html:109
+#: .\app\templates\app\publicacion.html:60
+#: .\app\templates\app\responder_mobile.html:4
+#: .\app\templates\app\responder_mobile.html:10
+msgid "Responder"
+msgstr ""
+
+#: .\app\templates\app\hilo_comentario.html:115
+msgid "Respuestas"
+msgstr ""
+
+#: .\app\templates\app\hilo_comentario.html:148
+msgid "No hay respuestas aún."
+msgstr ""
+
+#: .\app\templates\app\iniciar_sesion.html:7
+#: .\app\templates\app\iniciar_sesion.html:44
+msgid "Iniciar Sesión"
+msgstr ""
+
+#: .\app\templates\app\iniciar_sesion.html:25
+msgid "Correo o Usuario"
+msgstr ""
+
+#: .\app\templates\app\iniciar_sesion.html:28
+msgid "Contraseña"
+msgstr ""
+
+#: .\app\templates\app\iniciar_sesion.html:41
+msgid "¿Olvidaste tu contraseña?"
+msgstr ""
+
+#: .\app\templates\app\iniciar_sesion.html:47
+msgid "¿Aún no eres usuario?"
+msgstr ""
+
+#: .\app\templates\app\iniciar_sesion.html:47
+msgid "Regístrate"
+msgstr ""
+
+#: .\app\templates\app\notificaciones.html:20
+msgid "Marcar todas como leídas"
+msgstr ""
+
+#: .\app\templates\app\notificaciones.html:24
+msgid "Hoy"
+msgstr ""
+
+#: .\app\templates\app\notificaciones.html:28
+msgid "Sin notificaciones recientes."
+msgstr ""
+
+#: .\app\templates\app\notificaciones.html:33
+msgid "Ayer"
+msgstr ""
+
+#: .\app\templates\app\notificaciones.html:37
+msgid "Sin notificaciones ayer."
+msgstr ""
+
+#: .\app\templates\app\notificaciones.html:42
+msgid "Últimos 7 días"
+msgstr ""
+
+#: .\app\templates\app\notificaciones.html:46
+msgid "No hay más notificaciones esta semana."
+msgstr ""
+
+#: .\app\templates\app\perfil.html:4
+msgid "Perfil"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:27
+msgid "Editar perfil"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:33
+msgid "Añadir amigo"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:37 .\app\templates\app\perfil.html:142
+#: .\app\templates\app\publicacion.html:28
+msgid "Pendiente"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:41
+msgid "Amigo"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:46 .\app\templates\app\perfil.html:175
+msgid "Chatear"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:50 .\app\templates\app\perfil.html:172
+msgid "Chat pendiente"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:54
+msgid "Ir al chat"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:65
+msgid "Nacimiento"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:68
+msgid "Género"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:71
+msgid "Color favorito"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:74
+msgid "Libro favorito"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:77
+msgid "Música favorita"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:80
+msgid "Videojuegos"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:83
+msgid "Lenguajes"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:89 .\app\templates\app\publicacion.html:26
+msgid "Amigos"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:119
+msgid "Este usuario aún no tiene publicaciones."
+msgstr ""
+
+#: .\app\templates\app\perfil.html:130 .\app\templates\app\perfil.html:160
+msgid "Enviando..."
+msgstr ""
+
+#: .\app\templates\app\perfil.html:147 .\app\templates\app\perfil.html:152
+#: .\app\templates\app\perfil.html:180
+msgid "Error"
+msgstr ""
+
+#: .\app\templates\app\perfil.html:174
+msgid "Error enviando solicitud"
+msgstr ""
+
+#: .\app\templates\app\publicacion.html:4
+#: .\app\templates\app\publicacion.html:10
+#: .\app\templates\app\publicacion.html:11
+msgid "Publicación"
+msgstr ""
+
+#: .\app\templates\app\publicacion.html:30
+msgid "Añadir"
+msgstr ""
+
+#: .\app\templates\app\publicacion.html:64
+msgid "Comentarios"
+msgstr ""
+
+#: .\app\templates\app\publicacion.html:95
+msgid "Sin comentarios"
+msgstr ""
+
+#: .\app\templates\app\publicar_mobile.html:35
+msgid "¿Qué estas pensando?"
+msgstr ""
+
+#: .\app\templates\app\publicar_mobile.html:91
+msgid "Debe escribir un texto o subir una imagen para publicar."
+msgstr ""
+
+#: .\app\templates\app\registrarse.html:7
+msgid "Registro"
+msgstr ""
+
+#: .\app\templates\app\registrarse.html:61
+msgid "Registrarse"
+msgstr ""
+
+#: .\app\templates\app\registrarse.html:95
+msgid "Las contraseñas no coinciden"
+msgstr ""
+
+#: .\app\utils.py:151
+msgid "respondió tu comentario"
+msgstr ""
+
+#: .\app\utils.py:160
+msgid "comentó tu publicación"
+msgstr ""
+
+#: .\app\utils.py:211
+msgid " dio estrella a tu publicación"
+msgstr ""
+
+#: .\app\utils.py:337
+msgid " te envió una solicitud de chat"
+msgstr ""
+
+#: .\app\utils.py:441
+msgid " te envió una solicitud de amistad"
+msgstr ""

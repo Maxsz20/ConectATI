@@ -1,7 +1,7 @@
 {% extends 'app/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Editar Perfil{% endblock %}
+{% block title %}{% trans "Editar Perfil" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/editar_perfil_conectati.css' %}">
@@ -14,7 +14,6 @@
       <i class="fas fa-chevron-left"></i>
     </a>
 
-
     <!-- Formulario de edición -->
     <form class="perfil-formulario" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
@@ -23,161 +22,64 @@
         <!-- Imagen de preview -->
         <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" 
             id="profileImage" 
-            alt="Foto de perfil" />
+            alt="{% trans 'Foto de perfil' %}" />
 
         <!-- Botón para subir nueva imagen -->
         <div class="overlay-foto">
           <label for="inputFotoArchivo">
-            <i class="fas fa-pencil-alt icono-editar"></i>
+            <i class="fas fa-pencil-alt icono-editar" title="{% trans 'Editar foto' %}"></i>
           </label>
           <input type="file" id="inputFotoArchivo" name="foto" accept="image/*" hidden>
         </div>
 
         <!-- Botón para eliminar foto (X) -->
-        <button type="button" class="btn-eliminar-foto" id="btnEliminarFoto" title="Eliminar foto">&times;</button>
+        <button type="button" class="btn-eliminar-foto" id="btnEliminarFoto" title="{% trans 'Eliminar foto' %}">&times;</button>
       </div>
 
       <div class="form-grid">
         <div class="form-columna">
-          <label for="id_nombre">Nombre:</label>
+          <label for="id_nombre">{% trans "Nombre:" %}</label>
           <input type="text" name="nombre" id="id_nombre" value="{{ form.nombre.value|default_if_none:'' }}" class="input-campo" />
 
-          <label for="id_username">Usuario:</label>
+          <label for="id_username">{% trans "Usuario:" %}</label>
           <input type="text" name="username" id="id_username" value="{{ form.username.value|default_if_none:'' }}" class="input-campo" />
 
-          <label for="id_descripcion">Descripción:</label>
+          <label for="id_descripcion">{% trans "Descripción:" %}</label>
           <textarea name="descripcion" id="id_descripcion" rows="3" class="input-campo">{{ form.descripcion.value|default_if_none:'' }}</textarea>
 
-          <label for="id_genero">Género:</label>
+          <label for="id_genero">{% trans "Género:" %}</label>
           <input type="text" name="genero" id="id_genero" value="{{ form.genero.value|default_if_none:'' }}" class="input-campo" />
 
-          <label for="id_fecha_nacimiento">Nacimiento:</label>
+          <label for="id_fecha_nacimiento">{% trans "Nacimiento:" %}</label>
           <input type="date" name="fecha_nacimiento" id="id_fecha_nacimiento" value="{{ form.fecha_nacimiento.value|default_if_none:'' }}" class="input-campo" />
         </div>
 
         <div class="form-columna">
-          <label for="id_color_favorito">Color favorito:</label>
+          <label for="id_color_favorito">{% trans "Color favorito:" %}</label>
           <input type="text" name="color_favorito" id="id_color_favorito" value="{{ form.color_favorito.value|default_if_none:'' }}" class="input-campo" />
 
-          <label for="id_libro_favorito">Libro favorito:</label>
+          <label for="id_libro_favorito">{% trans "Libro favorito:" %}</label>
           <input type="text" name="libro_favorito" id="id_libro_favorito" value="{{ form.libro_favorito.value|default_if_none:'' }}" class="input-campo" />
 
-          <label for="id_musica_favorita">Música favorita:</label>
+          <label for="id_musica_favorita">{% trans "Música favorita:" %}</label>
           <input type="text" name="musica_favorita" id="id_musica_favorita" value="{{ form.musica_favorita.value|default_if_none:'' }}" class="input-campo" />
 
-          <label for="id_videojuegos">Videojuegos favoritos:</label>
+          <label for="id_videojuegos">{% trans "Videojuegos favoritos:" %}</label>
           <input type="text" name="videojuegos" id="id_videojuegos" value="{{ form.videojuegos.value|default_if_none:'' }}" class="input-campo" />
 
-          <label for="id_lenguajes">Lenguajes:</label>
+          <label for="id_lenguajes">{% trans "Lenguajes:" %}</label>
           <input type="text" name="lenguajes" id="id_lenguajes" value="{{ form.lenguajes.value|default_if_none:'' }}" class="input-campo" />
         </div>
       </div>
 
       <div class="form-botones">
-        <a href="{% url 'profile' %}" class="btn-cancelar">Cancelar</a>
-        <button type="submit" class="btn-guardar">Guardar</button>
+        <a href="{% url 'profile' %}" class="btn-cancelar">{% trans "Cancelar" %}</a>
+        <button type="submit" class="btn-guardar">{% trans "Guardar" %}</button>
       </div>
     </form>
-
-    
   </div>
 </main>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const eliminarBtn = document.getElementById('btnEliminarFoto'); 
-  const profileImage = document.getElementById('profileImage');
-  const inputFoto = document.getElementById('inputFotoArchivo');
-  let valorFotoOriginal = "{{ usuario_logueado.foto|default:'' }}";
-
-  function mostrarToast(mensaje) {
-    const toast = document.getElementById("toast");
-    const mensajeEl = document.getElementById("toastMensaje");
-    mensajeEl.textContent = mensaje;
-
-    toast.style.display = "block";
-
-    setTimeout(() => {
-      toast.style.display = "none";
-    }, 3000);
-  }
-
-  // Lógica para subir y preview de nueva imagen
-  if (inputFoto && profileImage) {
-    inputFoto.addEventListener('change', () => {
-      const archivo = inputFoto.files[0];
-      if (archivo) {
-        // Preview
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          profileImage.src = e.target.result;
-        };
-        reader.readAsDataURL(archivo);
-
-        // Subir al backend
-        const formData = new FormData();
-        formData.append('foto_archivo', archivo);
-
-        fetch("{% url 'editprofile' %}", {
-          method: "POST",
-          headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-          },
-          body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.ok && data.foto_url) {
-            profileImage.src = data.foto_url + "?t=" + new Date().getTime();
-            valorFotoOriginal = data.foto_url; // actualizar la referencia
-            mostrarToast("Foto subida exitosamente");
-          } else {
-            alert("Error al subir la foto");
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert("Error al comunicarse con el servidor");
-        });
-      }
-    });
-  }
-
-  // Lógica para eliminar foto
-  if (eliminarBtn) {
-    eliminarBtn.addEventListener('click', () => {
-      if (inputFoto.files.length > 0) {
-        inputFoto.value = "";
-        if (valorFotoOriginal !== "") {
-          profileImage.src = valorFotoOriginal;
-        } else {
-          profileImage.src = "{% static 'images/default_user.avif' %}";
-        }
-      } else if (valorFotoOriginal !== "") {
-        fetch("{% url 'eliminar_foto_perfil' %}", {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-          }
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.ok) {
-            profileImage.src = "{% static 'images/default_user.avif' %}";
-            valorFotoOriginal = "";
-          } else {
-            alert("Error al eliminar la foto");
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert("Error al comunicarse con el servidor");
-        });
-      }
-    });
-  }
-});
-</script>
-
+<script src="{% static 'js/editar_perfil.js' %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 {% endblock %}

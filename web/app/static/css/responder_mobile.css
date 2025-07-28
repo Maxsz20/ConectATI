@@ -89,6 +89,7 @@ body {
   gap: 1.2rem;
   height: calc(100vh - 120px);
   overflow-y: auto;
+  width: 100%;
 }
 
 /* Barra superior (cancelar y subir) */

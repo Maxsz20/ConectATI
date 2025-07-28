@@ -1,102 +1,97 @@
 {% extends 'app/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Publicar{% endblock %}
+{% block title %}{% trans "Publicar" %}{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/publicar_mobile.css' %}">
 {% endblock %}
 
 {% block contenido %}
-  <!-- Contenido principal -->
-  <form method="POST" enctype="multipart/form-data" class="area-publicar">
-    {% csrf_token %}
-    
-    <div class="barra-superior">
-      <a class="cancelar" href="{% url 'feed' %}">Cancelar</a>
+<form method="POST" enctype="multipart/form-data" class="area-publicar">
+  {% csrf_token %}
+  
+  <div class="barra-superior">
+    <a class="cancelar" href="{% url 'feed' %}">{% trans "Cancelar" %}</a>
 
-      <div class="selector-toggle">
-        <input type="checkbox" id="togglePrivacidad" hidden />
-        <input type="hidden" name="privacidad" id="inputPrivacidad" value="publica">
-        <label for="togglePrivacidad" class="btn-privacidad">
-          <span id="valorPrivacidad">Público</span>
-          <i class="fas fa-chevron-down"></i>
-        </label>
-        <ul class="menu-privacidad">
-          <li onclick="cambiarPrivacidad('Público')">Público</li>
-          <li onclick="cambiarPrivacidad('Privado')">Privado</li>
-        </ul>
-      </div>
-
-      <button class="btn-subir" type="submit">Subir</button>
+    <div class="selector-toggle">
+      <input type="checkbox" id="togglePrivacidad" hidden />
+      <input type="hidden" name="privacidad" id="inputPrivacidad" value="publica">
+      <label for="togglePrivacidad" class="btn-privacidad">
+        <span id="valorPrivacidad">{% trans "Público" %}</span>
+        <i class="fas fa-chevron-down"></i>
+      </label>
+      <ul class="menu-privacidad">
+        <li onclick="cambiarPrivacidad('publico')">{% trans 'Público' %}</li>
+        <li onclick="cambiarPrivacidad('privado')">{% trans 'Privado' %}</li>
+      </ul>
     </div>
 
-    <div class="contenido-publicacion">
-      <img class="avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="Mi perfil" />
-      <textarea name="texto" placeholder="¿Qué estas pensando?" rows="3">{{ form.texto.value|default_if_none:'' }}</textarea>
-    </div>
+    <button class="btn-subir" type="submit">{% trans 'Subir' %}</button>
+  </div>
 
-    <!-- Vista previa de imagen -->
-    <div class="preview-imagen" id="previewImagen" style="display: none;">
-      <img id="imagenPreview" src="#" alt="Vista previa" style="max-width: 100%; max-height: 200px; border-radius: 10px;" />
-    </div>
+  <div class="contenido-publicacion">
+    <img class="avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
+    <textarea name="texto" placeholder="{% trans '¿Qué estas pensando?' %}" rows="3">{{ form.texto.value|default_if_none:'' }}</textarea>
+  </div>
 
-    <!-- Ícono de imagen e input real oculto -->
-    <div class="acciones-publicacion">
-      <label for="archivoInput"><i class="fas fa-image"></i></label>
-      <input id="archivoInput" name="archivo" type="file" accept="image/*" hidden>
-    </div>
-  </form>
+  <div class="preview-imagen" id="previewImagen" style="display: none;">
+    <img id="imagenPreview" src="#" alt="{% trans 'Vista previa' %}" style="max-width: 100%; max-height: 200px; border-radius: 10px;" />
+  </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      function cambiarPrivacidad(valor) {
-        document.getElementById("valorPrivacidad").textContent = valor;
-        document.getElementById("togglePrivacidad").checked = false;
+  <div class="acciones-publicacion">
+    <label for="archivoInput"><i class="fas fa-image"></i></label>
+    <input id="archivoInput" name="archivo" type="file" accept="image/*" hidden>
+  </div>
+</form>
 
-        const inputPriv = document.getElementById("inputPrivacidad");
-        if (inputPriv) {
-          inputPriv.value = valor === "Público" ? "publica" : "privada";
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    function cambiarPrivacidad(valor) {
+      document.getElementById("valorPrivacidad").textContent = valor;
+      document.getElementById("togglePrivacidad").checked = false;
+
+      const inputPriv = document.getElementById("inputPrivacidad");
+      if (inputPriv) {
+        inputPriv.value = valor === "{% trans 'Público' %}" ? "publica" : "privada";
+      }
+    }
+
+    const inputArchivo = document.getElementById("archivoInput");
+    const previewContenedor = document.getElementById("previewImagen");
+    const imagenPreview = document.getElementById("imagenPreview");
+
+    if (inputArchivo) {
+      inputArchivo.addEventListener("change", () => {
+        const archivo = inputArchivo.files[0];
+
+        if (archivo && archivo.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagenPreview.src = e.target.result;
+            previewContenedor.style.display = "block";
+          };
+          reader.readAsDataURL(archivo);
+        } else {
+          imagenPreview.src = "#";
+          previewContenedor.style.display = "none";
         }
-      }
+      });
+    }
 
-      const inputArchivo = document.getElementById("archivoInput");
-      const previewContenedor = document.getElementById("previewImagen");
-      const imagenPreview = document.getElementById("imagenPreview");
+    const formulario = document.querySelector(".area-publicar");
+    if (formulario) {
+      formulario.addEventListener("submit", function (e) {
+        const textarea = formulario.querySelector("textarea[name='texto']");
+        const texto = textarea?.value.trim();
+        const archivo = inputArchivo?.files.length;
 
-      if (inputArchivo) {
-        inputArchivo.addEventListener("change", () => {
-          const archivo = inputArchivo.files[0];
-
-          if (archivo && archivo.type.startsWith("image/")) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-              imagenPreview.src = e.target.result;
-              previewContenedor.style.display = "block";
-            };
-            reader.readAsDataURL(archivo);
-          } else {
-            imagenPreview.src = "#";
-            previewContenedor.style.display = "none";
-          }
-        });
-      }
-
-      const formulario = document.querySelector(".area-publicar");
-      if (formulario) {
-        formulario.addEventListener("submit", function (e) {
-          console.log("📨 Submit detectado");
-
-          const textarea = formulario.querySelector("textarea[name='texto']");
-          const texto = textarea?.value.trim();
-          const archivo = inputArchivo?.files.length;
-
-          if (!texto && !archivo) {
-            e.preventDefault();
-            alert("Debe escribir un texto o subir una imagen para publicar.");
-          }
-        });
-      }
-    });
-  </script>
+        if (!texto && !archivo) {
+          e.preventDefault();
+          alert("{% trans 'Debe escribir un texto o subir una imagen para publicar.' %}");
+        }
+      });
+    }
+  });
+</script>
 {% endblock %}

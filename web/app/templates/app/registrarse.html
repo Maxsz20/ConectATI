@@ -1,10 +1,10 @@
-{% load static %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ConectATI - Registro</title>
+  <title>ConectATI - {% trans "Registro" %}</title>
   <link rel="icon" href="{% static 'images/logo.png' %}" type="image/png" />
   <link rel="stylesheet" href="{% static 'css/login_register_clave.css' %}"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -58,7 +58,7 @@
         </div>
       {% endif %}
 
-      <button type="submit" id="submit-btn">Registrarse</button>
+      <button type="submit" id="submit-btn">{% trans "Registrarse" %}</button>
     </form>
 
   </div>
@@ -92,7 +92,7 @@
         submitBtn.disabled = false;
       } else {
         passwordMatchMessage.style.display = 'block';
-        passwordMatchMessage.innerText = 'Las contraseñas no coinciden';
+        passwordMatchMessage.innerText = '{% trans "Las contraseñas no coinciden" %}';
         submitBtn.disabled = true;
       }
     }

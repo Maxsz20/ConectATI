@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from .forms import RegistroForm, PublicacionForm, EditarPerfilForm
 from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import EmailMessage
 from django.utils import timezone
-from .models import Usuario, Publicacion, Estrella, Amistad, SolicitudChat, Chat, Mensaje, Comentario, Notificacion, CodigoRecuperacion
+from .models import Usuario, Publicacion, Estrella, Amistad, SolicitudChat, Chat, Mensaje, Comentario, Notificacion, CodigoRecuperacion, Configuracion
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
@@ -14,11 +14,14 @@ from django.conf import settings
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from datetime import timedelta
+from django.views.decorators.http import require_POST
+from django.utils import translation
+from django.urls import reverse
 
 from .utils import (crear_notificacion, procesar_publicacion, eliminar_foto_perfil, marcar_notificaciones_leidas, 
 obtener_mensajes_chat, crear_comentario, dar_estrella, buscar_usuarios, obtener_conversacion,
 enviar_solicitud_chat, aceptar_solicitud_chat, rechazar_solicitud_chat, enviar_solicitud_amistad, aceptar_solicitud, 
-rechazar_solicitud, eliminar_amistad, eliminar_chat, obtener_hilo_completo)
+rechazar_solicitud, eliminar_amistad, eliminar_chat, obtener_hilo_completo, marcar_notificacion_individual)
 
 # Create your views here.
 def InicioRedirectView(request):
@@ -112,6 +115,17 @@ def RegisterView(request):
                     contrasena=make_password(data['contrasena'])
                 )
                 nuevo_usuario.save(using='conectati')
+                # Crear configuración por defecto
+                Configuracion.objects.using('conectati').create(
+                    usuario=nuevo_usuario,
+                    tema="claro",
+                    idioma="es",
+                    publicaciones_privadas=False,
+                    notificar_chat=True,
+                    notificar_comentario=True,
+                    notificar_amistad=True
+                )
+
                 return redirect('login')
     else:
         form = RegistroForm()
@@ -249,7 +263,7 @@ def FeedView(request):
     form = PublicacionForm()
     publicaciones = Publicacion.objects.using('conectati') \
         .filter(privacidad='publica') \
-        .annotate(num_comentarios=Count('comentario')) \
+        .annotate(num_comentarios=Count('comentario', filter=Q(comentario__respuesta_a__isnull=True))) \
         .order_by('-fecha')
 
     estrellas_usuario = []
@@ -264,13 +278,12 @@ def FeedView(request):
         nueva = procesar_publicacion(request, form)
         if nueva:
             return redirect('feed')
-
+    
     return render(request, 'app/feed.html', {
         'form': form,
         'publicaciones': publicaciones,
         'estrellas_usuario': list(estrellas_usuario)
     })
-
 
 def NotifyView(request):
     if not request.session.get('usuario_id'):
@@ -278,26 +291,42 @@ def NotifyView(request):
 
     usuario_id = request.session['usuario_id']
 
-    ahora = timezone.now()
+    ahora = timezone.localtime()
     hoy = ahora.date()
     ayer = hoy - timedelta(days=1)
     semana_pasada = hoy - timedelta(days=7)
 
-    # Cargar todas las notificaciones del usuario
-    notificaciones = Notificacion.objects.using('conectati').filter(
-        usuario_id=usuario_id
-    ).order_by('-fecha')
+    notificaciones = Notificacion.objects.using('conectati') \
+        .filter(usuario_id=usuario_id) \
+        .select_related('emisor') \
+        .order_by('-fecha')
 
     grupo_hoy = []
     grupo_ayer = []
     grupo_semana = []
 
     for n in notificaciones:
-        if n.fecha.date() == hoy:
+        # Asignar la URL según el tipo de notificación
+        if n.tipo == 'comentario' and n.publicacion_id:
+            n.url_destino = reverse('post', args=[n.publicacion_id])
+        elif n.tipo == 'respuesta' and n.comentario_id:
+            n.url_destino = reverse('comentario_hilo', args=[n.comentario_id])
+        elif n.tipo == 'chat':
+            n.url_destino = reverse('chat')
+        elif n.tipo == 'amistad':
+            n.url_destino = reverse('amistades')
+        elif n.tipo == 'estrella' and n.publicacion_id:
+            n.url_destino = reverse('post', args=[n.publicacion_id])
+        else:
+            n.url_destino = None  # O "#" si prefieres
+
+        # Agrupación por fecha
+        fecha_notif = timezone.localtime(n.fecha).date()
+        if fecha_notif == hoy:
             grupo_hoy.append(n)
-        elif n.fecha.date() == ayer:
+        elif fecha_notif == ayer:
             grupo_ayer.append(n)
-        elif n.fecha.date() >= semana_pasada:
+        elif fecha_notif >= semana_pasada:
             grupo_semana.append(n)
 
     return render(request, 'app/notificaciones.html', {
@@ -305,6 +334,7 @@ def NotifyView(request):
         'grupo_ayer': grupo_ayer,
         'grupo_semana': grupo_semana,
     })
+
 
 def ChatView(request):
     if not request.session.get('usuario_id'):
@@ -349,7 +379,19 @@ def ChatView(request):
     })
 
 def SettingsView(request):
-    return render(request, 'app/configuracion.html', {})
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+
+    usuario_id = request.session['usuario_id']
+    configuracion = None
+    try:
+        configuracion = Configuracion.objects.using('conectati').get(usuario_id=usuario_id)
+    except Configuracion.DoesNotExist:
+        pass
+
+    return render(request, 'app/configuracion.html', {
+        'configuracion': configuracion
+    })
 
 def PostView(request, publicacion_id):
     if not request.session.get('usuario_id'):
@@ -518,14 +560,13 @@ def enviar_codigo(request):
                 email.content_subtype = "plain"
                 email.send()
             except Exception as email_error:
-                print(f"❌ Error enviando correo: {email_error}")
-                # Por ahora, continuamos sin enviar correo para testing
+                print(f"Error enviando correo: {email_error}")
                 pass
 
             return JsonResponse({'ok': True})
 
         except Exception as e:
-            print("❌ Error en enviar_codigo:", e)
+            print("Error en enviar_codigo:", e)
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
@@ -588,3 +629,22 @@ def cambiar_password(request):
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
 
 
+@require_POST
+def guardar_idioma(request):
+    idioma = request.POST.get("idioma", "es")
+
+    # Activar inmediatamente el idioma en la sesión del usuario
+    request.session[settings.LANGUAGE_COOKIE_NAME] = idioma
+    translation.activate(idioma)
+
+    # Guardar en la configuración del usuario
+    usuario_id = request.session.get('usuario_id')
+    if usuario_id:
+        try:
+            configuracion = Configuracion.objects.using('conectati').get(usuario_id=usuario_id)
+            configuracion.idioma = idioma
+            configuracion.save(using='conectati')
+        except Configuracion.DoesNotExist:
+            pass  # Si deseas, puedes crear la configuración por defecto aquí
+
+    return redirect(request.META.get("HTTP_REFERER", "/"))

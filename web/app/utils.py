@@ -7,8 +7,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.db.models import Q
 import json
+from django.utils.translation import gettext as _
 
-def crear_notificacion(usuario_destino, tipo, contenido, emisor=None, por_correo=False):
+def crear_notificacion(usuario_destino, tipo, contenido, emisor=None, por_correo=False, publicacion_id=None, comentario_id=None):
     """Funcion de utilidad para crear notificaciones"""
     if not usuario_destino:
         return
@@ -20,7 +21,9 @@ def crear_notificacion(usuario_destino, tipo, contenido, emisor=None, por_correo
         contenido=contenido,
         leida=False,
         por_correo=por_correo,
-        fecha=timezone.now()
+        fecha=timezone.now(),
+        publicacion_id=publicacion_id,
+        comentario_id=comentario_id
     )
 
 # Logica para procesar publicaciones
@@ -85,8 +88,30 @@ def marcar_notificaciones_leidas(request):
 
     usuario_id = request.session['usuario_id']
     Notificacion.objects.using('conectati').filter(usuario_id=usuario_id, leida=False).update(leida=True)
+    
     return JsonResponse({'ok': True})
 
+@csrf_exempt
+@require_POST
+def marcar_notificacion_individual(request):
+    """Marca como leída una notificación específica"""
+    if not request.session.get('usuario_id'):
+        return JsonResponse({'ok': False}, status=403)
+
+    try:
+        data = json.loads(request.body)
+        notif_id = data.get('id')
+        usuario_id = request.session['usuario_id']
+
+        notificacion = Notificacion.objects.using('conectati').get(id=notif_id, usuario_id=usuario_id)
+        notificacion.leida = True
+        notificacion.save(using='conectati')
+        return JsonResponse({'ok': True})
+
+    except Notificacion.DoesNotExist:
+        return JsonResponse({'ok': False, 'error': 'No encontrada'}, status=404)
+    except Exception as e:
+        return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
 def obtener_mensajes_chat(request):
     """Funcion de utilidad para obtener los mensajes de chat entre usuarios"""
@@ -147,8 +172,10 @@ def crear_comentario(request):
                     crear_notificacion(
                         usuario_destino=comentario_padre.usuario,
                         tipo="respuesta",
-                        contenido="respondió tu comentario",
-                        emisor=usuario
+                        contenido=_("respondió tu comentario"),
+                        emisor=usuario,
+                        publicacion_id=publicacion.id,
+                        comentario_id=comentario.id
                     )
             else:
                 # Comentario directo a publicación
@@ -156,8 +183,9 @@ def crear_comentario(request):
                     crear_notificacion(
                         usuario_destino=publicacion.usuario,
                         tipo="comentario",
-                        contenido="comentó tu publicación",
-                        emisor=usuario
+                        contenido=_("comentó tu publicación"),
+                        emisor=usuario,
+                        publicacion_id=publicacion.id
                     )
 
             nuevo_total = Comentario.objects.using('conectati').filter(publicacion=publicacion).count()
@@ -207,7 +235,7 @@ def dar_estrella(request, publicacion_id):
             crear_notificacion(
                 usuario_destino=publicacion.usuario,
                 tipo="estrella",
-                contenido=" dio estrella a tu publicación",
+                contenido=_(" dio estrella a tu publicación"),
                 emisor=Usuario.objects.using('conectati').get(id=user_id)
             )
         # Guardar registro
@@ -330,6 +358,12 @@ def enviar_solicitud_chat(request):
                 para_usuario_id=para_id,
                 estado='pendiente'
             )
+            crear_notificacion(
+                usuario_destino=Usuario.objects.using('conectati').get(id=para_id),
+                tipo='chat',
+                contenido=_(" te envió una solicitud de chat"),
+                emisor=Usuario.objects.using('conectati').get(id=de_id)
+            )
             return JsonResponse({'ok': True})
         except Exception as e:
             print("❌ Error solicitud chat:", e)
@@ -382,7 +416,7 @@ def aceptar_solicitud_chat(request):
                 }
             })
         except Exception as e:
-            print("❌ Error al aceptar solicitud de chat:", e)
+            print("Error al aceptar solicitud de chat:", e)
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
@@ -427,6 +461,12 @@ def enviar_solicitud_amistad(request):
                     de_usuario_id=de_id,
                     para_usuario_id=para_id,
                     estado='pendiente'
+                )
+                crear_notificacion(
+                    usuario_destino=Usuario.objects.using('conectati').get(id=para_id),
+                    tipo='amistad',
+                    contenido=_(" te envió una solicitud de amistad"),
+                    emisor=Usuario.objects.using('conectati').get(id=de_id)
                 )
                 return JsonResponse({'ok': True})
             else:

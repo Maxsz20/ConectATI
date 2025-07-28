@@ -1,5 +1,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
+  const { gettext } = window;
   const input = document.getElementById('inputBusqueda');
   const dropdown = document.getElementById('dropdownBuscador');
 
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdown.classList.remove('oculto');
 
     if (query.length === 0) {
-      contenedor.innerHTML = `<p class="sin-resultados">Escribe algo para buscar</p>`;
+      contenedor.innerHTML = `<p class="sin-resultados">${gettext("Escribe algo para buscar")}</p>`;
       return;
     }
 
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(data => {
         contenedor.innerHTML = '';
         if (!data.usuarios || data.usuarios.length === 0) {
-          contenedor.innerHTML = '<p class="sin-resultados">Sin resultados</p>';
+          contenedor.innerHTML = `<p class="sin-resultados">${gettext("Sin resultados")}</p>`;
           return;
         }
 
@@ -38,17 +39,17 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="acciones-buscador">
               ${
                 usuario.estado_amistad === 'aceptada'
-                  ? `<i class="fas fa-user-check" title="Ya son amigos"></i>`
+                  ? `<i class="fas fa-user-check" title="${gettext("Ya son amigos")}"></i>`
                   : usuario.estado_amistad === 'pendiente'
-                    ? `<span class="estado-pendiente"><i class="fas fa-clock"></i> Pendiente</span>`
-                    : `<button class="btn-agregar" data-id="${usuario.id}">Añadir</button>`
+                    ? `<span class="estado-pendiente"><i class="fas fa-clock"></i> ${gettext("Pendiente")}</span>`
+                    : `<button class="btn-agregar" data-id="${usuario.id}">${gettext("Añadir")}</button>`
               }
               ${
                 usuario.estado_chat === 'aceptada'
-                  ? `<a href="/app/chat"><i class="fas fa-comments icono-chat" title="Chatear"></i></a>`
+                  ? `<a href="/app/chat"><i class="fas fa-comments icono-chat" title="${gettext("Chatear")}"></i></a>`
                   : usuario.estado_chat === 'pendiente'
-                    ? `<span class="estado-pendiente"><i class="fas fa-clock"></i> Chat Pendiente</span>`
-                    : `<button class="btn-chat-solicitud" data-id="${usuario.id}"><i class="fas fa-comment-dots"></i> Chatear</button>`
+                    ? `<span class="estado-pendiente"><i class="fas fa-clock"></i> ${gettext("Chat Pendiente")}</span>`
+                    : `<button class="btn-chat-solicitud" data-id="${usuario.id}"><i class="fas fa-comment-dots"></i> ${gettext("Chatear")}</button>`
               }
             </div>`;
           contenedor.appendChild(div);
@@ -82,9 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(res => res.json())
       .then(data => {
         if (data.ok) {
-          e.target.outerHTML = `<span class="solicitud-enviada"><i class="fas fa-paper-plane"></i> Enviada</span>`;
+          e.target.outerHTML = `<span class="solicitud-enviada"><i class="fas fa-paper-plane"></i> ${gettext("Enviada")}</span>`;
         } else {
-          e.target.textContent = "Ya enviada";
+          e.target.textContent = gettext("Ya enviada");
           e.target.disabled = true;
           e.target.classList.add("btn-error");
         }
@@ -143,14 +144,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="nombre">${data.chat.nombre}</span>
                     <span>@${data.chat.username} · ahora</span>
                   </div>
-                  <p>Haz clic aquí para conversar</p>
+                  <p>${gettext("Haz clic aquí para conversar")}</p>
                 </div>
                 <i class="fas fa-envelope"></i>
               </div>`;
             panel.insertBefore(nuevoChat, panel.querySelector('h3:nth-of-type(2)'));
           }
 
-          mostrarMensajeVacioSiAplica('.panel-lateral', '.solicitud-preview', 'No tienes solicitudes de chat pendientes.');
+          mostrarMensajeVacioSiAplica('.panel-lateral', '.solicitud-preview', gettext("No tienes solicitudes de chat pendientes."));
         }
       });
     }
@@ -171,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const item = e.target.closest('.solicitud-preview');
           item.remove();
 
-          mostrarMensajeVacioSiAplica('.panel-lateral', '.solicitud-preview', 'No tienes solicitudes de chat pendientes.');
+          mostrarMensajeVacioSiAplica('.panel-lateral', '.solicitud-preview', gettext("No tienes solicitudes de chat pendientes."));
         }
       });
     }
