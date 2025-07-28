@@ -71,40 +71,45 @@
         </form>
 
         {% for post in publicaciones %}
-            <article class="post-container">
-                <div class="usuario">
-                    <a href="{% url 'ver_perfil_usuario' post.usuario.id %}" style="display:flex;align-items:center;text-decoration:none;color:inherit;">
-                        <img src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" class="profile-pic">
-                        <div class="datos">
-                            <strong>{{ post.usuario.nombre }}</strong>
-                            <span>@{{ post.usuario.username }} · {{ post.fecha|timesince }}</span>
-                        </div>
-                    </a>
-                </div>
-                <a href="{% url 'post' post.id %}" style="text-decoration: none; color: inherit;">
-                    <p class="contenido-post">{{ post.texto }}</p>
-                    {% if post.archivo_nombre %}
-                        <img class="imagen-post" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
-                    {% endif %}
+        <article class="post-container card-publicacion" data-url="{% url 'post' post.id %}">
+            <div class="usuario">
+                <a href="{% url 'ver_perfil_usuario' post.usuario.id %}" class="stop-click">
+                    <img src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" class="profile-pic">
+                    <div class="datos">
+                        <strong>{{ post.usuario.nombre }}</strong>
+                        <span>@{{ post.usuario.username }} · {{ post.fecha|timesince }}</span>
+                    </div>
                 </a>
-                <div class="acciones">
-                    <span class="estrella {% if post.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ post.id }}">
-                        <i class="fas fa-star"></i> <span class="contador">{{ post.estrellas }}</span>
-                    </span>                               
-                    <span><i class="far fa-comment comentario-btn"
+            </div>
+
+            <p class="contenido-post">{{ post.texto }}</p>
+
+            {% if post.archivo_nombre %}
+                <img class="imagen-post" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
+            {% endif %}
+
+            <div class="acciones">
+                <span class="estrella {% if post.id in estrellas_usuario %}marcada{% endif %} stop-click" data-id="{{ post.id }}">
+                    <i class="fas fa-star"></i> <span class="contador">{{ post.estrellas }}</span>
+                </span>
+
+                <span class="stop-click">
+                    <i class="far fa-comment comentario-btn"
                         data-id="{{ post.id }}"
+                        data-tipo="publicacion"
                         data-texto="{{ post.texto|escapejs }}"
                         data-nombre="{{ post.usuario.nombre }}"
                         data-username="@{{ post.usuario.username }}"
                         data-foto="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}"
                         data-imagen="{% if post.archivo_nombre %}/media/publicaciones/{{ post.archivo_nombre }}{% endif %}">
-                        </i><span class="contador-comentarios">{{ post.num_comentarios }}</span>
-                    </span>
-                </div>
-                <a href="{% url 'post' post.id %}" style="text-decoration: none; color: inherit;">
-                    <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
-                </a>
-            </article>
+                    </i>
+                    <span class="contador-comentarios">{{ post.num_comentarios }}</span>
+                </span>
+            </div>
+
+            <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
+        </article>
+
         {% empty %}
             <p style="text-align:center;">{% trans "No hay publicaciones aún." %}</p>
         {% endfor %}

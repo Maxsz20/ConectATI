@@ -92,7 +92,7 @@
 
   {% if publicaciones %}
     {% for post in publicaciones %}
-      <div class="post">
+      <div class="post card-publicacion" data-url="{% url 'post' post.id %}">
         <div class="post-header">
           <img class="avatar" src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" />
           <div class="info-texto">
@@ -100,12 +100,10 @@
             <span class="usuario">@{{ post.usuario.username }}</span>
           </div>
         </div>
-        <a href="{% url 'post' post.id %}" style="text-decoration: none; color: inherit;">
-          <p class="post-texto">{{ post.texto }}</p>
-          {% if post.archivo_nombre %}
-            <img class="post-image" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
-          {% endif %}
-        </a>
+        <p class="post-texto">{{ post.texto }}</p>
+        {% if post.archivo_nombre %}
+          <img class="post-image" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
+        {% endif %}
         <div class="post-acciones">
           <span class="estrella {% if post.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ post.id }}">
             <i class="fas fa-star"></i> <span class="contador">{{ post.estrellas }}</span>
@@ -124,6 +122,16 @@
 {% block extra_js %}
 {{ block.super }}
 <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const posts = document.querySelectorAll('.post');
+    posts.forEach(post => {
+      post.addEventListener('click', function() {
+        const url = this.getAttribute('data-url');
+        window.location.href = url;
+      });
+    });
+  });
 function enviarSolicitudAmistad(para_usuario_id) {
   var btn = document.getElementById('btn-aniadir-amigo');
   btn.disabled = true;

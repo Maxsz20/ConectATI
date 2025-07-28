@@ -232,7 +232,7 @@
   display: flex;
   justify-content: flex-end ;
   gap: 1rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #666;
   margin-bottom: 0.5rem;
 }
@@ -260,6 +260,16 @@
 
 .estrella.marcada i {
   color: gold;
+}
+.card-publicacion {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.usuario a{
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
 }
 
 @media (min-width: 877px) {

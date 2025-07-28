@@ -178,6 +178,10 @@
   padding: 0.6em 0.8em;
 }
 
+.card-publicacion {
+  cursor: pointer;
+}
+
 
 /* Franja blanca que se extiende a lo ancho */
 .franja-blanca {

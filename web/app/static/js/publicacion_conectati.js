@@ -20,6 +20,29 @@ document.addEventListener("DOMContentLoaded", () => {
       toast.style.display = "none";
     }, 3000);
   }
+  function inicializarPublicaciones() {
+    document.querySelectorAll(".card-comentario").forEach(card => {
+      card.addEventListener("click", function () {
+        const url = card.dataset.url;
+        if (url) window.location.href = url;
+      });
+    });
+    document.querySelectorAll(".card-publicacion").forEach(card => {
+      card.addEventListener("click", function () {
+        const url = card.dataset.url;
+        if (url) window.location.href = url;
+      });
+    });
+
+    document.querySelectorAll(".stop-click").forEach(el => {
+      el.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+    });
+  }
+
+  inicializarPublicaciones();
+
 
   // Función para abrir el modal de respuesta
   document.querySelectorAll(".comentario-btn").forEach(btn => {
@@ -135,7 +158,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (contenedorComentarios && data.comentario) {
             const nuevoComentario = document.createElement("div");
-            nuevoComentario.classList.add("comentario");
+            nuevoComentario.classList.add("comentario", "card-comentario");
+            nuevoComentario.setAttribute("data-url", `/app/comentario_hilo/${data.comentario.id}/`);
+
             nuevoComentario.innerHTML = `
               <img src="${data.comentario.foto}" alt="${data.comentario.nombre}" />
               <div class="contenido">
@@ -145,8 +170,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
                 <p>${data.comentario.texto}</p>
                 <div class="acciones">
-                  <span><i class="far fa-star"></i> 0</span>
-                  <span><i class="far fa-comment comentario-btn" data-usuario="@${data.comentario.username}"></i> 0</span>
+                  <span class="stop-click">
+                    <i class="far fa-comment comentario-btn stop-click"
+                      data-id="${data.comentario.id}"
+                      data-tipo="comentario"
+                      data-publicacion-id="${data.comentario.id_publicacion}"
+                      data-texto="${data.comentario.texto.replace(/"/g, '&quot;')}"
+                      data-nombre="${data.comentario.nombre}"
+                      data-username="@${data.comentario.username}"
+                      data-foto="${data.comentario.foto}">
+                    </i>
+                    <span class="contador-comentarios">0</span>
+                  </span>
                 </div>
                 <div class="meta">${data.comentario.fecha}</div>
               </div>
@@ -259,7 +294,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (respuestasVacias) {
               respuestasVacias.remove();
             }
-            nuevoComentario.classList.add("comentario", "respuesta");
+            nuevoComentario.classList.add("comentario", "respuesta", "card-comentario");
+            nuevoComentario.setAttribute("data-url", `/app/comentario_hilo/${data.comentario.id}/`);
+
             nuevoComentario.innerHTML = `
               <img src="${data.comentario.foto}" alt="${data.comentario.nombre}" />
               <div class="contenido">
@@ -267,16 +304,25 @@ document.addEventListener("DOMContentLoaded", () => {
                   <strong>${data.comentario.nombre}</strong>
                   <span>@${data.comentario.username} · ahora</span>
                 </div>
-                <a href="/app/comentario/${data.comentario.id}/" class="comentario comentario-clickable">
-                  <p>${data.comentario.texto}</p>
-                </a>
+
+                <p>${data.comentario.texto}</p>
+
                 <div class="acciones">
-                  <span><i class="far fa-star"></i> 0</span>
-                  <span><i class="far fa-comment comentario-btn" data-usuario="@${data.comentario.username}"></i> 0</span>
+                  <span class="stop-click">
+                    <i class="far fa-comment comentario-btn stop-click"
+                      data-id="${data.comentario.id}"
+                      data-tipo="comentario"
+                      data-publicacion-id="${data.comentario.id_publicacion}"
+                      data-texto="${data.comentario.texto.replace(/"/g, '&quot;')}"
+                      data-nombre="${data.comentario.nombre}"
+                      data-username="@${data.comentario.username}"
+                      data-foto="${data.comentario.foto}">
+                    </i>
+                    <span class="contador-comentarios">0</span>
+                  </span>
                 </div>
-                <a href="/app/comentario/${data.comentario.id}/" class="comentario comentario-clickable"> 
-                  <div class="meta">${data.comentario.fecha}</div>
-                </a>
+
+                <div class="meta">${data.comentario.fecha}</div>
               </div>
             `;
 

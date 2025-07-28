@@ -14,13 +14,14 @@
 <div class="contenedor-info">
     <section class="publicacion">
     <article class="post-principal">
-        <div class="usuario">
-        <img src="{% if publicacion.usuario.foto %}{{ publicacion.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ publicacion.usuario.nombre }}" />
-        <div class="datos">
-            <strong>{{ publicacion.usuario.nombre }}</strong>
-            <span>@{{ publicacion.usuario.username }} · {{ publicacion.fecha|timesince }}</span>
-        </div>
-
+        <a href="{% url 'ver_perfil_usuario' publicacion.usuario.id %}" class="stop-click">
+            <div class="usuario">
+            <img src="{% if publicacion.usuario.foto %}{{ publicacion.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ publicacion.usuario.nombre }}" />
+            <div class="datos">
+                <strong>{{ publicacion.usuario.nombre }}</strong>
+                <span>@{{ publicacion.usuario.username }} · {{ publicacion.fecha|timesince }}</span>
+            </div>
+        </a>
         {% if not es_propia %}
             {% if estado_amistad == "aceptada" %}
                 <button class="seguir" disabled>{% trans "Amigos" %}</button>
@@ -65,37 +66,43 @@
         <h3>{% trans "Comentarios" %}</h3>
         {% if comentarios %}
             {% for comentario in comentarios %}
-            <div class="comentario">
-                <img src="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ comentario.usuario.nombre }}" />
+                <div class="comentario card-comentario" data-url="{% url 'comentario_hilo' comentario.id %}">
+                <a href="{% url 'ver_perfil_usuario' comentario.usuario.id %}" class="stop-click">
+                    <img src="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ comentario.usuario.nombre }}" />
+                </a>
+                
                 <div class="contenido">
-                    <div class="usuario">
-                        <strong>{{ comentario.usuario.nombre }}</strong>
-                        <span>@{{ comentario.usuario.username }} · {{ comentario.fecha|timesince }}</span>
-                    </div>
-                    <a href="{% url 'comentario_hilo' comentario.id %}" class="comentario comentario-clickable">
-                        <p>{{ comentario.texto }}</p>
+                    <a href="{% url 'ver_perfil_usuario' comentario.usuario.id %}" class="stop-click">
+                        <div class="usuario">
+                            <strong>{{ comentario.usuario.nombre }}</strong>
+                            <span>@{{ comentario.usuario.username }} · {{ comentario.fecha|timesince }}</span>
+                        </div>
                     </a>
+
+                    <p>{{ comentario.texto }}</p>
+
                     <div class="acciones">
-                        <span>
-                            <i class="far fa-comment comentario-btn"
-                            data-id="{{ comentario.id }}"
-                            data-tipo="comentario"
-                            data-publicacion-id="{{ publicacion.id }}"
-                            data-texto="{{ comentario.texto|escapejs }}"
-                            data-nombre="{{ comentario.usuario.nombre }}"
-                            data-username="@{{ comentario.usuario.username }}"
-                            data-foto="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
-                            </i>{{ comentario.num_comentarios }}</span>
+                        <span class="stop-click">
+                        <i class="far fa-comment comentario-btn stop-click"
+                        data-id="{{ comentario.id }}"
+                        data-tipo="comentario"
+                        data-publicacion-id="{{ publicacion.id }}"
+                        data-texto="{{ comentario.texto|escapejs }}"
+                        data-nombre="{{ comentario.usuario.nombre }}"
+                        data-username="@{{ comentario.usuario.username }}"
+                        data-foto="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+                        </i>
+                        <span class="contador-comentarios">{{ comentario.num_comentarios }}</span>
+                    </span>
                     </div>
-                    <a href="{% url 'comentario_hilo' comentario.id %}" class="comentario comentario-clickable">    
-                        <div class="meta">{{ comentario.fecha|time:"H:i" }} · {{ comentario.fecha|date:"d/m/Y" }}</div>
-                    </a>
+
+                    <div class="meta">{{ comentario.fecha|time:"H:i" }} · {{ comentario.fecha|date:"d/m/Y" }}</div>
                 </div>
-            </div>
+                </div>
             {% endfor %}
-        {% else %}
-            <p style="text-align: center; color: #888; margin-top: 1rem;">{% trans "Sin comentarios" %}</p>
-        {% endif %}
+            {% else %}
+                <p style="text-align: center; color: #888; margin-top: 1rem;">{% trans "Sin comentarios" %}</p>
+            {% endif %}
     </div>
     </section>
     {% block panel_lateral %}

@@ -21,6 +21,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 
+  function inicializarPublicaciones() {
+    document.querySelectorAll(".card-publicacion").forEach(card => {
+      card.addEventListener("click", function () {
+        const url = card.dataset.url;
+        if (url) window.location.href = url;
+      });
+    });
+
+    document.querySelectorAll(".stop-click").forEach(el => {
+      el.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+    });
+  }
+
+  inicializarPublicaciones();
+
   // Abrir modal al hacer clic en el ícono de comentar
   document.querySelectorAll(".comentario-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {

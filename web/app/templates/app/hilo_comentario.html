@@ -15,24 +15,29 @@
 <div class="contenedor-info">
   <section class="publicacion">
     <!-- PUBLICACIÓN ORIGINAL -->
-    <article class="post-principal">
-      <div class="usuario">
-        <img src="{{ publicacion.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ publicacion.usuario.nombre }}" />
-        <div class="datos">
-          <strong>{{ publicacion.usuario.nombre }}</strong>
-          <span>@{{ publicacion.usuario.username }} · {{ publicacion.fecha|timesince }}</span>
-        </div>
+    <article class="post-principal card-publicacion" data-url="{% url 'post' publicacion.id %}">
+      <div class="usuario stop-click">
+        <a href="{% url 'ver_perfil_usuario' publicacion.usuario.id %}" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+          <img src="{{ publicacion.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ publicacion.usuario.nombre }}" />
+          <div class="datos">
+            <strong>{{ publicacion.usuario.nombre }}</strong>
+            <span>@{{ publicacion.usuario.username }} · {{ publicacion.fecha|timesince }}</span>
+          </div>
+        </a>
       </div>
+
       <p class="contenido-post">{{ publicacion.texto }}</p>
+
       {% if publicacion.archivo_nombre %}
         <img class="imagen-post" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
       {% endif %}
+
       <div class="acciones">
-        <span class="estrella {% if publicacion.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ publicacion.id }}">
-            <i class="fas fa-star"></i> <span class="contador">{{ publicacion.estrellas }}</span>
+        <span class="estrella {% if publicacion.id in estrellas_usuario %}marcada{% endif %} stop-click" data-id="{{ publicacion.id }}">
+          <i class="fas fa-star"></i> <span class="contador">{{ publicacion.estrellas }}</span>
         </span>
-        <span class="comentario-contenedor">
-          <i class="far fa-comment comentario-btn"
+        <span class="comentario-contenedor stop-click">
+          <i class="far fa-comment comentario-btn stop-click"
               data-id="{{ publicacion.id }}"
               data-tipo="publicacion"
               data-texto="{{ publicacion.texto|escapejs }}"
@@ -40,36 +45,48 @@
               data-username="@{{ publicacion.usuario.username }}"
               data-foto="{% if publicacion.usuario.foto %}{{ publicacion.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}"
               data-imagen="{% if publicacion.archivo_nombre %}/media/publicaciones/{{ publicacion.archivo_nombre }}{% endif %}">
-          </i><span class="contador-comentarios">{{ num_comentarios }}</span>
+          </i>
+          <span class="contador-comentarios">{{ num_comentarios }}</span>
         </span>
       </div>
+
       <div class="meta">{{ publicacion.fecha|time:"H:i" }} · {{ publicacion.fecha|date:"d/m/Y" }}</div>
       <div class="linea-hilo"></div> 
     </article>
 
+
     <!-- HILO ANTERIOR (PADRES DEL COMENTARIO ACTUAL) -->
     {% if hilo %}
       {% for c in hilo %}
-        <div class="comentario hilo-anterior">
-          <img src="{{ c.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ c.usuario.nombre }}">
+        <div class="comentario hilo-anterior card-comentario" data-url="{% url 'comentario_hilo' c.id %}">
+          <a href="{% url 'ver_perfil_usuario' c.usuario.id %}" class="stop-click">
+            <img src="{{ c.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ c.usuario.nombre }}">
+          </a>
           <div class="contenido">
-            <div class="usuario">
-              <strong>{{ c.usuario.nombre }}</strong>
-              <span>@{{ c.usuario.username }} · {{ c.fecha|timesince }}</span>
-            </div>
+            <a href="{% url 'ver_perfil_usuario' c.usuario.id %}" class="stop-click">
+              <div class="usuario">
+                <strong>{{ c.usuario.nombre }}</strong>
+                <span>@{{ c.usuario.username }} · {{ c.fecha|timesince }}</span>
+              </div>
+            </a>
+
             <p>{{ c.texto }}</p>
+
             <div class="acciones">
-              <span>
-                  <i class="far fa-comment comentario-btn"
-                  data-id="{{ c.id }}"
-                  data-tipo="comentario"
-                  data-publicacion-id="{{ publicacion.id }}"
-                  data-texto="{{ c.texto|escapejs }}"
-                  data-nombre="{{ c.usuario.nombre }}"
-                  data-username="@{{ c.usuario.username }}"
-                  data-foto="{% if c.usuario.foto %}{{ c.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
-                  </i>{{ c.num_comentarios }}</span>
+              <span class="stop-click">
+                <i class="far fa-comment comentario-btn stop-click"
+                    data-id="{{ c.id }}"
+                    data-tipo="comentario"
+                    data-publicacion-id="{{ publicacion.id }}"
+                    data-texto="{{ c.texto|escapejs }}"
+                    data-nombre="{{ c.usuario.nombre }}"
+                    data-username="@{{ c.usuario.username }}"
+                    data-foto="{% if c.usuario.foto %}{{ c.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+                </i>
+                <span class="contador-respuestas">{{ c.num_comentarios }}</span>
+              </span>
             </div>
+
             <div class="meta">{{ c.fecha|time:"H:i" }} · {{ c.fecha|date:"d/m/Y" }}</div>
           </div>
         </div>
@@ -79,12 +96,16 @@
 
     <!-- COMENTARIO ACTUAL -->
     <div class="comentario comentario-principal">
-      <img src="{{ comentario.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ comentario.usuario.nombre }}">
+      <a href="{% url 'ver_perfil_usuario' comentario.usuario.id %}">
+        <img src="{{ comentario.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ comentario.usuario.nombre }}">
+      </a>
       <div class="contenido">
-        <div class="usuario">
-          <strong>{{ comentario.usuario.nombre }}</strong>
-          <span>@{{ comentario.usuario.username }} · {{ comentario.fecha|timesince }}</span>
-        </div>
+        <a href="{% url 'ver_perfil_usuario' comentario.usuario.id %}">
+          <div class="usuario">
+            <strong>{{ comentario.usuario.nombre }}</strong>
+            <span>@{{ comentario.usuario.username }} · {{ comentario.fecha|timesince }}</span>
+          </div>
+        </a>
         <p>{{ comentario.texto }}</p>
         <div class="acciones">
           <span>
@@ -114,44 +135,41 @@
     </div>
 
     <!-- RESPUESTAS -->
-    <div class="comentarios">
-      <h3>{% trans "Respuestas" %}</h3>
-      {% if respuestas %}
-        {% for r in respuestas %}
-          <div class="comentario respuesta">
-            <img src="{{ r.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ r.usuario.nombre }}">
-            <div class="contenido">
-              <div class="usuario">
-                <strong>{{ r.usuario.nombre }}</strong>
-                <span>@{{ r.usuario.username }} · {{ r.fecha|timesince }}</span>
-              </div>
-              <a href="{% url 'comentario_hilo' r.id %}" class="comentario comentario-clickable">
-                <p>{{ r.texto }}</p>
-              </a>
-              <div class="acciones">
-                <span>
-                  <i class="far fa-comment comentario-btn"
-                      data-id="{{ r.id }}"
-                      data-tipo="comentario"
-                      data-publicacion-id="{{ publicacion.id }}"
-                      data-texto="{{ r.texto|escapejs }}"
-                      data-nombre="{{ r.usuario.nombre }}"
-                      data-username="@{{ r.usuario.username }}"
-                      data-foto="{% if r.usuario.foto %}{{ r.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
-                  </i>
-                  <span class="contador-respuestas" data-id="{{ r.id }}">{{ r.num_comentarios }}</span>
-                </span>
-              </div>
-              <a href="{% url 'comentario_hilo' r.id %}" class="comentario comentario-clickable">    
-                <div class="meta">{{ r.fecha|time:"H:i" }} · {{ r.fecha|date:"d/m/Y" }}</div>
-              </a>
+    {% for r in respuestas %}
+      <div class="comentario respuesta card-comentario" data-url="{% url 'comentario_hilo' r.id %}">
+        <a href="{% url 'ver_perfil_usuario' r.usuario.id %}" class="stop-click">
+          <img src="{{ r.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ r.usuario.nombre }}">
+        </a>
+        <div class="contenido">
+          <a href="{% url 'ver_perfil_usuario' r.usuario.id %}" class="stop-click">
+            <div class="usuario">
+              <strong>{{ r.usuario.nombre }}</strong>
+              <span>@{{ r.usuario.username }} · {{ r.fecha|timesince }}</span>
             </div>
+          </a>
+
+          <p>{{ r.texto }}</p>
+
+          <div class="acciones">
+            <span class="stop-click">
+              <i class="far fa-comment comentario-btn stop-click"
+                  data-id="{{ r.id }}"
+                  data-tipo="comentario"
+                  data-publicacion-id="{{ publicacion.id }}"
+                  data-texto="{{ r.texto|escapejs }}"
+                  data-nombre="{{ r.usuario.nombre }}"
+                  data-username="@{{ r.usuario.username }}"
+                  data-foto="{% if r.usuario.foto %}{{ r.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+              </i>
+              <span class="contador-respuestas" data-id="{{ r.id }}">{{ r.num_comentarios }}</span>
+            </span>
           </div>
-        {% endfor %}
-      {% else %}
-        <p class="respuestas-vacias" style="color: #666; text-align: center;">{% trans "No hay respuestas aún." %}</p>
-      {% endif %}
-    </div>
+
+          <div class="meta">{{ r.fecha|time:"H:i" }} · {{ r.fecha|date:"d/m/Y" }}</div>
+        </div>
+      </div>
+    {% endfor %}
+
   </section>
 
   {% block panel_lateral %}

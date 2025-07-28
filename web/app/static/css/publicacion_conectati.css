@@ -100,6 +100,7 @@
 
 .post-principal .acciones i {
   margin-right: 0.4rem;
+  font-size: 1rem;
 }
 
 .post-principal .meta {
@@ -228,6 +229,7 @@
 
 .comentario .acciones i {
   margin-right: 0.3rem;
+  font-size: 1rem;
 }
 
 .comentario .meta {
@@ -279,6 +281,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .usuario a{
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+  }
+
+  .card-comentario{
+    cursor: pointer;
   }
 
   .cancelar-modal {

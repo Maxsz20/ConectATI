@@ -19,6 +19,9 @@
 .post-principal .usuario img{
     margin-bottom: -40px;
 }
+.card-publicacion{
+    cursor: pointer;
+}
 
 @media (max-width: 876px) {
     .post-principal{
