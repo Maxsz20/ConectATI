@@ -261,28 +261,50 @@ def FeedView(request):
         return redirect('login')
 
     form = PublicacionForm()
+    usuario_id = request.session['usuario_id']
+
+    # Obtener IDs de amigos con amistad aceptada
+    amistades = Amistad.objects.using('conectati').filter(
+        Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id),
+        estado='aceptada'
+    )
+
+    amigos_ids = set()
+    for amistad in amistades:
+        if amistad.de_usuario_id == usuario_id:
+            amigos_ids.add(amistad.para_usuario_id)
+        else:
+            amigos_ids.add(amistad.de_usuario_id)
+
+    # Publicaciones públicas o privadas de amigos
     publicaciones = Publicacion.objects.using('conectati') \
-        .filter(privacidad='publica') \
+        .filter(
+            Q(privacidad='publica') |
+            Q(privacidad='privada', usuario_id__in=amigos_ids) |
+            Q(usuario_id=usuario_id)
+        ) \
         .annotate(num_comentarios=Count('comentario', filter=Q(comentario__respuesta_a__isnull=True))) \
         .order_by('-fecha')
 
-    estrellas_usuario = []
-    if request.session.get('usuario_id'):
-        user_id = request.session['usuario_id']
-        estrellas_usuario = Estrella.objects.using('conectati') \
-            .filter(usuario_id=user_id) \
-            .values_list('publicacion_id', flat=True)
+    # Estrellas del usuario
+    estrellas_usuario = Estrella.objects.using('conectati') \
+        .filter(usuario_id=usuario_id) \
+        .values_list('publicacion_id', flat=True)
+    
+    configuracion = Configuracion.objects.using('conectati').get(usuario_id=usuario_id)
 
+    # Manejo de publicación nueva
     if request.method == "POST":
         form = PublicacionForm(request.POST, request.FILES)
         nueva = procesar_publicacion(request, form)
         if nueva:
             return redirect('feed')
-    
+
     return render(request, 'app/feed.html', {
         'form': form,
         'publicaciones': publicaciones,
-        'estrellas_usuario': list(estrellas_usuario)
+        'estrellas_usuario': list(estrellas_usuario),
+        'configuracion': configuracion
     })
 
 def NotifyView(request):
@@ -314,7 +336,7 @@ def NotifyView(request):
         elif n.tipo == 'chat':
             n.url_destino = reverse('chat')
         elif n.tipo == 'amistad':
-            n.url_destino = reverse('amistades')
+            n.url_destino = reverse('friends')
         elif n.tipo == 'estrella' and n.publicacion_id:
             n.url_destino = reverse('post', args=[n.publicacion_id])
         else:
@@ -483,9 +505,12 @@ def PostMobileView(request):
         if nueva:
             return redirect('feed')
 
+    configuracion = Configuracion.objects.using('conectati').get(usuario_id=request.session['usuario_id'])        
+
     return render(request, 'app/publicar_mobile.html', {
         'form': form,
         'no_area_info': True,
+        'configuracion': configuracion
     })
 
 def ReplyMobileView(request, publicacion_id):
@@ -646,5 +671,22 @@ def guardar_idioma(request):
             configuracion.save(using='conectati')
         except Configuracion.DoesNotExist:
             pass  # Si deseas, puedes crear la configuración por defecto aquí
+
+    return redirect(request.META.get("HTTP_REFERER", "/"))
+
+@require_POST
+def guardar_privacidad(request):
+    valor = request.POST.get("privacidad", "").strip().lower()
+    es_privado = valor == "privado"
+
+    usuario_id = request.session.get("usuario_id")
+    if usuario_id:
+        try:
+            configuracion = Configuracion.objects.using("conectati").get(usuario_id=usuario_id)
+            configuracion.publicaciones_privadas = es_privado
+            configuracion.save(using="conectati")
+        except Configuracion.DoesNotExist:
+            # Aquí no se crea nada, solo se ignora si no existe
+            pass
 
     return redirect(request.META.get("HTTP_REFERER", "/"))

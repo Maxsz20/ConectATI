@@ -11,6 +11,7 @@
 {% block titulo_pagina_mobile %}{% trans "Configuración" %}{% endblock %}
 
 {% block contenido2 %}
+  <!-- Contenedor principal de la página de configuración. Dentro de este contenedor se encuentran los grupos de opciones de configuración y el panel lateral. -->
 <div class="contenedor-info">
   <section class="configuracion">
     <!-- TEMA -->
@@ -57,12 +58,31 @@
       <div class="selector-toggle">
         <input type="checkbox" id="togglePrivacidad" hidden />
         <label for="togglePrivacidad" class="btn-privacidad">
-          <span id="valorPrivacidad">{% trans "Privado" %}</span>
+          <span id="valorPrivacidad">
+            {% if configuracion and configuracion.publicaciones_privadas %}
+              {% trans "Privado" %}
+            {% else %}
+              {% trans "Público" %}
+            {% endif %}
+          </span>
           <i class="fas fa-chevron-down"></i>
         </label>
         <ul class="menu-privacidad">
-          <li onclick="cambiarOpcion('valorPrivacidad', 'Privado', 'togglePrivacidad')">{% trans "Privado" %}</li>
-          <li onclick="cambiarOpcion('valorPrivacidad', 'Público', 'togglePrivacidad')">{% trans "Público" %}</li>
+          <li 
+            data-spanid="valorPrivacidad" 
+            data-visible="{{ _('Privado') }}" 
+            data-toggleid="togglePrivacidad" 
+            data-value="privado"
+            onclick="handlePrivacidadClick(this)"
+          >{{ _('Privado') }}</li>
+          
+          <li 
+            data-spanid="valorPrivacidad" 
+            data-visible="{{ _('Público') }}" 
+            data-toggleid="togglePrivacidad" 
+            data-value="publico"
+            onclick="handlePrivacidadClick(this)"
+          >{{ _('Público') }}</li>
         </ul>
       </div>
     </div>
@@ -130,42 +150,25 @@
       <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
     {% endif %}
   </div>
-  {% endblock %}
 </div>
 
-<!-- FORMULARIO OCULTO PARA CAMBIO DE IDIOMA -->
+<!-- FORM OCULTO PARA CAMBIO DE IDIOMA -->
 <form id="formIdioma" method="POST" action="{% url 'guardar_idioma' %}">
   {% csrf_token %}
   <input type="hidden" name="idioma" id="inputIdioma">
 </form>
 {% endblock %}
 
+<!-- FORM OCULTO PARA CAMBIO DE PRIVACIDAD -->
+<form id="formPrivacidad" method="POST" action="{% url 'guardar_privacidad' %}">
+  {% csrf_token %}
+  <input type="hidden" name="privacidad" id="inputPrivacidadForm" value="">
+</form>
+{% endblock %}
+
+
 {% block boton_mobile %}{% endblock %}
 
 {% block extra_js %}
-<script>
-  function cambiarOpcion(spanID, valor, toggleID) {
-    document.getElementById(spanID).textContent = valor;
-    document.getElementById(toggleID).checked = false;
-
-    if (spanID === 'valorIdioma') {
-      const idioma = valor === 'EN' ? 'en' : 'es';
-      document.getElementById('inputIdioma').value = idioma;
-      document.getElementById('formIdioma').submit();
-    }
-  }
-
-  const input = document.getElementById('inputBusqueda');
-  const dropdown = document.getElementById('dropdownBuscador');
-
-  input?.addEventListener('focus', () => {
-    dropdown.classList.remove('oculto');
-  });
-
-  document.addEventListener('click', function (e) {
-    if (!document.querySelector('.buscador')?.contains(e.target)) {
-      dropdown.classList.add('oculto');
-    }
-  });
-</script>
+<script src="{% static 'js/configuracion_conecati.js' %}"></script>
 {% endblock %}

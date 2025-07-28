@@ -19,14 +19,32 @@
                 <img style="width: 50px; height: 50px; border-radius: 50%;" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
                 <div class="selector-toggle">
                     <input type="checkbox" id="togglePrivacidad" hidden>
-                    <input type="hidden" name="privacidad" id="inputPrivacidad" value="publica">
+
+                    <!-- Valor oculto real que se enviará en el formulario -->
+                    <input type="hidden" name="privacidad" id="inputPrivacidad"
+                            value="{% if configuracion and configuracion.publicaciones_privadas %}privada{% else %}publica{% endif %}">
+
+                    <!-- Etiqueta que muestra el texto al usuario -->
                     <label for="togglePrivacidad" class="btn-privacidad">
-                        <span id="valorPrivacidad">{% trans "Público" %}</span>
+                        <span id="valorPrivacidad">
+                        {% if configuracion and configuracion.publicaciones_privadas %}
+                            {{ _('Privado') }}
+                        {% else %}
+                            {{ _('Público') }}
+                        {% endif %}
+                        </span>
                         <i class="fas fa-chevron-down"></i>
                     </label>
+
+                    <!-- Opciones del dropdown -->
                     <ul class="menu-privacidad">
-                        <li onclick="seleccionarPrivacidad('publico')">{% trans "Público" %}</li>
-                        <li onclick="seleccionarPrivacidad('privado')">{% trans "Privado" %}</li>
+                        <li onclick="seleccionarPrivacidad(this)"
+                            data-value="publica"
+                            data-visible="{{ _('Público') }}">{{ _('Público') }}</li>
+
+                        <li onclick="seleccionarPrivacidad(this)"
+                            data-value="privada"
+                            data-visible="{{ _('Privado') }}">{{ _('Privado') }}</li>
                     </ul>
                 </div>
             </div>

@@ -146,12 +146,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Selector de privacidad
-  window.seleccionarPrivacidad = function (valor) {
-    document.getElementById("valorPrivacidad").textContent = valor;
-    document.getElementById("togglePrivacidad").checked = false;
+  window.seleccionarPrivacidad = function (elemento) {
+    const valor = elemento.dataset.value;          // publica o privada
+    const visible = elemento.dataset.visible;      // PÚBLICO o PRIVATE
+
     const inputPriv = document.getElementById("inputPrivacidad");
-    if (inputPriv) inputPriv.value = valor === gettext("Público") ? "publica" : "privada";
+    const label = document.getElementById("valorPrivacidad");
+    const toggle = document.getElementById("togglePrivacidad");
+
+    if (inputPriv) inputPriv.value = valor;
+    if (toggle) toggle.checked = false;
+    if (label) label.textContent = visible;
   };
+
+
 
   // Marcar estrella (like)
   document.querySelectorAll('.estrella').forEach(el => {

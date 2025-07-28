@@ -16,14 +16,26 @@
 
     <div class="selector-toggle">
       <input type="checkbox" id="togglePrivacidad" hidden />
-      <input type="hidden" name="privacidad" id="inputPrivacidad" value="publica">
+      <input type="hidden" name="privacidad" id="inputPrivacidad"
+       value="{% if configuracion and configuracion.publicaciones_privadas %}privada{% else %}publica{% endif %}">
       <label for="togglePrivacidad" class="btn-privacidad">
-        <span id="valorPrivacidad">{% trans "Público" %}</span>
+        <span id="valorPrivacidad">
+          {% if configuracion and configuracion.publicaciones_privadas %}
+            {{ _('Privado') }}
+          {% else %}
+            {{ _('Público') }}
+          {% endif %}
+        </span>
         <i class="fas fa-chevron-down"></i>
       </label>
       <ul class="menu-privacidad">
-        <li onclick="cambiarPrivacidad('publico')">{% trans 'Público' %}</li>
-        <li onclick="cambiarPrivacidad('privado')">{% trans 'Privado' %}</li>
+        <li onclick="seleccionarPrivacidadMobile(this)"
+            data-value="publica"
+            data-visible="{{ _('Público') }}">{{ _('Público') }}</li>
+
+        <li onclick="seleccionarPrivacidadMobile(this)"
+            data-value="privada"
+            data-visible="{{ _('Privado') }}">{{ _('Privado') }}</li>
       </ul>
     </div>
 
@@ -46,16 +58,16 @@
 </form>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    function cambiarPrivacidad(valor) {
-      document.getElementById("valorPrivacidad").textContent = valor;
-      document.getElementById("togglePrivacidad").checked = false;
+  function seleccionarPrivacidadMobile(elemento) {
+      const valor = elemento.dataset.value;           // publica o privada
+      const visible = elemento.dataset.visible;       // Público o Privado
 
-      const inputPriv = document.getElementById("inputPrivacidad");
-      if (inputPriv) {
-        inputPriv.value = valor === "{% trans 'Público' %}" ? "publica" : "privada";
-      }
-    }
+      document.getElementById("inputPrivacidad").value = valor;
+      document.getElementById("valorPrivacidad").textContent = visible;
+      document.getElementById("togglePrivacidad").checked = false;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
 
     const inputArchivo = document.getElementById("archivoInput");
     const previewContenedor = document.getElementById("previewImagen");
@@ -69,7 +81,7 @@
           const reader = new FileReader();
           reader.onload = function(e) {
             imagenPreview.src = e.target.result;
-            previewContenedor.style.display = "block";
+            previewContenedor.style.display = "flex";
           };
           reader.readAsDataURL(archivo);
         } else {
