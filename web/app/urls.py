@@ -20,6 +20,7 @@ urlpatterns = [
     path('editprofile/', views.EditProfileView, name='editprofile'),
     path('post_mobile/', views.PostMobileView, name='post_mobile'),
     path('reply_mobile/<int:publicacion_id>/', views.ReplyMobileView, name='reply_mobile'),
+    path('reply_mobile_comment/<int:comentario_id>/', views.ReplyToCommentMobileView, name='reply_mobile_comment'), 
     path('logout/', views.LogoutView, name='logout'),
     path('publicacion/<int:publicacion_id>/estrella/', views.dar_estrella, name='dar_estrella'),
     path('buscar-usuarios/', views.buscar_usuarios, name='buscar_usuarios'),

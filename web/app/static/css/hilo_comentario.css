@@ -4,7 +4,7 @@
 .linea-hilo {
   height: 90px;
   width: 2px;
-  background-color: #666;
+  background-color: var(--color-iconos);
   margin-left: 22px; /* Alineado con el centro del avatar (40px ancho) */
   margin-top: -50px; /* opcional: acercar a la card anterior */
   margin-bottom: -25px; /* opcional: quitar espacio extra */

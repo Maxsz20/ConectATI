@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Expansión dinámica del textarea principal (crear post)
+  // Expansión dinámica del textarea principal
   const textarea = document.querySelector(".crear-post textarea");
   if (textarea) {
     textarea.addEventListener("input", () => {
@@ -147,8 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Selector de privacidad
   window.seleccionarPrivacidad = function (elemento) {
-    const valor = elemento.dataset.value;          // publica o privada
-    const visible = elemento.dataset.visible;      // PÚBLICO o PRIVATE
+    const valor = elemento.dataset.value;      
+    const visible = elemento.dataset.visible;      
 
     const inputPriv = document.getElementById("inputPrivacidad");
     const label = document.getElementById("valorPrivacidad");
@@ -158,8 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (toggle) toggle.checked = false;
     if (label) label.textContent = visible;
   };
-
-
 
   // Marcar estrella (like)
   document.querySelectorAll('.estrella').forEach(el => {

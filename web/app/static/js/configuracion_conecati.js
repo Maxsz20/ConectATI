@@ -1,4 +1,4 @@
-// Cambiar idioma (solo EN o ES)
+// Cambiar idioma
 function cambiarOpcion(spanID, textoVisible, toggleID) {
   const span = document.getElementById(spanID);
   const toggle = document.getElementById(toggleID);
@@ -13,7 +13,7 @@ function cambiarOpcion(spanID, textoVisible, toggleID) {
   }
 }
 
-// Cambiar privacidad (envía al backend el valor real: "privado" o "publico")
+// Cambiar privacidad
 function handlePrivacidadClick(elemento) {
   const spanID = elemento.dataset.spanid;
   const textoVisible = elemento.dataset.visible; // Lo que se muestra en pantalla
@@ -35,7 +35,7 @@ function handlePrivacidadClick(elemento) {
   }
 }
 
-// Mostrar/ocultar dropdown del buscador (si existe)
+// Mostrar/ocultar dropdown del buscador
 const input = document.getElementById('inputBusqueda');
 const dropdown = document.getElementById('dropdownBuscador');
 

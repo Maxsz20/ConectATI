@@ -21,18 +21,28 @@
       <button class="btn-subir" form="form-responder" type="submit">{% trans "Subir" %}</button>
     </div>
 
-    <!-- Publicación a la que se responde -->
+    <!-- Publicación o comentario al que se responde -->
     <div class="publicacion-original">
-      <img class="imagen-perfil" src="{{ autor.foto|default:'/static/images/default_user.avif' }}" alt="{{ autor.nombre }}" />
-      <div class="contenido">
-        <strong>{{ autor.nombre }}</strong>
-        <span class="username">@{{ autor.username }}</span>
-        <p>{{ publicacion.texto }}</p>
-        {% if publicacion.archivo_nombre %}
-          <img class="imagen-mini" src="{% if publicacion.archivo_nombre %}/media/publicaciones/{{ publicacion.archivo_nombre }}{% endif %}" alt="{% trans 'Imagen de la publicación' %}" class="img-publicacion" />
-        {% endif %}
-      </div>
+      {% if comentario %}
+        <img class="imagen-perfil" src="{{ comentario.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ comentario.usuario.nombre }}" />
+        <div class="contenido">
+          <strong>{{ comentario.usuario.nombre }}</strong>
+          <span class="username">@{{ comentario.usuario.username }}</span>
+          <p>{{ comentario.texto }}</p>
+        </div>
+      {% else %}
+        <img class="imagen-perfil" src="{{ autor.foto|default:'/static/images/default_user.avif' }}" alt="{{ autor.nombre }}" />
+        <div class="contenido">
+          <strong>{{ autor.nombre }}</strong>
+          <span class="username">@{{ autor.username }}</span>
+          <p>{{ publicacion.texto }}</p>
+          {% if publicacion.archivo_nombre %}
+            <img class="imagen-mini" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}" class="img-publicacion" />
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
+
 
     <!-- Campo para responder -->
     <form id="form-responder" method="post" class="campo-respuesta">

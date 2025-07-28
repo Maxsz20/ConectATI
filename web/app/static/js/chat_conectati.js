@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
           linkPerfil.setAttribute("href", `/app/usuario/${usuarioId}/`);
         }
 
-        // Buscar el chat id asociado (puede estar en data-chat-id si lo agregas en Django)
+        // Buscar el chat id asociado
         let chatId = item.dataset.chatId;
         if (!chatId && item.getAttribute('data-chat-id')) chatId = item.getAttribute('data-chat-id');
 

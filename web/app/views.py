@@ -545,6 +545,47 @@ def ReplyMobileView(request, publicacion_id):
         'no_area_info': True
     })
 
+def ReplyToCommentMobileView(request, comentario_id):
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+    try:
+        comentario = Comentario.objects.using('conectati') \
+            .select_related('usuario', 'publicacion') \
+            .get(id=comentario_id)
+
+        publicacion = comentario.publicacion
+        autor = comentario.usuario
+        usuario_logueado = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
+
+    except Comentario.DoesNotExist:
+        messages.error(request, 'Comentario no encontrado.')
+        return redirect('feed')
+
+    error = None
+    if request.method == 'POST':
+        texto = request.POST.get('texto', '').strip()
+        if texto:
+            Comentario.objects.using('conectati').create(
+                publicacion=publicacion,
+                usuario=usuario_logueado,
+                texto=texto,
+                fecha=timezone.now(),
+                respuesta_a=comentario
+            )
+            return redirect('comentario_hilo', comentario.id)
+        else:
+            error = 'El comentario no puede estar vacío.'
+    
+    return render(request, 'app/responder_mobile.html', {
+        'publicacion': publicacion,
+        'autor': autor,
+        'comentario': comentario,
+        'usuario_logueado': usuario_logueado,
+        'error': error,
+        'no_area_info': True
+    })
+
+
 def SearchMobileView(request):
     return render(request, 'app/busqueda_mobile.html', {'no_area_info': True})
 
@@ -614,7 +655,7 @@ def verificar_codigo(request):
 
             # Guardar ID temporal en sesión para el siguiente paso
             request.session['recuperacion_usuario_id'] = recuperacion.usuario.id
-            recuperacion.delete()  # elimina el código usado
+            recuperacion.delete()
             return JsonResponse({'ok': True})
 
         except CodigoRecuperacion.DoesNotExist:
@@ -641,7 +682,7 @@ def cambiar_password(request):
                 return JsonResponse({'ok': False, 'error': 'Sesión expirada'}, status=403)
 
             usuario = Usuario.objects.using('conectati').get(id=usuario_id)
-            usuario.contrasena = make_password(nueva)  # Hashear la contraseña
+            usuario.contrasena = make_password(nueva)  # Hashear la nueva contraseña
             usuario.save(using='conectati')
             del request.session['recuperacion_usuario_id']
             return JsonResponse({'ok': True})
@@ -670,7 +711,7 @@ def guardar_idioma(request):
             configuracion.idioma = idioma
             configuracion.save(using='conectati')
         except Configuracion.DoesNotExist:
-            pass  # Si deseas, puedes crear la configuración por defecto aquí
+            pass 
 
     return redirect(request.META.get("HTTP_REFERER", "/"))
 
@@ -686,7 +727,6 @@ def guardar_privacidad(request):
             configuracion.publicaciones_privadas = es_privado
             configuracion.save(using="conectati")
         except Configuracion.DoesNotExist:
-            # Aquí no se crea nada, solo se ignora si no existe
             pass
 
     return redirect(request.META.get("HTTP_REFERER", "/"))

@@ -27,8 +27,16 @@ document.addEventListener("DOMContentLoaded", () => {
       e.stopPropagation();
       const isMobile = window.innerWidth <= 876;
       if (isMobile) {
-        const postId = btn.dataset.id;
-        window.location.href = `/app/reply_mobile/${postId}/`;
+
+        const tipo = btn.dataset.tipo;
+        const comentarioId = btn.dataset.id;
+        const publicacionId = btn.dataset.publicacionId;
+
+        if (tipo === "comentario" && comentarioId) {
+          window.location.href = `/app/reply_mobile_comment/${comentarioId}/`;
+        } else if (tipo === "publicacion" && publicacionId) {
+          window.location.href = `/app/reply_mobile/${publicacionId}/`;
+        }
         return;
       }
 
