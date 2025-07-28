@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import sys
+import io
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -39,12 +44,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'app',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -64,7 +71,10 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
                 'django.contrib.messages.context_processors.messages',
+                'app.context_processors.usuario_actual',
+                'app.context_processors.datos_chat_context',
             ],
         },
     },
@@ -82,11 +92,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent  # <- subimos hasta la 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'web' / 'db.sqlite3',
+        #'NAME': '/app/db.sqlite3', # <- ruta de la base de datos cuando se usa Docker
     },
     'conectati': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/app/db/ConectATI_db.db',
+        #'NAME': '/app/db/ConectATI_db.db', # <- ruta de la base de datos cuando se usa Docker
+        'NAME': BASE_DIR / 'web' / 'db' / 'ConectATI_db.db', # <- ruta de la base de datos cuando se usa python manage.py runserver
     }
 
 }
@@ -114,20 +126,43 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
+# Configuración de internacionalización
+LANGUAGE_CODE = 'es-ve'  # Código de idioma por defecto
+TIME_ZONE = 'America/Caracas'  # Zona horaria de Venezuela
+USE_I18N = True  # Activar sistema de internacionalización
+USE_L10N = True  # Activar formato de números y fechas localizados
 USE_TZ = True
+
+# Idiomas soportados
+LANGUAGES = [
+    ('es', 'Español'),
+    ('en', 'English'),
+]
+
+# Directorio donde se guardarán los archivos de traducción
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'web', 'locale'),
+]
+
+# Middleware para detectar el idioma del usuario
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'app.middleware.idioma_usuario.IdiomaUsuarioMiddleware', 
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = Path("/app/static")  # <- importante para que Django recoja ahí
+STATIC_ROOT = Path("/web/static")  # <- importante para que Django recoja ahí
 STATICFILES_DIRS = [
     BASE_DIR / 'web' / 'app' / 'static',  # <- donde están tus CSS, imágenes, etc.
 ]
@@ -138,3 +173,27 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATABASE_ROUTERS = ['db_router.ConectATIRouter']
 APPEND_SLASH = True
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'web', 'media')
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']  # Ajusta según el dominio si estás en otro entorno
+
+DEFAULT_CHARSET = 'utf-8'
+
+# Configuración para envío de correos
+# Para testing: usa console backend (muestra emails en consola)
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# OPCIÓN 1: Gmail con contraseña de aplicación (REQUIERE 2FA)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'conectatiUCV@gmail.com'
+EMAIL_HOST_PASSWORD = 'itjb jqpd ibfp pfkw'  # ← Contraseña de aplicación (NO la normal)
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_TIMEOUT = 60
+
+# Para volver a testing en consola:
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

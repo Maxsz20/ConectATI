@@ -1,0 +1,258 @@
+{% extends "app/base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Comentario" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/publicacion_conectati.css' %}">
+<link rel="stylesheet" href="{% static 'css/hilo_comentario.css' %}">
+{% endblock %}
+
+{% block titulo_pagina %}{% trans "Comentario" %}{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Comentario" %}{% endblock %}
+
+{% block contenido2 %}
+<div class="contenedor-info">
+  <section class="publicacion">
+    <!-- PUBLICACIÓN ORIGINAL -->
+    <article class="post-principal card-publicacion" data-url="{% url 'post' publicacion.id %}">
+      <div class="usuario stop-click">
+        <a href="{% url 'ver_perfil_usuario' publicacion.usuario.id %}" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+          <img src="{{ publicacion.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ publicacion.usuario.nombre }}" />
+          <div class="datos">
+            <strong>{{ publicacion.usuario.nombre }}</strong>
+            <span>@{{ publicacion.usuario.username }} · {{ publicacion.fecha|timesince }}</span>
+          </div>
+        </a>
+      </div>
+
+      <p class="contenido-post">{{ publicacion.texto }}</p>
+
+      {% if publicacion.archivo_nombre %}
+        <img class="imagen-post" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
+      {% endif %}
+
+      <div class="acciones">
+        <span class="estrella {% if publicacion.id in estrellas_usuario %}marcada{% endif %} stop-click" data-id="{{ publicacion.id }}">
+          <i class="fas fa-star"></i> <span class="contador">{{ publicacion.estrellas }}</span>
+        </span>
+        <span class="comentario-contenedor stop-click">
+          <i class="far fa-comment comentario-btn stop-click"
+              data-id="{{ publicacion.id }}"
+              data-tipo="publicacion"
+              data-texto="{{ publicacion.texto|escapejs }}"
+              data-nombre="{{ publicacion.usuario.nombre }}"
+              data-username="@{{ publicacion.usuario.username }}"
+              data-foto="{% if publicacion.usuario.foto %}{{ publicacion.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}"
+              data-imagen="{% if publicacion.archivo_nombre %}/media/publicaciones/{{ publicacion.archivo_nombre }}{% endif %}">
+          </i>
+          <span class="contador-comentarios">{{ num_comentarios }}</span>
+        </span>
+      </div>
+
+      <div class="meta">{{ publicacion.fecha|time:"H:i" }} · {{ publicacion.fecha|date:"d/m/Y" }}</div>
+      <div class="linea-hilo"></div> 
+    </article>
+
+
+    <!-- HILO ANTERIOR (PADRES DEL COMENTARIO ACTUAL) -->
+    {% if hilo %}
+      {% for c in hilo %}
+        <div class="comentario hilo-anterior card-comentario" data-url="{% url 'comentario_hilo' c.id %}">
+          <a href="{% url 'ver_perfil_usuario' c.usuario.id %}" class="stop-click">
+            <img src="{{ c.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ c.usuario.nombre }}">
+          </a>
+          <div class="contenido">
+            <a href="{% url 'ver_perfil_usuario' c.usuario.id %}" class="stop-click">
+              <div class="usuario">
+                <strong>{{ c.usuario.nombre }}</strong>
+                <span>@{{ c.usuario.username }} · {{ c.fecha|timesince }}</span>
+              </div>
+            </a>
+
+            <p>{{ c.texto }}</p>
+
+            <div class="acciones">
+              <span class="stop-click">
+                <i class="far fa-comment comentario-btn stop-click"
+                    data-id="{{ c.id }}"
+                    data-tipo="comentario"
+                    data-publicacion-id="{{ publicacion.id }}"
+                    data-texto="{{ c.texto|escapejs }}"
+                    data-nombre="{{ c.usuario.nombre }}"
+                    data-username="@{{ c.usuario.username }}"
+                    data-foto="{% if c.usuario.foto %}{{ c.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+                </i>
+                <span class="contador-respuestas">{{ c.num_comentarios }}</span>
+              </span>
+            </div>
+
+            <div class="meta">{{ c.fecha|time:"H:i" }} · {{ c.fecha|date:"d/m/Y" }}</div>
+          </div>
+        </div>
+        <div class="linea-hilo"></div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- COMENTARIO ACTUAL -->
+    <div class="comentario comentario-principal">
+      <a href="{% url 'ver_perfil_usuario' comentario.usuario.id %}">
+        <img src="{{ comentario.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ comentario.usuario.nombre }}">
+      </a>
+      <div class="contenido">
+        <a href="{% url 'ver_perfil_usuario' comentario.usuario.id %}">
+          <div class="usuario">
+            <strong>{{ comentario.usuario.nombre }}</strong>
+            <span>@{{ comentario.usuario.username }} · {{ comentario.fecha|timesince }}</span>
+          </div>
+        </a>
+        <p>{{ comentario.texto }}</p>
+        <div class="acciones">
+          <span>
+              <i class="far fa-comment comentario-btn"
+              data-id="{{ comentario.id }}"
+              data-tipo="comentario"
+              data-publicacion-id="{{ publicacion.id }}"
+              data-texto="{{ comentario.texto|escapejs }}"
+              data-nombre="{{ comentario.usuario.nombre }}"
+              data-username="@{{ comentario.usuario.username }}"
+              data-foto="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+              </i>{{ comentario.num_comentarios }}</span>
+        </div>
+        <div class="meta">{{ comentario.fecha|time:"H:i" }} · {{ comentario.fecha|date:"d/m/Y" }}</div>
+      </div>
+    </div>
+
+    <div class="form-respuesta">
+        <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
+        <input type="text" placeholder="{% trans 'Postea tu respuesta' %}" id="respuestaRapida" />
+        <button class="btn-responder"
+              id="btnResponderRapido"
+              data-publicacion-id="{{ publicacion.id }}"
+              {% if comentario.id %}data-comentario-id="{{ comentario.id }}"{% endif %}>
+          {% trans "Responder" %}
+        </button>
+    </div>
+
+    <!-- RESPUESTAS -->
+    {% for r in respuestas %}
+      <div class="comentario respuesta card-comentario" data-url="{% url 'comentario_hilo' r.id %}">
+        <a href="{% url 'ver_perfil_usuario' r.usuario.id %}" class="stop-click">
+          <img src="{{ r.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ r.usuario.nombre }}">
+        </a>
+        <div class="contenido">
+          <a href="{% url 'ver_perfil_usuario' r.usuario.id %}" class="stop-click">
+            <div class="usuario">
+              <strong>{{ r.usuario.nombre }}</strong>
+              <span>@{{ r.usuario.username }} · {{ r.fecha|timesince }}</span>
+            </div>
+          </a>
+
+          <p>{{ r.texto }}</p>
+
+          <div class="acciones">
+            <span class="stop-click">
+              <i class="far fa-comment comentario-btn stop-click"
+                  data-id="{{ r.id }}"
+                  data-tipo="comentario"
+                  data-publicacion-id="{{ publicacion.id }}"
+                  data-texto="{{ r.texto|escapejs }}"
+                  data-nombre="{{ r.usuario.nombre }}"
+                  data-username="@{{ r.usuario.username }}"
+                  data-foto="{% if r.usuario.foto %}{{ r.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+              </i>
+              <span class="contador-respuestas" data-id="{{ r.id }}">{{ r.num_comentarios }}</span>
+            </span>
+          </div>
+
+          <div class="meta">{{ r.fecha|time:"H:i" }} · {{ r.fecha|date:"d/m/Y" }}</div>
+        </div>
+      </div>
+    {% endfor %}
+
+  </section>
+
+  {% block panel_lateral %}
+  <div class="panel-lateral">
+      <h3>{% trans "Mensajes" %}</h3>
+      {% if chats %}
+          {% for chat in chats %}
+          <a href="{% url 'chat' %}">
+              <div class="mensaje-preview">
+              <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
+              <div class="mensaje-info">
+                  <div class="usuario">
+                  <span class="nombre">{{ chat.nombre }}</span>
+                  <span>@{{ chat.username }}</span>
+                  </div>
+                  <p>{% trans "Haz clic para conversar" %}</p>
+              </div>
+              <i class="fas fa-envelope"></i>
+              </div>
+          </a>
+          {% endfor %}
+      {% else %}
+          <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay mensajes." %}</div>
+      {% endif %}
+
+      <h3>{% trans "Solicitudes de mensajes" %}</h3>
+      {% if solicitudes_chat_pendientes %}
+          {% for solicitud in solicitudes_chat_pendientes %}
+          <div class="solicitud-preview">
+          <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
+          <div class="mensaje-info">
+              <div class="usuario">
+              <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
+              <span>@{{ solicitud.de_usuario.username }}</span>
+              </div>
+              <p>{% trans "¿Podemos hablar por aquí?" %}</p>
+          </div>
+          <div class="acciones">
+              <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+              <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
+          </div>
+          </div>
+          {% endfor %}
+      {% else %}
+          <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
+      {% endif %}
+  </div>
+  {% endblock %}
+{% endblock %}
+
+{% block extra_body_content %}
+<div class="modal-respuesta" id="modalRespuesta">
+  <div class="contenido-modal">
+    <div class="barra-superior-modal">
+      <a href="#" class="cancelar-modal" id="btnCancelarModal">{% trans "Cancelar" %}</a>
+      <button class="btn-subir" id="btnEnviarComentario">{% trans "Subir" %}</button>
+    </div>
+    <div class="publicacion-respuesta">
+      <img class="imagen-avatar" id="avatarPublicacion" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Avatar del autor' %}" />
+      <div class="contenido">
+        <strong id="nombreAutor">{% trans "Nombre del autor" %}</strong>
+        <p id="textoOriginal">{% trans "Texto original de la publicación o comentario" %}</p>
+        <img id="imagen-publicacion" class="imagen-mini" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen adjunta' %}" style="display: none;" />
+      </div>
+    </div>
+    <div class="campo-respuesta">
+      <img class="imagen-avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
+      <div class="respuesta-input">
+        <span class="respondiendo-a">{% trans "Respondiendo a" %} <span id="usuarioMencionado">@usuario</span></span>
+        <textarea id="inputRespuesta" placeholder="{% trans 'Escribe tu respuesta' %}"></textarea>
+        <input type="hidden" id="idPadreRespuesta" value="">
+        <input type="hidden" id="tipoPadre" value="">
+        <input type="hidden" id="idPublicacionOriginal" value="{{ publicacion.id }}">
+      </div>
+    </div>
+    <div class="acciones-respuesta">
+      <i class="fas fa-camera"></i>
+      <i class="fas fa-image"></i>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/publicacion_conectati.js' %}"></script>
+{% endblock %}

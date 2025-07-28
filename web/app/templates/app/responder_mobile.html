@@ -1,49 +1,63 @@
 {% extends "app/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Responder{% endblock %}
+{% block title %}{% trans "Responder" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/responder_mobile.css' %}">
 {% endblock %}
 
-{% block titulo_pagina_mobile %}Responder{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Responder" %}{% endblock %}
 
 {% block contenido %}
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
 
-
-  <!-- Área principal -->
   <main class="area-responder">
-
     <!-- Barra superior de acción -->
     <div class="barra-superior">
-      <a href="/app/post" class="cancelar">Cancelar</a>
-      <button class="btn-subir">Subir</button>
+      <a href="{% url 'post' publicacion.id %}" class="cancelar">{% trans "Cancelar" %}</a>
+      <button class="btn-subir" form="form-responder" type="submit">{% trans "Subir" %}</button>
     </div>
 
-    <!-- Publicación a la que se responde -->
+    <!-- Publicación o comentario al que se responde -->
     <div class="publicacion-original">
-      <img src="https://i.pravatar.cc/150?img=12" alt="Carlos Mendoza" />
-      <div class="contenido">
-        <strong>Carlos Mendoza</strong>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</p>
-      </div>
+      {% if comentario %}
+        <img class="imagen-perfil" src="{{ comentario.usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ comentario.usuario.nombre }}" />
+        <div class="contenido">
+          <strong>{{ comentario.usuario.nombre }}</strong>
+          <span class="username">@{{ comentario.usuario.username }}</span>
+          <p>{{ comentario.texto }}</p>
+        </div>
+      {% else %}
+        <img class="imagen-perfil" src="{{ autor.foto|default:'/static/images/default_user.avif' }}" alt="{{ autor.nombre }}" />
+        <div class="contenido">
+          <strong>{{ autor.nombre }}</strong>
+          <span class="username">@{{ autor.username }}</span>
+          <p>{{ publicacion.texto }}</p>
+          {% if publicacion.archivo_nombre %}
+            <img class="imagen-mini" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}" class="img-publicacion" />
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
+
 
     <!-- Campo para responder -->
-    <div class="campo-respuesta">
-      <img src="https://i.pravatar.cc/150?img=8" alt="Usuario actual" />
+    <form id="form-responder" method="post" class="campo-respuesta">
+      {% csrf_token %}
+      <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
       <div class="respuesta-input">
-        <span class="respondiendo-a">Respondiendo a <span>@carlosm</span></span>
-        <textarea placeholder="Escribe tu respuesta"></textarea>
+        <span class="respondiendo-a">{% trans "Respondiendo a" %} <span>@{{ autor.username }}</span></span>
+        <textarea name="texto" placeholder="{% trans 'Escribe tu respuesta' %}" required></textarea>
       </div>
-    </div>
+    </form>
 
     <!-- Iconos -->
     <div class="acciones-respuesta">
       <i class="fas fa-camera"></i>
       <i class="fas fa-image"></i>
-      <i class="fas fa-moon"></i>
     </div>
   </main>
 
@@ -54,5 +68,19 @@
     <a href="/amistades.html"><i class="fas fa-user-friends"></i></a>
     <a href="/chat.html"><i class="fas fa-envelope"></i></a>
   </nav>
+{% endblock %}
 
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const textarea = document.querySelector("#form-responder textarea[name='texto']");
+    if (textarea) {
+      textarea.addEventListener("input", function() {
+        this.style.height = "auto";
+        this.style.height = (this.scrollHeight) + "px";
+      });
+      textarea.style.height = (textarea.scrollHeight) + "px";
+    }
+  });
+</script>
 {% endblock %}

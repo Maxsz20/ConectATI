@@ -16,11 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import RedirectView
+from app.views import InicioRedirectView
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.i18n import JavaScriptCatalog
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(url='/app/feed/', permanent=False)),  # 👈 redirección
+    path('', InicioRedirectView, name='inicio_redirect'),
     path('app/', include('app.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 ]
+
+# SOLO para desarrollo: servir archivos MEDIA
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 

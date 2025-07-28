@@ -1,164 +1,174 @@
 {% extends "app/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Configuración{% endblock %}
+{% block title %}{% trans "Configuración" %}{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/configuracion_conectati.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/configuracion_conectati.css' %}" />
 {% endblock %}
 
-{% block titulo_pagina %}Configuración{% endblock %}
-{% block titulo_pagina_mobile %}Configuración{% endblock %}
+{% block titulo_pagina %}{% trans "Configuración" %}{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Configuración" %}{% endblock %}
 
 {% block contenido2 %}
+  <!-- Contenedor principal de la página de configuración. Dentro de este contenedor se encuentran los grupos de opciones de configuración y el panel lateral. -->
 <div class="contenedor-info">
-    <section class="configuracion">
-        <div class="grupo-opcion">
-            <label>Tema</label>
-            <div class="selector-toggle">
-                <input type="checkbox" id="toggleTema" hidden />
-                <label for="toggleTema" class="btn-privacidad">
-                    <span id="valorTema">Claro</span>
-                    <i class="fas fa-chevron-down"></i>
-                </label>
-                <ul class="menu-privacidad">
-                    <li onclick="cambiarOpcion('valorTema', 'Claro', 'toggleTema')">Claro</li>
-                    <li onclick="cambiarOpcion('valorTema', 'Oscuro', 'toggleTema')">Oscuro</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="grupo-opcion">
-            <label>Idioma</label>
-            <div class="selector-toggle">
-                <input type="checkbox" id="toggleIdioma" hidden />
-                <label for="toggleIdioma" class="btn-privacidad">
-                    <span id="valorIdioma">ES</span>
-                    <i class="fas fa-chevron-down"></i>
-                </label>
-                <ul class="menu-privacidad">
-                    <li onclick="cambiarOpcion('valorIdioma', 'ES', 'toggleIdioma')">ES</li>
-                    <li onclick="cambiarOpcion('valorIdioma', 'EN', 'toggleIdioma')">EN</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="grupo-opcion">
-            <label>Privacidad</label>
-            <div class="selector-toggle">
-                <input type="checkbox" id="togglePrivacidad" hidden />
-                <label for="togglePrivacidad" class="btn-privacidad">
-                    <span id="valorPrivacidad">Privado</span>
-                    <i class="fas fa-chevron-down"></i>
-                </label>
-                <ul class="menu-privacidad">
-                    <li onclick="cambiarOpcion('valorPrivacidad', 'Privado', 'togglePrivacidad')">Privado</li>
-                    <li onclick="cambiarOpcion('valorPrivacidad', 'Público', 'togglePrivacidad')">Público</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="grupo-opcion">
-            <label>Notificaciones</label>
-            <div class="selector-toggle">
-                <input type="checkbox" id="toggleNotificaciones" hidden />
-                <label for="toggleNotificaciones" class="btn-privacidad">
-                    <span id="valorNotificaciones">Sí</span>
-                    <i class="fas fa-chevron-down"></i>
-                </label>
-                <ul class="menu-privacidad">
-                    <li onclick="cambiarOpcion('valorNotificaciones', 'Sí', 'toggleNotificaciones')">Sí</li>
-                    <li onclick="cambiarOpcion('valorNotificaciones', 'No', 'toggleNotificaciones')">No</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-    {% block panel_lateral %}
-    <div class="panel-lateral">
-
-        <h3>Mensajes</h3>
-        <a href="{% url 'chat' %}">
-            <div class="mensaje-preview">
-                <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
-                <div class="mensaje-info">
-                    <div class="usuario">
-                        <span class="nombre">Ana García</span>
-                        <span>@anag · 4h</span>
-                    </div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div>
-                <i class="fas fa-envelope"></i>
-            </div>
-        </a>
-
-        <a href="{% url 'chat' %}">
-            <div class="mensaje-preview">
-                <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
-                <div class="mensaje-info">
-                    <div class="usuario">
-                        <span class="nombre">Ana García</span>
-                        <span>@anag · 4h</span>
-                    </div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div>
-                <i class="fas fa-envelope"></i>
-            </div>
-        </a>
-
-        <h3>Solicitudes de mensajes</h3>
-        <div class="solicitud-preview">
-            <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
-            <div class="mensaje-info">
-                <div class="usuario">
-                    <span class="nombre">Carlos Mendoza</span>
-                    <span>@carlosm · 3h</span>
-                </div>
-                <p>¿Podemos hablar por aquí?</p>
-            </div>
-            <div class="acciones">
-                <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
-                <i class="fas fa-times rechazar" title="Rechazar"></i>
-            </div>
-        </div>
-
-        <div class="solicitud-preview">
-            <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
-            <div class="mensaje-info">
-                <div class="usuario">
-                    <span class="nombre">Ana García</span>
-                    <span>@anag · 4h</span>
-                </div>
-                <p>¿Podemos hablar por aquí?</p>
-            </div>
-            <div class="acciones">
-                <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
-                <i class="fas fa-times rechazar" title="Rechazar"></i>
-            </div>
-        </div>
+  <section class="configuracion">
+    <!-- TEMA -->
+    <div class="grupo-opcion">
+      <label>{% trans "Tema" %}</label>
+      <div class="selector-toggle">
+        <input type="checkbox" id="toggleTema" hidden />
+        <label for="toggleTema" class="btn-privacidad">
+          <span id="valorTema">{% trans "Claro" %}</span>
+          <i class="fas fa-chevron-down"></i>
+        </label>
+        <ul class="menu-privacidad">
+          <li onclick="cambiarOpcion('valorTema', 'Claro', 'toggleTema')">{% trans "Claro" %}</li>
+          <li onclick="cambiarOpcion('valorTema', 'Oscuro', 'toggleTema')">{% trans "Oscuro" %}</li>
+        </ul>
+      </div>
     </div>
-    {% endblock %}
-</div>    
+
+    <!-- IDIOMA -->
+    <div class="grupo-opcion">
+      <label>{% trans "Idioma" %}</label>
+      <div class="selector-toggle">
+        <input type="checkbox" id="toggleIdioma" hidden />
+        <label for="toggleIdioma" class="btn-privacidad">
+          <span id="valorIdioma">
+            {% if configuracion and configuracion.idioma == "en" %}
+              {% trans "EN" %}
+            {% else %}
+              {% trans "ES" %}
+            {% endif %}
+          </span>
+          <i class="fas fa-chevron-down"></i>
+        </label>
+        <ul class="menu-privacidad">
+          <li onclick="cambiarOpcion('valorIdioma', 'ES', 'toggleIdioma')">{% trans "ES" %}</li>
+          <li onclick="cambiarOpcion('valorIdioma', 'EN', 'toggleIdioma')">{% trans "EN" %}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PRIVACIDAD -->
+    <div class="grupo-opcion">
+      <label>{% trans "Privacidad" %}</label>
+      <div class="selector-toggle">
+        <input type="checkbox" id="togglePrivacidad" hidden />
+        <label for="togglePrivacidad" class="btn-privacidad">
+          <span id="valorPrivacidad">
+            {% if configuracion and configuracion.publicaciones_privadas %}
+              {% trans "Privado" %}
+            {% else %}
+              {% trans "Público" %}
+            {% endif %}
+          </span>
+          <i class="fas fa-chevron-down"></i>
+        </label>
+        <ul class="menu-privacidad">
+          <li 
+            data-spanid="valorPrivacidad" 
+            data-visible="{{ _('Privado') }}" 
+            data-toggleid="togglePrivacidad" 
+            data-value="privado"
+            onclick="handlePrivacidadClick(this)"
+          >{{ _('Privado') }}</li>
+          
+          <li 
+            data-spanid="valorPrivacidad" 
+            data-visible="{{ _('Público') }}" 
+            data-toggleid="togglePrivacidad" 
+            data-value="publico"
+            onclick="handlePrivacidadClick(this)"
+          >{{ _('Público') }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- NOTIFICACIONES -->
+    <div class="grupo-opcion">
+      <label>{% trans "Notificaciones" %}</label>
+      <div class="selector-toggle">
+        <input type="checkbox" id="toggleNotificaciones" hidden />
+        <label for="toggleNotificaciones" class="btn-privacidad">
+          <span id="valorNotificaciones">{% trans "Sí" %}</span>
+          <i class="fas fa-chevron-down"></i>
+        </label>
+        <ul class="menu-privacidad">
+          <li onclick="cambiarOpcion('valorNotificaciones', 'Sí', 'toggleNotificaciones')">{% trans "Sí" %}</li>
+          <li onclick="cambiarOpcion('valorNotificaciones', 'No', 'toggleNotificaciones')">{% trans "No" %}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANEL LATERAL -->
+  {% block panel_lateral %}
+  <div class="panel-lateral">
+    <h3>{% trans "Mensajes" %}</h3>
+    {% if chats %}
+      {% for chat in chats %}
+        <a href="{% url 'chat' %}">
+          <div class="mensaje-preview">
+            <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
+            <div class="mensaje-info">
+              <div class="usuario">
+                <span class="nombre">{{ chat.nombre }}</span>
+                <span>@{{ chat.username }}</span>
+              </div>
+              <p>{% trans "Haz clic para conversar" %}</p>
+            </div>
+            <i class="fas fa-envelope"></i>
+          </div>
+        </a>
+      {% endfor %}
+    {% else %}
+      <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay mensajes." %}</div>
+    {% endif %}
+
+    <h3>{% trans "Solicitudes de mensajes" %}</h3>
+    {% if solicitudes_chat_pendientes %}
+      {% for solicitud in solicitudes_chat_pendientes %}
+        <div class="solicitud-preview">
+          <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
+          <div class="mensaje-info">
+            <div class="usuario">
+              <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
+              <span>@{{ solicitud.de_usuario.username }}</span>
+            </div>
+            <p>{% trans "¿Podemos hablar por aquí?" %}</p>
+          </div>
+          <div class="acciones">
+            <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+            <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- FORM OCULTO PARA CAMBIO DE IDIOMA -->
+<form id="formIdioma" method="POST" action="{% url 'guardar_idioma' %}">
+  {% csrf_token %}
+  <input type="hidden" name="idioma" id="inputIdioma">
+</form>
 {% endblock %}
+
+<!-- FORM OCULTO PARA CAMBIO DE PRIVACIDAD -->
+<form id="formPrivacidad" method="POST" action="{% url 'guardar_privacidad' %}">
+  {% csrf_token %}
+  <input type="hidden" name="privacidad" id="inputPrivacidadForm" value="">
+</form>
+{% endblock %}
+
 
 {% block boton_mobile %}{% endblock %}
 
 {% block extra_js %}
-<script>
-    function cambiarOpcion(spanID, valor, toggleID) {
-        document.getElementById(spanID).textContent = valor;
-        document.getElementById(toggleID).checked = false;
-    }
-    const input = document.getElementById('inputBusqueda');
-    const dropdown = document.getElementById('dropdownBuscador');
-
-    input.addEventListener('focus', () => {
-        dropdown.classList.remove('oculto');
-    });
-
-    document.addEventListener('click', function (e) {
-        if (!document.querySelector('.buscador').contains(e.target)) {
-            dropdown.classList.add('oculto');
-        }
-    });
-</script>
+<script src="{% static 'js/configuracion_conecati.js' %}"></script>
 {% endblock %}

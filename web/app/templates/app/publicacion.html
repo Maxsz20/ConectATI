@@ -1,114 +1,154 @@
 {% extends "app/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Publicación{% endblock %}
+{% block title %}{% trans "Publicación" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/publicacion_conectati.css' %}">
 {% endblock %}
 
-{% block titulo_pagina %}Publicación{% endblock %}
-{% block titulo_pagina_mobile %}Publicación{% endblock %}
+{% block titulo_pagina %}{% trans "Publicación" %}{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Publicación" %}{% endblock %}
 
 {% block contenido2 %}
 <div class="contenedor-info">
     <section class="publicacion">
     <article class="post-principal">
-        <div class="usuario">
-        <img src="https://i.pravatar.cc/150?img=20" alt="Carlos Mendoza" />
-        <div class="datos">
-            <strong>Carlos Mendoza</strong>
-            <span>@carlosm</span>
+        <a href="{% url 'ver_perfil_usuario' publicacion.usuario.id %}" class="stop-click">
+            <div class="usuario">
+            <img src="{% if publicacion.usuario.foto %}{{ publicacion.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ publicacion.usuario.nombre }}" />
+            <div class="datos">
+                <strong>{{ publicacion.usuario.nombre }}</strong>
+                <span>@{{ publicacion.usuario.username }} · {{ publicacion.fecha|timesince }}</span>
+            </div>
+        </a>
+        {% if not es_propia %}
+            {% if estado_amistad == "aceptada" %}
+                <button class="seguir" disabled>{% trans "Amigos" %}</button>
+            {% elif estado_amistad == "pendiente" %}
+                <button class="seguir" disabled>{% trans "Pendiente" %}</button>
+            {% else %}
+                <button class="seguir" onclick="enviarSolicitud('{{ publicacion.usuario.id }}', this)">{% trans "Añadir" %}</button>
+            {% endif %}
+        {% endif %}
+
         </div>
-        <button class="seguir">Añadir</button>
-        </div>
-        <p class="contenido-post">Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-        <img class="imagen-post" src="{% static 'images/gato.jfif' %}" alt="Imagen de la publicación">
+        <p class="contenido-post">{{ publicacion.texto }}</p>
+        {% if publicacion.archivo_nombre %}
+          <img class="imagen-post" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
+        {% endif %}
         <div class="acciones">
-        <span><i class="far fa-star"></i> 12</span>
-        <span><i class="far fa-comment comentario-btn" data-usuario="@carlosm"></i> 3</span>
+          <span class="estrella {% if publicacion.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ publicacion.id }}">
+              <i class="fas fa-star"></i> <span class="contador">{{ publicacion.estrellas }}</span>
+          </span>
+          <span class="comentario-contenedor">
+            <i class="far fa-comment comentario-btn"
+                data-id="{{ publicacion.id }}"
+                data-tipo="publicacion"
+                data-texto="{{ publicacion.texto|escapejs }}"
+                data-nombre="{{ publicacion.usuario.nombre }}"
+                data-username="@{{ publicacion.usuario.username }}"
+                data-foto="{% if publicacion.usuario.foto %}{{ publicacion.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}"
+                data-imagen="{% if publicacion.archivo_nombre %}/media/publicaciones/{{ publicacion.archivo_nombre }}{% endif %}">
+            </i><span class="contador-comentarios">{{ num_comentarios }}</span>
+          </span>
         </div>
-        <div class="meta">3:15 PM · 16/06/2025</div>
+        <div class="meta">{{ publicacion.fecha|time:"H:i" }} · {{ publicacion.fecha|date:"d/m/Y" }}</div>
     </article>
 
     <div class="form-respuesta">
-        <img src="https://i.pravatar.cc/150?img=47" alt="Mi perfil" />
-        <input type="text" placeholder="Postea tu respuesta" />
-        <button class="btn-responder">Responder</button>
+        <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
+        <input type="text" placeholder="{% trans 'Postea tu respuesta' %}" id="respuestaRapida" />
+        <button class="btn-responder" id="btnResponderRapido" data-publicacion-id="{{ publicacion.id }}">{% trans "Responder" %}</button>
     </div>
 
     <div class="comentarios">
-        <h3>Comentarios</h3>
+        <h3>{% trans "Comentarios" %}</h3>
+        {% if comentarios %}
+            {% for comentario in comentarios %}
+                <div class="comentario card-comentario" data-url="{% url 'comentario_hilo' comentario.id %}">
+                <a href="{% url 'ver_perfil_usuario' comentario.usuario.id %}" class="stop-click">
+                    <img src="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ comentario.usuario.nombre }}" />
+                </a>
+                
+                <div class="contenido">
+                    <a href="{% url 'ver_perfil_usuario' comentario.usuario.id %}" class="stop-click">
+                        <div class="usuario">
+                            <strong>{{ comentario.usuario.nombre }}</strong>
+                            <span>@{{ comentario.usuario.username }} · {{ comentario.fecha|timesince }}</span>
+                        </div>
+                    </a>
 
-        <div class="comentario">
-        <img src="https://i.pravatar.cc/150?img=47" alt="Daniel Rojas" />
-        <div class="contenido">
-            <div class="usuario">
-            <strong>Daniel Rojas</strong>
-            <span>@danroj · 2h</span>
-            </div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam.</p>
-            <div class="acciones">
-            <span><i class="far fa-star"></i> 2</span>
-            <span><i class="far fa-comment comentario-btn" data-usuario="@danroj"></i> 1</span>
-            </div>
-            <div class="meta">3:15 PM · 16/06/2025</div>
-        </div>
-        </div>
+                    <p>{{ comentario.texto }}</p>
 
-        <div class="comentario">
-        <img src="https://i.pravatar.cc/150?img=21" alt="Valentina García" />
-        <div class="contenido">
-            <div class="usuario">
-            <strong>Valentina García</strong>
-            <span>@valenng · 5h</span>
-            </div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <div class="acciones">
-            <span><i class="far fa-star"></i> 3</span>
-            <span><i class="far fa-comment comentario-btn" data-usuario="@valenng"></i> 0</span>
-            </div>
-            <div class="meta">3:15 PM · 16/06/2025</div>
-        </div>
-        </div>
+                    <div class="acciones">
+                        <span class="stop-click">
+                        <i class="far fa-comment comentario-btn stop-click"
+                        data-id="{{ comentario.id }}"
+                        data-tipo="comentario"
+                        data-publicacion-id="{{ publicacion.id }}"
+                        data-texto="{{ comentario.texto|escapejs }}"
+                        data-nombre="{{ comentario.usuario.nombre }}"
+                        data-username="@{{ comentario.usuario.username }}"
+                        data-foto="{% if comentario.usuario.foto %}{{ comentario.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}">
+                        </i>
+                        <span class="contador-comentarios">{{ comentario.num_comentarios }}</span>
+                    </span>
+                    </div>
+
+                    <div class="meta">{{ comentario.fecha|time:"H:i" }} · {{ comentario.fecha|date:"d/m/Y" }}</div>
+                </div>
+                </div>
+            {% endfor %}
+            {% else %}
+                <p style="text-align: center; color: #888; margin-top: 1rem;">{% trans "Sin comentarios" %}</p>
+            {% endif %}
     </div>
     </section>
     {% block panel_lateral %}
     <div class="panel-lateral">
-    <h3>Mensajes</h3>
-    {% for i in "12" %}
-    <a href="{% url 'chat' %}">
-        <div class="mensaje-preview">
-        <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
-        <div class="mensaje-info">
-            <div class="usuario">
-            <span class="nombre">Ana García</span>
-            <span>@anag · 4h</span>
-            </div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </div>
-        <i class="fas fa-envelope"></i>
-        </div>
-    </a>
-    {% endfor %}
+        <h3>{% trans "Mensajes" %}</h3>
+        {% if chats %}
+            {% for chat in chats %}
+            <a href="{% url 'chat' %}">
+                <div class="mensaje-preview">
+                <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
+                <div class="mensaje-info">
+                    <div class="usuario">
+                    <span class="nombre">{{ chat.nombre }}</span>
+                    <span>@{{ chat.username }}</span>
+                    </div>
+                    <p>{% trans "Haz clic para conversar" %}</p>
+                </div>
+                <i class="fas fa-envelope"></i>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay mensajes." %}</div>
+        {% endif %}
 
-    <h3>Solicitudes de mensajes</h3>
-    {% for i in "12" %}
-    <div class="solicitud-preview">
-        <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
-        <div class="mensaje-info">
-        <div class="usuario">
-            <span class="nombre">Carlos Mendoza</span>
-            <span>@carlosm · 3h</span>
-        </div>
-        <p>¿Podemos hablar por aquí?</p>
-        </div>
-        <div class="acciones">
-        <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
-        <i class="fas fa-times rechazar" title="Rechazar"></i>
-        </div>
-    </div>
-    {% endfor %}
+        <h3>{% trans "Solicitudes de mensajes" %}</h3>
+        {% if solicitudes_chat_pendientes %}
+            {% for solicitud in solicitudes_chat_pendientes %}
+            <div class="solicitud-preview">
+            <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
+            <div class="mensaje-info">
+                <div class="usuario">
+                <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
+                <span>@{{ solicitud.de_usuario.username }}</span>
+                </div>
+                <p>{% trans "¿Podemos hablar por aquí?" %}</p>
+            </div>
+            <div class="acciones">
+                <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
+            </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
+        {% endif %}
     </div>
     {% endblock %}
 {% endblock %}
@@ -117,74 +157,39 @@
 <div class="modal-respuesta" id="modalRespuesta">
   <div class="contenido-modal">
     <div class="barra-superior-modal">
-      <a href="#" class="cancelar-modal" onclick="cerrarModal()">Cancelar</a>
-      <button class="btn-subir">Subir</button>
+      <a href="#" class="cancelar-modal" id="btnCancelarModal">{% trans "Cancelar" %}</a>
+      <button class="btn-subir" id="btnEnviarComentario">{% trans "Subir" %}</button>
     </div>
 
     <div class="publicacion-respuesta">
-      <img src="https://i.pravatar.cc/150?img=12" alt="Carlos Mendoza" />
+      <img class="imagen-avatar" id="avatarPublicacion" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Avatar del autor' %}" />
       <div class="contenido">
-        <strong>Carlos Mendoza</strong>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam.</p>
+        <strong id="nombreAutor">{% trans "Nombre del autor" %}</strong>
+        <p id="textoOriginal">{% trans "Texto original de la publicación o comentario" %}</p>
+        <img id="imagen-publicacion" class="imagen-mini" src="/media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen adjunta' %}" style="display: none;" />
       </div>
     </div>
 
     <div class="campo-respuesta">
-      <img src="https://i.pravatar.cc/150?img=9" alt="Usuario actual" />
+      <img class="imagen-avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
       <div class="respuesta-input">
-        <span class="respondiendo-a">Respondiendo a <span>@carlosm</span></span>
-        <textarea placeholder="Escribe tu respuesta"></textarea>
+        <span class="respondiendo-a">{% trans "Respondiendo a" %} <span id="usuarioMencionado">@usuario</span></span>
+        <textarea id="inputRespuesta" placeholder="{% trans 'Escribe tu respuesta' %}"></textarea>
+        <input type="hidden" id="idPadreRespuesta" value="">
+        <input type="hidden" id="idPublicacionOriginal" value="{{ publicacion.id }}">
+        <input type="hidden" id="tipoPadre" value="publicacion">
       </div>
     </div>
 
     <div class="acciones-respuesta">
       <i class="fas fa-camera"></i>
       <i class="fas fa-image"></i>
-      <i class="fas fa-moon"></i>
     </div>
   </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const botonesComentar = document.querySelectorAll(".comentario-btn");
-    const modal = document.getElementById("modalRespuesta");
-
-    botonesComentar.forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const isMobile = window.innerWidth <= 876;
-
-        if (isMobile) {
-          window.location.href = "{% url 'reply_mobile' %}";
-        } else {
-          abrirModalRespuesta();
-        }
-      });
-    });
-
-    document.addEventListener("click", (e) => {
-      if (modal.style.display === "flex" &&
-          !document.querySelector(".contenido-modal").contains(e.target)) {
-        cerrarModal();
-      }
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        cerrarModal();
-      }
-    });
-  });
-
-  function abrirModalRespuesta() {
-    document.getElementById("modalRespuesta").style.display = "flex";
-  }
-
-  function cerrarModal() {
-    document.getElementById("modalRespuesta").style.display = "none";
-  }
-</script>
+<script src="{% static 'js/publicacion_conectati.js' %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 {% endblock %}

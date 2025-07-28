@@ -1,0 +1,32 @@
+{% load humanize i18n %}
+
+<a href="{{ n.url_destino }}" class="item-notif {% if not n.leida %}no-leida{% endif %}" data-id="{{ n.id }}">
+  <div class="icono-envuelto">
+    {% if n.tipo == 'comentario' or n.tipo == 'respuesta' %}
+      <i class="fas fa-reply reply" style="color: #6c63ff;"></i>
+    {% elif n.tipo == 'chat' %}
+      <i class="fas fa-envelope"></i>
+    {% elif n.tipo == 'amistad' %}
+      <i class="fas fa-user-friends" style="color: red;"></i>
+    {% elif n.tipo == 'estrella' %}
+      <i class="fas fa-star" style="color: #f5c100;"></i>
+    {% else %}
+      <i class="fas fa-bell"></i>
+    {% endif %}
+  </div>
+
+  <img src="{{ n.emisor.foto|default:'/static/images/default_user.avif' }}" alt="{% trans 'Usuario' %}" />
+
+  <div class="contenido">
+    <strong>@{{ n.emisor.username }}</strong>
+    {{ n.contenido }}
+
+    <div class="meta">
+      {% blocktrans with tiempo=n.fecha|naturaltime %}{{ tiempo }}{% endblocktrans %}
+    </div>
+
+    {% if n.por_correo %}
+      <div class="preview">{% trans "También se te envió esta notificación por correo." %}</div>
+    {% endif %}
+  </div>
+</a>

@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,10 +11,15 @@
   {% block extra_css %}{% endblock %}
 </head>
 <body>
+
+  <div id="toast" class="toast" style="display: none;">
+    <p id="toastMensaje">{% trans "¡Comentario publicado!" %}</p>
+  </div>
+
   <!-- Header mobile -->
   <div class="header-mobile">
     <a href="{% url 'profile' %}">
-      <img src="https://i.pravatar.cc/150?img=47" alt="Perfil" />
+      <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
     </a>
     <h1>
       <div class="logo-circulo"></div>
@@ -34,25 +39,25 @@
         <span>ConectATI</span>
       </div>
       <div class="menu">
-        <a href="{% url 'feed' %}"><span class="icono"><i class="fas fa-home"></i></span><span class="texto">Inicio</span></a>
-        <a href="{% url 'notifications' %}"><span class="icono"><i class="fas fa-bell"></i></span><span class="texto">Notificaciones</span></a>
-        <a href="{% url 'friends' %}"><span class="icono"><i class="fas fa-user-friends"></i></span><span class="texto">Amistades</span></a>
-        <a href="{% url 'chat' %}"><span class="icono"><i class="fas fa-envelope"></i></span><span class="texto">Mensajes</span></a>
-        <a href="{% url 'settings' %}"><span class="icono"><i class="fas fa-cog"></i></span><span class="texto">Configuración</span></a>
+        <a href="{% url 'feed' %}"><span class="icono"><i class="fas fa-home"></i></span><span class="texto">{% trans "Inicio" %}</span></a>
+        <a href="{% url 'notifications' %}"><span class="icono"><i class="fas fa-bell"></i></span><span class="texto">{% trans "Notificaciones" %}</span></a>
+        <a href="{% url 'friends' %}"><span class="icono"><i class="fas fa-user-friends"></i></span><span class="texto">{% trans "Amistades" %}</span></a>
+        <a href="{% url 'chat' %}"><span class="icono"><i class="fas fa-envelope"></i></span><span class="texto">{% trans "Mensajes" %}</span></a>
+        <a href="{% url 'settings' %}"><span class="icono"><i class="fas fa-cog"></i></span><span class="texto">{% trans "Configuración" %}</span></a>
       </div>
     </div>
 
     <div class="perfil-contenedor">
-      <a href="{% url 'login' %}" class="cerrar-sesion">Cerrar Sesión</a>
+      <a href="{% url 'logout' %}" class="cerrar-sesion">{% trans "Cerrar Sesión" %}</a>
       <a href="{% url 'profile' %}" class="perfil-detalle-a" style="text-decoration: none;">
         <div class="perfil-detalle">
-          <img src="https://i.pravatar.cc/150?img=47" alt="Daniel" />
+          <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
           <div class="info">
             <div class="nombre">
-              <strong>Daniel Rojas</strong>
+              <strong>{{ usuario_logueado.nombre }}</strong>
               <span class="puntos">●●●</span>
             </div>
-            <small>@danroj</small>
+            <small>@{{ usuario_logueado.username }}</small>
           </div>
         </div>
       </a>
@@ -73,29 +78,14 @@
         <div class="encabezado-chat">
           <div class="buscador">
             <i class="fas fa-search"></i>
-            <input type="text" id="inputBusqueda" placeholder="Buscar..." />
+            <input type="text" id="inputBusqueda" placeholder="{% trans 'Buscar...' %}" />
             <div class="dropdown-resultados oculto" id="dropdownBuscador">
               <div class="header-dropdown">
-                <span>Recientes</span>
-                <a href="#">Ver todo</a>
+                <span>{% trans "Recientes" %}</span>
+                <a href="#">{% trans "Ver todo" %}</a>
               </div>
-
-              <div class="usuario-busqueda">
-                <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
-                <div class="info">
-                  <strong>@anag</strong>
-                  <small>Ana García · 2 nuevos posts</small>
-                </div>
-                <i class="fas fa-times"></i>
-              </div>
-
-              <div class="usuario-busqueda">
-                <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" />
-                <div class="info">
-                  <strong>@carlosm</strong>
-                  <small>Carlos Mendoza</small>
-                </div>
-                <i class="fas fa-times"></i>
+              <div class="usuarios-buscados">
+                <!-- Aquí se agregan los resultados -->
               </div>
             </div>
           </div>
@@ -117,7 +107,7 @@
     <a href="{% url 'post_mobile' %}">
       <div class="boton-publicar-mobile">
         <div class="burbuja">
-          <span class="texto">Publicar</span>
+          <span class="texto">{% trans "Publicar" %}</span>
           <div class="icono"><i class="fas fa-plus"></i></div>
         </div>
       </div>
@@ -135,22 +125,8 @@
   {% block extra_body_content%}
   {% endblock %}
 
-  <script>
-    const input = document.getElementById('inputBusqueda');
-    const dropdown = document.getElementById('dropdownBuscador');
-
-    if (input && dropdown) {
-      input.addEventListener('focus', () => {
-        dropdown.classList.remove('oculto');
-      });
-
-      document.addEventListener('click', function (e) {
-        if (!document.querySelector('.buscador').contains(e.target)) {
-          dropdown.classList.add('oculto');
-        }
-      });
-    }
-  </script>
+  <script src="{% static 'js/base.js' %}"></script>
+  <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 
   {% block extra_js %}{% endblock %}
 </body>

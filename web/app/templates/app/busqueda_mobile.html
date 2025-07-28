@@ -1,7 +1,7 @@
 {% extends 'app/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Busqueda{% endblock %}
+{% block title %}{% trans "Busqueda" %}{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/busqueda_mobile.css' %}">
@@ -12,70 +12,27 @@
   <div class="buscador-busqueda">
     <div class="campo-busqueda">
       <i class="fas fa-search"></i>
-      <input type="text" placeholder="Buscar..." />
+      <input type="text" id="inputBusqueda" placeholder="{% trans 'Buscar...' %}" autocomplete="off" />
     </div>
-    <a class="cancelar" href="#">Cancelar</a>
   </div>
 
-  <!-- Filtro y resultados -->
-  <div class="busqueda-contenido">
-    <div class="filtro">
-      <span>Recientes</span>
-      <a href="#">Ver todo</a>
-    </div>
+  <div class="filtro">
+    <span>{% trans "Recientes" %}</span>
+    <a href="#">{% trans "Ver todo" %}</a>
+  </div>
 
-    <div class="usuario-busqueda">
-      <img src="https://i.pravatar.cc/150?img=47" alt="Ana García" />
-      <div class="info">
-        <strong>@anag</strong>
-        <small>Ana García · 2 nuevos posts</small>
-      </div>
-      <i class="fas fa-times"></i>
-    </div>
-
-    <div class="usuario-busqueda">
-      <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" />
-      <div class="info">
-        <strong>@carlosm</strong>
-        <small>Carlos Mendoza</small>
-      </div>
-      <i class="fas fa-times"></i>
-    </div>
-
-    <div class="usuario-busqueda">
-      <img src="https://i.pravatar.cc/150?img=13" alt="Daniel" />
-      <div class="info">
-        <strong>@danroj</strong>
-        <small>Daniel Rojas · 1 nuevo post</small>
-      </div>
-      <i class="fas fa-times"></i>
-    </div>
-
-    <div class="usuario-busqueda">
-      <img src="https://i.pravatar.cc/150?img=8" alt="Valentina" />
-      <div class="info">
-        <strong>@valenng</strong>
-        <small>Valentina García</small>
-      </div>
-      <i class="fas fa-times"></i>
-    </div>
-
-    <div class="usuario-busqueda">
-      <img src="https://i.pravatar.cc/150?img=5" alt="Juan" />
-      <div class="info">
-        <strong>@juanp</strong>
-        <small>Juan Perez</small>
-      </div>
-      <i class="fas fa-times"></i>
+  <div class="busqueda-contenido" id="dropdownBuscador">
+    <div class="usuarios-buscados">
+      <!-- Se insertan con JS -->
     </div>
   </div>
 
   <!-- Menú mobile -->
   <div class="menu-mobile">
-    <a href="/feed.html"><i class="fas fa-home"></i></a>
-    <a href="/busqueda_mobile.html"><i class="fas fa-search"></i></a>
-    <a href="/amistades.html"><i class="fas fa-user-friends"></i></a>
-    <a href="/chat.html"><i class="fas fa-envelope"></i></a>
+    <a href="{% url 'feed' %}"><i class="fas fa-home"></i></a>
+    <a href="{% url 'search_mobile' %}"><i class="fas fa-search"></i></a>
+    <a href="{% url 'friends' %}"><i class="fas fa-user-friends"></i></a>
+    <a href="{% url 'chat' %}"><i class="fas fa-envelope"></i></a>
   </div>
 {% endblock %}
 

@@ -1,83 +1,122 @@
 {% extends "app/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Amistades{% endblock %}
+{% block title %}{% trans "Amistades" %}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/amistades_conectati.css' %}">
 {% endblock %}
 
-{% block titulo_pagina %}Amistades{% endblock %}
-{% block titulo_pagina_mobile %}Amistades{% endblock %}
+{% block titulo_pagina %}{% trans "Amistades" %}{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Amistades" %}{% endblock %}
 
 {% block contenido2 %}
 <div class="contenedor-info">
   <div class="columna-central">
     <section class="lista-amigos">
-      {% for i in "12345" %}
-      <div class="item-amigo">
-        <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
-        <div class="contenido">
-          <strong>@anag</strong> <span class="nombre">Ana García</span>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+      {% if amigos %}
+        {% for amigo in amigos %}
+          <div class="item-amigo card-amigo">
+            <a href="{% url 'ver_perfil_usuario' amigo.id %}" class="item-amigo-link">
+              <img src="{{ amigo.foto|default:'/static/images/default_user.avif' }}" alt="{{ amigo.nombre }}" />
+              <div class="contenido">
+                <strong>@{{ amigo.username }}</strong> <span class="nombre">{{ amigo.nombre }}</span>
+                <p>{{ amigo.descripcion|default:"" }}</p>
+              </div>
+            </a>
+            <div class="acciones-amigos">
+              <i class="fas fa-user-slash eliminar" title="{% trans 'Eliminar amigo' %}" data-id="{{ amigo.amistad_id }}"></i>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="mensaje-vacio-chat" id="mensaje-sin-amigos" style="color: #888; text-align: center; padding: 1rem 0;">
+          {% trans "No tienes amigos aún." %}
         </div>
-        <i class="fas fa-user-slash eliminar"></i>
-      </div>
-      {% endfor %}
+      {% endif %}
     </section>
 
     <section class="solicitudes">
-      <h3>Solicitudes de Amistad</h3>
-      {% for i in "12345" %}
-      <div class="item-solicitud">
-        <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
-        <div class="contenido">
-          <strong>@carlosm</strong> <span class="nombre">Carlos Mendoza</span>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+      <h3>{% trans "Solicitudes de Amistad" %}</h3>
+      {% if solicitudes %}
+        {% for solicitud in solicitudes %}
+          {% with usuario=solicitud.de_usuario %}
+            <div class="item-solicitud">
+              <img src="{{ usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ usuario.nombre }}" />
+              <div class="contenido">
+                <strong>@{{ usuario.username }}</strong> <span class="nombre">{{ usuario.nombre }}</span>
+                <p>{{ usuario.descripcion|default:"" }}</p>
+              </div>
+              <div class="acciones">
+                <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
+              </div>
+            </div>
+          {% endwith %}
+        {% endfor %}
+      {% else %}
+        <div class="mensaje-vacio-solicitudes" id="mensaje-sin-solicitudes" style="color: #888; text-align: center; padding: 1rem 0;">
+          {% trans "No tienes solicitudes de amistad." %}
         </div>
-        <div class="acciones">
-          <i class="fas fa-check aceptar" title="Aceptar"></i>
-          <i class="fas fa-times rechazar" title="Rechazar"></i>
-        </div>
-      </div>
-      {% endfor %}
+      {% endif %}
     </section>
+
   </div>
 
+  {% block panel_lateral %}
   <div class="panel-lateral">
-    <h3>Mensajes</h3>
-    {% for i in "12" %}
-    <a href="#">
-      <div class="mensaje-preview">
-        <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
-        <div class="mensaje-info">
-          <div class="usuario">
-            <span class="nombre">Ana García</span>
-            <span>@anag · 4h</span>
+      <h3>{% trans "Mensajes" %}</h3>
+      {% if chats %}
+          {% for chat in chats %}
+          <a href="{% url 'chat' %}">
+              <div class="mensaje-preview">
+              <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
+              <div class="mensaje-info">
+                  <div class="usuario">
+                  <span class="nombre">{{ chat.nombre }}</span>
+                  <span>@{{ chat.username }}</span>
+                  </div>
+                  <p>{% trans "Haz clic para conversar" %}</p>
+              </div>
+              <i class="fas fa-envelope"></i>
+              </div>
+          </a>
+          {% endfor %}
+      {% else %}
+          <div id="mensaje-sin-mensajes" class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">
+            {% trans "No hay mensajes." %}
           </div>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </div>
-        <i class="fas fa-envelope"></i>
-      </div>
-    </a>
-    {% endfor %}
+      {% endif %}
 
-    <h3>Solicitudes de mensajes</h3>
-    {% for i in "12" %}
-    <div class="solicitud-preview">
-      <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
-      <div class="mensaje-info">
-        <div class="usuario">
-          <span class="nombre">Carlos Mendoza</span>
-          <span>@carlosm · 3h</span>
-        </div>
-        <p>¿Podemos hablar por aquí?</p>
-      </div>
-      <div class="acciones">
-        <a href="#"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
-        <i class="fas fa-times rechazar" title="Rechazar"></i>
-      </div>
-    </div>
-    {% endfor %}
+      <h3>{% trans "Solicitudes de mensajes" %}</h3>
+      {% if solicitudes_chat_pendientes %}
+          {% for solicitud in solicitudes_chat_pendientes %}
+          <div class="solicitud-preview">
+          <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
+          <div class="mensaje-info">
+              <div class="usuario">
+              <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
+              <span>@{{ solicitud.de_usuario.username }}</span>
+              </div>
+              <p>{% trans "¿Podemos hablar por aquí?" %}</p>
+          </div>
+          <div class="acciones">
+              <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+              <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
+          </div>
+          </div>
+          {% endfor %}
+      {% else %}
+          <div style="color: #888; text-align: center; padding: 1rem 0;">
+            {% trans "No tienes solicitudes de chat pendientes." %}
+          </div>
+      {% endif %}
   </div>
+  {% endblock %}
+  
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/amistades_conectati.js' %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 {% endblock %}

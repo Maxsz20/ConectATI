@@ -6,10 +6,13 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.utils import timezone
+from datetime import timedelta
 
 class Usuario(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.TextField()
+    username = models.TextField(unique=True) 
     email = models.TextField(unique=True)
     ci = models.TextField(unique=True)
     foto = models.TextField(blank=True, null=True)
@@ -29,7 +32,7 @@ class Usuario(models.Model):
         app_label = 'app'
 
     def __str__(self):
-        return f"Usuario: {self.nombre} ({self.email})"
+        return f"Usuario: {self.nombre} {self.username} ({self.email})"
 
 
 class Amistad(models.Model):
@@ -96,12 +99,15 @@ class Mensaje(models.Model):
 
 
 class Notificacion(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)  # receptor
+    emisor = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True, blank=True, related_name='notificaciones_emitidas')  # nuevo campo
     tipo = models.TextField(blank=True, null=True)
     contenido = models.TextField(blank=True, null=True)
-    leida = models.BooleanField(blank=True, null=True)
-    por_correo = models.BooleanField(blank=True, null=True)
+    leida = models.BooleanField(blank=True, null=True, default=False)
+    por_correo = models.BooleanField(blank=True, null=True, default=False)
     fecha = models.DateTimeField(blank=True, null=True)
+    publicacion_id = models.IntegerField(blank=True, null=True)
+    comentario_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -112,12 +118,51 @@ class Notificacion(models.Model):
 class Publicacion(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     texto = models.TextField(blank=True, null=True)
-    archivo = models.TextField(blank=True, null=True)
+    archivo_nombre = models.TextField(blank=True, null=True)
     privacidad = models.TextField(blank=True, null=True)
     fecha = models.DateTimeField(blank=True, null=True)
+    estrellas = models.IntegerField(default=0)
 
     class Meta:
         managed = False
         db_table = 'Publicacion'
         app_label = 'app'
 
+class Estrella(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE)
+
+    class Meta:
+        managed = False
+        db_table = 'Estrella'
+        app_label = 'app'
+        unique_together = ('usuario', 'publicacion')
+
+class SolicitudChat(models.Model):
+    de_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='solicitudes_chat_enviadas')
+    para_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='solicitudes_chat_recibidas')
+    estado = models.CharField(max_length=20, choices=[('pendiente', 'Pendiente'), ('aceptada', 'Aceptada'), ('rechazada', 'Rechazada')], default='pendiente')
+    fecha = models.DateTimeField(auto_now_add=True)
+    fecha_aceptada = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'SolicitudChat'
+        app_label = 'app'
+        unique_together = ('de_usuario', 'para_usuario')
+
+    def __str__(self):
+        return f"Solicitud de {self.de_usuario.username} a {self.para_usuario.username} ({self.estado})"
+
+class CodigoRecuperacion(models.Model):
+    usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
+    codigo = models.CharField(max_length=6)
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    def expirado(self):
+        return timezone.now() > self.creado_en + timedelta(minutes=10)
+
+    class Meta:
+        managed = False
+        app_label = 'app'
+        db_table = 'CodigoRecuperacion'

@@ -1,10 +1,10 @@
-{% load static %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verificar Código</title>
+  <title>{% trans "Verificar Código" %}</title>
   <link rel="stylesheet" href="{% static 'css/login_register_clave.css' %}"/>
   <link rel="icon" href="{% static 'images/logo.png' %}" type="image/png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -16,12 +16,12 @@
   <div class="triangulo-morado"></div>
 
   <div class="container">
-    <h1>Verifica tu código</h1>
-    <p class="texto-explicativo">Por favor, introduce el código que recibiste por correo electrónico.</p>
+    <h1>{% trans "Verifica tu código" %}</h1>
+    <p class="texto-explicativo">{% trans "Por favor, introduce el código que recibiste por correo electrónico." %}</p>
 
     <form class="form" onsubmit="validarCodigo(event)">
-      <input type="text" id="codigo" placeholder="Código recibido" required />
-      <button type="submit">Confirmar</button>
+      <input type="text" id="codigo" placeholder="{% trans 'Código recibido' %}" required />
+      <button type="submit">{% trans "Confirmar" %}</button>
     </form>
   </div>
 
@@ -29,13 +29,32 @@
     function validarCodigo(event) {
       event.preventDefault();
       const codigo = document.getElementById("codigo").value;
+      const correo = localStorage.getItem("correo_recuperacion");
 
       if (!codigo) {
-        alert("Por favor, ingresa el código.");
+        alert("{% trans 'Por favor, ingresa el código.' %}");
         return;
       }
 
-      window.location.href = "{% url 'change_password' %}"; // Asegúrate de que este archivo exista y esté en la misma carpeta
+      fetch('/app/verificar-codigo/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: correo, codigo: codigo })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          window.location.href = "/app/cambiar-clave/";
+        } else {
+          alert(data.error || "{% trans 'Código incorrecto.' %}");
+        }
+      })
+      .catch(err => {
+        alert("{% trans 'Error de red.' %}");
+        console.error(err);
+      });
     }
   </script>
 </body>

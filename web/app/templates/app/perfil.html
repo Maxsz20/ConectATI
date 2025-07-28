@@ -1,7 +1,7 @@
 {% extends 'app/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Perfil{% endblock %}
+{% block title %}{% trans "Perfil" %}{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/perfil_conectati.css' %}">
@@ -10,58 +10,199 @@
 {% block encabezado_unificado %}{% endblock %}
 
 {% block contenido %}
-    <!-- Cabecera del perfil -->
-    <div class="area-perfil">
-      <div class="perfil-header">
-        <div class="franja-azul">
-          <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
-          <div class="info-texto">
-            <h2>Daniela Rojas</h2>
-            <p class="usuario">@danroj</p>
-            <p class="bio">Desarrollador de software en ConectATI. Apasionado por la tecnología y el aprendizaje continuo.</p>
-          </div>
-          <a  class="editar-perfil" href="/app/editprofile">
-            <span>Editar perfil</span>
+<div class="area-perfil">
+  <div class="perfil-header">
+    <div class="franja-azul">
+      <img class="avatar" src="{% if usuario_perfil.foto %}{{ usuario_perfil.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_perfil.nombre }}" />
+      <div class="contenedor-info-principal">
+        <div class="info-texto">
+          <h2>{{ usuario_perfil.nombre }}</h2>
+          <p class="usuario">@{{ usuario_perfil.username }}</p>
+          {% if usuario_perfil.descripcion %}
+            <p class="bio">{{ usuario_perfil.descripcion }}</p>
+          {% endif %}
+        </div>
+        {% if es_propio_perfil %}
+          <a class="editar-perfil" href="{% url 'editprofile' %}">
+            <span>{% trans "Editar perfil" %}</span>
           </a>
-
-        </div>
-        <div class="barra-inferior">
-          <span><strong>50</strong> Amigos</span>
-        </div>
-      </div>
-
-      <!-- Publicaciones -->
-      <div class="post">
-        <div class="post-header">
-          <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
-          <div class="info-texto">
-            <strong>Daniela Rojas</strong>
-            <span class="usuario">@danroj · 1d</span>
+        {% else %}
+          <div class="perfil-botones-acciones">
+            {% if estado_amistad == None %}
+              <button id="btn-aniadir-amigo" class="editar-perfil" onclick="enviarSolicitudAmistad('{{ usuario_perfil.id }}')">
+                <span>{% trans "Añadir amigo" %}</span>
+              </button>
+            {% elif estado_amistad == 'pendiente' %}
+              <button class="editar-perfil" disabled style="cursor:not-allowed;opacity:0.7;">
+                <span>{% trans "Pendiente" %}</span>
+              </button>
+            {% elif estado_amistad == 'aceptada' %}
+              <button class="editar-perfil" disabled style="cursor:not-allowed;opacity:0.7;">
+                <span>{% trans "Amigo" %}</span>
+              </button>
+            {% endif %}
+            {% if estado_chat == None %}
+              <button id="btn-chatear" class="editar-perfil" onclick="enviarSolicitudChat('{{ usuario_perfil.id }}')">
+                <span>{% trans "Chatear" %}</span>
+              </button>
+            {% elif estado_chat == 'pendiente' %}
+              <button class="editar-perfil" disabled style="cursor:not-allowed;opacity:0.7;">
+                <span>{% trans "Chat pendiente" %}</span>
+              </button>
+            {% elif estado_chat == 'aceptada' %}
+              <a href="{% url 'chat' %}" class="editar-perfil" style="background:#5793fb;">
+                <span><i class="fas fa-comments"></i> {% trans "Ir al chat" %}</span>
+              </a>
+            {% endif %}
           </div>
-        </div>
-        <p class="post-texto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        <div class="post-acciones">
-          <button class="accion"><i class="far fa-star"></i> 12</button>
-          <button class="accion comentario-btn" data-usuario="@danroj"><i class="far fa-comment"></i> 3</button>
-        </div>
-        <div class="meta">3:15 PM · 16/06/2025</div>
-      </div>
-
-      <div class="post">
-        <div class="post-header">
-          <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Daniela Rojas" />
-          <div class="info-texto">
-            <strong>Daniela Rojas</strong>
-            <span class="usuario">@danroj · 1d</span>
-          </div>
-        </div>
-        <p class="post-texto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.✨</p>
-        <img class="post-image" src="https://t3.ftcdn.net/jpg/08/44/84/46/360_F_844844652_Z3SF4M5HIZsSMkGLt5ts0cr1s5O4mdQL.jpg" alt="Paisaje" />
-        <div class="post-acciones">
-          <button class="accion"><i class="far fa-star"></i> 12</button>
-          <button class="accion comentario-btn" data-usuario="@danroj"><i class="far fa-comment"></i> 3</button>
-        </div>
-        <div class="meta">3:15 PM · 16/06/2025</div>
+        {% endif %}
       </div>
     </div>
-{% endblock %} 
+
+    {% if usuario_perfil.fecha_nacimiento or usuario_perfil.genero or usuario_perfil.color_favorito or usuario_perfil.libro_favorito or usuario_perfil.musica_favorita or usuario_perfil.videojuegos or usuario_perfil.lenguajes %}
+      <div class="info-extra">
+        {% if usuario_perfil.fecha_nacimiento %}
+          <div><strong>{% trans "Nacimiento" %}:</strong> {{ usuario_perfil.fecha_nacimiento|date:"d/m/Y" }}</div>
+        {% endif %}
+        {% if usuario_perfil.genero %}
+          <div><strong>{% trans "Género" %}:</strong> {{ usuario_perfil.genero }}</div>
+        {% endif %}
+        {% if usuario_perfil.color_favorito %}
+          <div><strong>{% trans "Color favorito" %}:</strong> {{ usuario_perfil.color_favorito }}</div>
+        {% endif %}
+        {% if usuario_perfil.libro_favorito %}
+          <div><strong>{% trans "Libro favorito" %}:</strong> {{ usuario_perfil.libro_favorito }}</div>
+        {% endif %}
+        {% if usuario_perfil.musica_favorita %}
+          <div><strong>{% trans "Música favorita" %}:</strong> {{ usuario_perfil.musica_favorita }}</div>
+        {% endif %}
+        {% if usuario_perfil.videojuegos %}
+          <div><strong>{% trans "Videojuegos" %}:</strong> {{ usuario_perfil.videojuegos }}</div>
+        {% endif %}
+        {% if usuario_perfil.lenguajes %}
+          <div><strong>{% trans "Lenguajes" %}:</strong> {{ usuario_perfil.lenguajes }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="barra-inferior">
+      <span><strong>{{ cantidad_amigos }}</strong> {% trans "Amigos" %}</span>
+    </div>
+  </div>
+
+  {% if publicaciones %}
+    {% for post in publicaciones %}
+      <div class="post card-publicacion" data-url="{% url 'post' post.id %}">
+        <div class="post-header">
+          <img class="avatar" src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" />
+          <div class="info-texto">
+            <strong>{{ post.usuario.nombre }}</strong>
+            <span class="usuario">@{{ post.usuario.username }}</span>
+          </div>
+        </div>
+        <p class="post-texto">{{ post.texto }}</p>
+        {% if post.archivo_nombre %}
+          <img class="post-image" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
+        {% endif %}
+        <div class="post-acciones">
+          <span class="estrella {% if post.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ post.id }}">
+            <i class="fas fa-star"></i> <span class="contador">{{ post.estrellas }}</span>
+          </span>
+          <button class="accion comentario-btn"><i class="far fa-comment"></i> {{ post.num_comentarios }}</button>
+        </div>
+        <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="text-align:center; color: #888; margin-top: 2rem;">{% trans "Este usuario aún no tiene publicaciones." %}</p>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const posts = document.querySelectorAll('.post');
+    posts.forEach(post => {
+      post.addEventListener('click', function() {
+        const url = this.getAttribute('data-url');
+        window.location.href = url;
+      });
+    });
+  });
+function enviarSolicitudAmistad(para_usuario_id) {
+  var btn = document.getElementById('btn-aniadir-amigo');
+  btn.disabled = true;
+  btn.querySelector('span').innerText = '{% trans "Enviando..." %}';
+  fetch("{% url 'enviar_solicitud_amistad' %}", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: JSON.stringify({ para_usuario_id: para_usuario_id })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.ok) {
+      btn.querySelector('span').innerText = '{% trans "Pendiente" %}';
+      btn.disabled = true;
+      btn.style.cursor = 'not-allowed';
+      btn.style.opacity = '0.7';
+    } else {
+      btn.querySelector('span').innerText = data.error || '{% trans "Error" %}';
+      btn.disabled = false;
+    }
+  })
+  .catch(err => {
+    btn.querySelector('span').innerText = '{% trans "Error" %}';
+    btn.disabled = false;
+  });
+}
+
+function enviarSolicitudChat(para_usuario_id) {
+  var btn = document.getElementById('btn-chatear');
+  btn.disabled = true;
+  btn.querySelector('span').innerText = '{% trans "Enviando..." %}';
+  fetch("/app/enviar-solicitud-chat/", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+    body: JSON.stringify({ para_usuario_id: para_usuario_id })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.ok || (data.error && data.error.includes('Ya existe solicitud'))) {
+      btn.outerHTML = `<button class='editar-perfil' disabled style='cursor:not-allowed;opacity:0.7;'><span>{% trans "Chat pendiente" %}</span></button>`;
+    } else {
+      alert(data.error || '{% trans "Error enviando solicitud" %}');
+      btn.querySelector('span').innerText = '{% trans "Chatear" %}';
+      btn.disabled = false;
+    }
+  })
+  .catch(err => {
+    btn.querySelector('span').innerText = '{% trans "Error" %}';
+    btn.disabled = false;
+  });
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+</script>
+{% endblock %}

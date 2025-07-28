@@ -1,0 +1,85 @@
+{% extends 'app/base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Editar Perfil" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/editar_perfil_conectati.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<main class="perfil-editar">
+  <div class="perfil-container">
+    <a href="{% url 'profile' %}" class="volver-atras-link">
+      <i class="fas fa-chevron-left"></i>
+    </a>
+
+    <!-- Formulario de edición -->
+    <form class="perfil-formulario" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="perfil-foto-editable">
+        <!-- Imagen de preview -->
+        <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" 
+            id="profileImage" 
+            alt="{% trans 'Foto de perfil' %}" />
+
+        <!-- Botón para subir nueva imagen -->
+        <div class="overlay-foto">
+          <label for="inputFotoArchivo">
+            <i class="fas fa-pencil-alt icono-editar" title="{% trans 'Editar foto' %}"></i>
+          </label>
+          <input type="file" id="inputFotoArchivo" name="foto" accept="image/*" hidden>
+        </div>
+
+        <!-- Botón para eliminar foto (X) -->
+        <button type="button" class="btn-eliminar-foto" id="btnEliminarFoto" title="{% trans 'Eliminar foto' %}">&times;</button>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-columna">
+          <label for="id_nombre">{% trans "Nombre:" %}</label>
+          <input type="text" name="nombre" id="id_nombre" value="{{ form.nombre.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_username">{% trans "Usuario:" %}</label>
+          <input type="text" name="username" id="id_username" value="{{ form.username.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_descripcion">{% trans "Descripción:" %}</label>
+          <textarea name="descripcion" id="id_descripcion" rows="3" class="input-campo">{{ form.descripcion.value|default_if_none:'' }}</textarea>
+
+          <label for="id_genero">{% trans "Género:" %}</label>
+          <input type="text" name="genero" id="id_genero" value="{{ form.genero.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_fecha_nacimiento">{% trans "Nacimiento:" %}</label>
+          <input type="date" name="fecha_nacimiento" id="id_fecha_nacimiento" value="{{ form.fecha_nacimiento.value|default_if_none:'' }}" class="input-campo" />
+        </div>
+
+        <div class="form-columna">
+          <label for="id_color_favorito">{% trans "Color favorito:" %}</label>
+          <input type="text" name="color_favorito" id="id_color_favorito" value="{{ form.color_favorito.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_libro_favorito">{% trans "Libro favorito:" %}</label>
+          <input type="text" name="libro_favorito" id="id_libro_favorito" value="{{ form.libro_favorito.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_musica_favorita">{% trans "Música favorita:" %}</label>
+          <input type="text" name="musica_favorita" id="id_musica_favorita" value="{{ form.musica_favorita.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_videojuegos">{% trans "Videojuegos favoritos:" %}</label>
+          <input type="text" name="videojuegos" id="id_videojuegos" value="{{ form.videojuegos.value|default_if_none:'' }}" class="input-campo" />
+
+          <label for="id_lenguajes">{% trans "Lenguajes:" %}</label>
+          <input type="text" name="lenguajes" id="id_lenguajes" value="{{ form.lenguajes.value|default_if_none:'' }}" class="input-campo" />
+        </div>
+      </div>
+
+      <div class="form-botones">
+        <a href="{% url 'profile' %}" class="btn-cancelar">{% trans "Cancelar" %}</a>
+        <button type="submit" class="btn-guardar">{% trans "Guardar" %}</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script src="{% static 'js/editar_perfil.js' %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+{% endblock %}

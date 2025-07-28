@@ -1,55 +1,109 @@
 {% extends 'app/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Publicar{% endblock %}
+{% block title %}{% trans "Publicar" %}{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/publicar_mobile.css' %}">
 {% endblock %}
 
-
 {% block contenido %}
+<form method="POST" enctype="multipart/form-data" class="area-publicar">
+  {% csrf_token %}
+  
+  <div class="barra-superior">
+    <a class="cancelar" href="{% url 'feed' %}">{% trans "Cancelar" %}</a>
 
+    <div class="selector-toggle">
+      <input type="checkbox" id="togglePrivacidad" hidden />
+      <input type="hidden" name="privacidad" id="inputPrivacidad"
+       value="{% if configuracion and configuracion.publicaciones_privadas %}privada{% else %}publica{% endif %}">
+      <label for="togglePrivacidad" class="btn-privacidad">
+        <span id="valorPrivacidad">
+          {% if configuracion and configuracion.publicaciones_privadas %}
+            {{ _('Privado') }}
+          {% else %}
+            {{ _('Público') }}
+          {% endif %}
+        </span>
+        <i class="fas fa-chevron-down"></i>
+      </label>
+      <ul class="menu-privacidad">
+        <li onclick="seleccionarPrivacidadMobile(this)"
+            data-value="publica"
+            data-visible="{{ _('Público') }}">{{ _('Público') }}</li>
 
-  <!-- Contenido principal -->
-  <div class="area-publicar">
-    <div class="barra-superior">
-      <a class="cancelar" href="/app/feed">Cancelar</a>
-      <!-- Botón de apertura -->
-        <div class="selector-toggle">
-            <input type="checkbox" id="togglePrivacidad" hidden />
-            <label for="togglePrivacidad" class="btn-privacidad">
-                <span id="valorPrivacidad">Público</span>
-                <i class="fas fa-chevron-down"></i>
-            </label>
-
-            <ul class="menu-privacidad">
-                <li onclick="cambiarPrivacidad('Público')">Público</li>
-                <li onclick="cambiarPrivacidad('Privado')">Privado</li>
-            </ul>
-        </div>
-
-      <button class="btn-subir">Subir</button>
+        <li onclick="seleccionarPrivacidadMobile(this)"
+            data-value="privada"
+            data-visible="{{ _('Privado') }}">{{ _('Privado') }}</li>
+      </ul>
     </div>
 
-    <div class="contenido-publicacion">
-      <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Mi perfil" />
-      <textarea placeholder="¿Qué estas pensando?"></textarea>
-    </div>
-
-    <div class="acciones-publicacion">
-      <i class="fas fa-camera"></i>
-      <i class="fas fa-image"></i>
-      <i class="fas fa-moon"></i>
-    </div>
+    <button class="btn-subir" type="submit">{% trans 'Subir' %}</button>
   </div>
 
+  <div class="contenido-publicacion">
+    <img class="avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
+    <textarea name="texto" placeholder="{% trans '¿Qué estas pensando?' %}" rows="3">{{ form.texto.value|default_if_none:'' }}</textarea>
+  </div>
+
+  <div class="preview-imagen" id="previewImagen" style="display: none;">
+    <img id="imagenPreview" src="#" alt="{% trans 'Vista previa' %}" style="max-width: 100%; max-height: 200px; border-radius: 10px;" />
+  </div>
+
+  <div class="acciones-publicacion">
+    <label for="archivoInput"><i class="fas fa-image"></i></label>
+    <input id="archivoInput" name="archivo" type="file" accept="image/*" hidden>
+  </div>
+</form>
 
 <script>
-  function cambiarPrivacidad(valor) {
-    document.getElementById("valorPrivacidad").textContent = valor;
-    document.getElementById("togglePrivacidad").checked = false;
-  }
-</script>
+  function seleccionarPrivacidadMobile(elemento) {
+      const valor = elemento.dataset.value;          
+      const visible = elemento.dataset.visible;   
 
-{% endblock %} 
+      document.getElementById("inputPrivacidad").value = valor;
+      document.getElementById("valorPrivacidad").textContent = visible;
+      document.getElementById("togglePrivacidad").checked = false;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+
+    const inputArchivo = document.getElementById("archivoInput");
+    const previewContenedor = document.getElementById("previewImagen");
+    const imagenPreview = document.getElementById("imagenPreview");
+
+    if (inputArchivo) {
+      inputArchivo.addEventListener("change", () => {
+        const archivo = inputArchivo.files[0];
+
+        if (archivo && archivo.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagenPreview.src = e.target.result;
+            previewContenedor.style.display = "flex";
+          };
+          reader.readAsDataURL(archivo);
+        } else {
+          imagenPreview.src = "#";
+          previewContenedor.style.display = "none";
+        }
+      });
+    }
+
+    const formulario = document.querySelector(".area-publicar");
+    if (formulario) {
+      formulario.addEventListener("submit", function (e) {
+        const textarea = formulario.querySelector("textarea[name='texto']");
+        const texto = textarea?.value.trim();
+        const archivo = inputArchivo?.files.length;
+
+        if (!texto && !archivo) {
+          e.preventDefault();
+          alert("{% trans 'Debe escribir un texto o subir una imagen para publicar.' %}");
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

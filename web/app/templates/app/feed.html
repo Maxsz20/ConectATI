@@ -1,234 +1,205 @@
 {% extends "app/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Inicio{% endblock %} 
+{% block title %}{% trans "Inicio" %}{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/feed_conectati.css' %}" /> {# Specific CSS for the feed page #}
+    <link rel="stylesheet" href="{% static 'css/feed_conectati.css' %}" />
 {% endblock %}
 
-{% block titulo_pagina %}Feed{% endblock %}
-{% block titulo_pagina_mobile %}Feed{% endblock %}
+{% block titulo_pagina %}{% trans "Feed" %}{% endblock %}
+{% block titulo_pagina_mobile %}{% trans "Feed" %}{% endblock %}
 
 {% block contenido2 %}
-    <div class="contenedor-info">
-        <section class="feed">
-            <div class="crear-post">
-                <div class="top-line">
-                    <img src="https://i.pravatar.cc/150?img=47" alt="Usuario" class="profile-pic">
-                    <div class="selector-toggle">
-                        <input type="checkbox" id="togglePrivacidad" hidden>
-                        <label for="togglePrivacidad" class="btn-privacidad">
-                            <span id="valorPrivacidad">Público</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </label>
-                        <ul class="menu-privacidad">
-                            <li onclick="seleccionarPrivacidad('Público')">Público</li>
-                            <li onclick="seleccionarPrivacidad('Privado')">Privado</li>
-                        </ul>
-                    </div>
-                </div>
+<div class="contenedor-info">
+    <section class="feed">
+        <form method="POST" enctype="multipart/form-data" class="crear-post">
+            {% csrf_token %}
+            <div class="top-line">
+                <img style="width: 50px; height: 50px; border-radius: 50%;" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
+                <div class="selector-toggle">
+                    <input type="checkbox" id="togglePrivacidad" hidden>
 
-                <div class="post-input">
-                    <textarea placeholder="¿Qué estás pensando?" rows="1"></textarea>
-                </div>
+                    <!-- Valor oculto real que se enviará en el formulario -->
+                    <input type="hidden" name="privacidad" id="inputPrivacidad"
+                            value="{% if configuracion and configuracion.publicaciones_privadas %}privada{% else %}publica{% endif %}">
 
-                <div class="bottom-line">
-                    <div class="iconos">
-                        <i class="fas fa-camera"></i>
-                        <i class="fas fa-image"></i>
-                        <i class="fas fa-moon"></i>
-                    </div>
-                    <button class="btn-postear">Postear</button>
+                    <!-- Etiqueta que muestra el texto al usuario -->
+                    <label for="togglePrivacidad" class="btn-privacidad">
+                        <span id="valorPrivacidad">
+                        {% if configuracion and configuracion.publicaciones_privadas %}
+                            {{ _('Privado') }}
+                        {% else %}
+                            {{ _('Público') }}
+                        {% endif %}
+                        </span>
+                        <i class="fas fa-chevron-down"></i>
+                    </label>
+
+                    <!-- Opciones del dropdown -->
+                    <ul class="menu-privacidad">
+                        <li onclick="seleccionarPrivacidad(this)"
+                            data-value="publica"
+                            data-visible="{{ _('Público') }}">{{ _('Público') }}</li>
+
+                        <li onclick="seleccionarPrivacidad(this)"
+                            data-value="privada"
+                            data-visible="{{ _('Privado') }}">{{ _('Privado') }}</li>
+                    </ul>
                 </div>
             </div>
 
-            <article class="post-container">
-                <a href="{% url 'post' %}" style="text-decoration: none;"> {# Use URL tag #}
-                    <div class="usuario">
-                        <img src="https://i.pravatar.cc/150?img=47" alt="Daniel Rojas" class="profile-pic">
-                        <div class="datos">
-                            <strong>Daniel Rojas</strong>
-                            <span>@danroj · 2h</span>
-                        </div>
-                    </div>
-                    <p class="contenido-post">Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-                </a>
-                <div class="acciones">
-                    <span><i class="far fa-star"></i> 12</span>
-                    <span><i class="far fa-comment comentario-btn" data-usuario="@carlosm"></i> 30</span>
-                </div>
-                <div class="meta">3:15 PM · 16/06/2025</div>
-            </article>
+            <div class="post-input">
+                <textarea name="texto" placeholder="{% trans '¿Qué estás pensando?' %}" rows="1">{{ form.texto.value|default_if_none:'' }}</textarea>
+            </div>
 
-            <article class="post-container">
-                <a href="{% url 'post' %}" style="text-decoration: none;"> {# Use URL tag #}
-                    <div class="usuario">
-                        <img src="https://i.pravatar.cc/150?img=20" alt="Carlos Mendoza" />
-                        <div class="datos">
-                            <strong>Carlos Mendoza</strong>
-                            <span>@carlosm</span>
-                        </div>
-                    </div>
-                    <p class="contenido-post">Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-                    <img class="imagen-post" src="{% static 'images/gato.jfif' %}" alt="Imagen de la publicación"> {# Use static tag #}
-                </a>
-                <div class="acciones">
-                    <span><i class="far fa-star"></i> 12</span>
-                    <span><i class="far fa-comment comentario-btn" data-usuario="@carlosm"></i> 3</span>
-                </div>
-                <div class="meta">3:15 PM · 16/06/2025</div>
-            </article>
+            <div class="preview-imagen" id="previewImagen" style="margin-top: 10px; display: none;">
+                <img id="imagenPreview" src="#" alt="{% trans 'Vista previa' %}" style="max-width: 100%; max-height: 200px; border-radius: 10px;" />
+            </div>
 
-            <article class="post-container">
-                <a href="{% url 'post' %}" style="text-decoration: none;">
-                    <div class="usuario">
-                        <img src="https://i.pravatar.cc/150?img=20" alt="Carlos Mendoza" />
-                        <div class="datos">
-                            <strong>Carlos Mendoza</strong>
-                            <span>@carlosm</span>
-                        </div>
+            <div class="bottom-line">
+                <div class="iconos">
+                    <i class="fas fa-camera"></i>
+                    <label for="archivoInput" style="cursor: pointer;">
+                        <i class="fas fa-image"></i>
+                    </label>
+                    <input type="file" id="archivoInput" name="archivo" accept="image/*" style="display: none;" />
+                </div>
+
+                <button type="submit" class="btn-postear">{% trans "Postear" %}</button>
+            </div>
+        </form>
+
+        {% for post in publicaciones %}
+        <article class="post-container card-publicacion" data-url="{% url 'post' post.id %}">
+            <div class="usuario">
+                <a href="{% url 'ver_perfil_usuario' post.usuario.id %}" class="stop-click">
+                    <img src="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ post.usuario.nombre }}" class="profile-pic">
+                    <div class="datos">
+                        <strong>{{ post.usuario.nombre }}</strong>
+                        <span>@{{ post.usuario.username }} · {{ post.fecha|timesince }}</span>
                     </div>
                 </a>
-                <p class="contenido-post">Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-                <img class="imagen-post" src="{% static 'images/gato.jfif' %}" alt="Imagen de la publicación"> {# Use static tag #}
-                <a href="#" style="text-decoration: none;"></a> {# Use URL tag #}
-                <div class="acciones">
-                    <span><i class="far fa-star"></i> 15</span>
-                    <span><i class="far fa-comment comentario-btn" data-usuario="@carlosm"></i> 24</span>
-                </div>
-                <div class="meta">3:15 PM · 16/06/2025</div>
-            </article>
-        </section>
+            </div>
 
-        {% block panel_lateral %}
-        <div class="panel-lateral">
-        <h3>Mensajes</h3>
-        {% for i in "12" %}
-        <a href="{% url 'chat' %}">
-            <div class="mensaje-preview">
-            <img src="https://i.pravatar.cc/150?img=47" alt="Ana" />
+            <p class="contenido-post">{{ post.texto }}</p>
+
+            {% if post.archivo_nombre %}
+                <img class="imagen-post" src="/media/publicaciones/{{ post.archivo_nombre }}" alt="{% trans 'Imagen de la publicación' %}">
+            {% endif %}
+
+            <div class="acciones">
+                <span class="estrella {% if post.id in estrellas_usuario %}marcada{% endif %} stop-click" data-id="{{ post.id }}">
+                    <i class="fas fa-star"></i> <span class="contador">{{ post.estrellas }}</span>
+                </span>
+
+                <span class="stop-click">
+                    <i class="far fa-comment comentario-btn"
+                        data-id="{{ post.id }}"
+                        data-tipo="publicacion"
+                        data-texto="{{ post.texto|escapejs }}"
+                        data-nombre="{{ post.usuario.nombre }}"
+                        data-username="@{{ post.usuario.username }}"
+                        data-foto="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}"
+                        data-imagen="{% if post.archivo_nombre %}/media/publicaciones/{{ post.archivo_nombre }}{% endif %}">
+                    </i>
+                    <span class="contador-comentarios">{{ post.num_comentarios }}</span>
+                </span>
+            </div>
+
+            <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
+        </article>
+
+        {% empty %}
+            <p style="text-align:center;">{% trans "No hay publicaciones aún." %}</p>
+        {% endfor %}
+    </section>
+
+    {% block panel_lateral %}
+    <div class="panel-lateral">
+        <h3>{% trans "Mensajes" %}</h3>
+        {% if chats %}
+            {% for chat in chats %}
+            <a href="{% url 'chat' %}">
+                <div class="mensaje-preview">
+                <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
+                <div class="mensaje-info">
+                    <div class="usuario">
+                    <span class="nombre">{{ chat.nombre }}</span>
+                    <span>@{{ chat.username }}</span>
+                    </div>
+                    <p>{% trans "Haz clic para conversar" %}</p>
+                </div>
+                <i class="fas fa-envelope"></i>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay mensajes." %}</div>
+        {% endif %}
+
+        <h3>{% trans "Solicitudes de mensajes" %}</h3>
+        {% if solicitudes_chat_pendientes %}
+            {% for solicitud in solicitudes_chat_pendientes %}
+            <div class="solicitud-preview">
+            <img src="{{ solicitud.de_usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ solicitud.de_usuario.nombre }}" />
             <div class="mensaje-info">
                 <div class="usuario">
-                <span class="nombre">Ana García</span>
-                <span>@anag · 4h</span>
+                <span class="nombre">{{ solicitud.de_usuario.nombre }}</span>
+                <span>@{{ solicitud.de_usuario.username }}</span>
                 </div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-            <i class="fas fa-envelope"></i>
-            </div>
-        </a>
-        {% endfor %}
-
-        <h3>Solicitudes de mensajes</h3>
-        {% for i in "12" %}
-        <div class="solicitud-preview">
-            <img src="https://i.pravatar.cc/150?img=21" alt="Carlos" />
-            <div class="mensaje-info">
-            <div class="usuario">
-                <span class="nombre">Carlos Mendoza</span>
-                <span>@carlosm · 3h</span>
-            </div>
-            <p>¿Podemos hablar por aquí?</p>
+                <p>{% trans "¿Podemos hablar por aquí?" %}</p>
             </div>
             <div class="acciones">
-            <a href="{% url 'chat' %}"><i class="fas fa-check aceptar" title="Aceptar"></i></a>
-            <i class="fas fa-times rechazar" title="Rechazar"></i>
+                <i class="fas fa-check aceptar" title="{% trans 'Aceptar' %}" data-id="{{ solicitud.id }}"></i>
+                <i class="fas fa-times rechazar" title="{% trans 'Rechazar' %}" data-id="{{ solicitud.id }}"></i>
             </div>
-        </div>
-        {% endfor %}
-        </div>
-        {% endblock %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
+        {% endif %}
     </div>
+    {% endblock %}
+</div>
 {% endblock %}
 
 {% block extra_body_content %}
 <div class="modal-respuesta" id="modalRespuesta">
   <div class="contenido-modal">
     <div class="barra-superior-modal">
-      <a href="#" class="cancelar-modal" onclick="cerrarModal()">Cancelar</a>
-      <button class="btn-subir">Subir</button>
+      <a href="#" class="cancelar-modal" id="btnCancelarModal">{% trans "Cancelar" %}</a>
+      <button class="btn-subir" id="btnEnviarComentario">{% trans "Subir" %}</button>
     </div>
 
     <div class="publicacion-respuesta">
-      <img src="https://i.pravatar.cc/150?img=12" alt="Carlos Mendoza" />
+      <img class="imagen-avatar" id="avatarPublicacion" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Avatar del autor' %}" />
       <div class="contenido">
-        <strong>Carlos Mendoza</strong>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam.</p>
+        <strong id="nombreAutor">{% trans "Nombre del autor" %}</strong>
+        <p id="textoOriginal">{% trans "Texto original de la publicación o comentario" %}</p>
+        <img id="imagen-publicacion" class="imagen-mini" src="media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen adjunta' %}" style="display: none;" />
       </div>
     </div>
 
     <div class="campo-respuesta">
-      <img src="https://i.pravatar.cc/150?img=9" alt="Usuario actual" />
+      <img class="imagen-avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
       <div class="respuesta-input">
-        <span class="respondiendo-a">Respondiendo a <span>@carlosm</span></span>
-        <textarea placeholder="Escribe tu respuesta"></textarea>
+        <span class="respondiendo-a">{% trans "Respondiendo a" %} <span id="usuarioMencionado">@usuario</span></span>
+        <textarea id="inputRespuesta" placeholder="{% trans 'Escribe tu respuesta' %}"></textarea>
+        <input type="hidden" id="idPadreRespuesta" value="">
       </div>
     </div>
 
     <div class="acciones-respuesta">
       <i class="fas fa-camera"></i>
       <i class="fas fa-image"></i>
-      <i class="fas fa-moon"></i>
     </div>
   </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const botonesComentar = document.querySelectorAll(".comentario-btn");
-        const modal = document.getElementById("modalRespuesta");
-
-        botonesComentar.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const isMobile = window.innerWidth <= 876;
-
-            if (isMobile) {
-            window.location.href = "{% url 'reply_mobile' %}";
-            } else {
-            abrirModalRespuesta();
-            }
-        });
-        });
-
-        document.addEventListener("click", (e) => {
-        if (modal.style.display === "flex" &&
-            !document.querySelector(".contenido-modal").contains(e.target)) {
-            cerrarModal();
-        }
-        });
-
-        document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            cerrarModal();
-        }
-        });
-    });
-
-    function abrirModalRespuesta() {
-        document.getElementById("modalRespuesta").style.display = "flex";
-    }
-
-    function cerrarModal() {
-        document.getElementById("modalRespuesta").style.display = "none";
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const textarea = document.querySelector(".crear-post textarea");
-
-        if (textarea) {
-            textarea.addEventListener("input", () => {
-                textarea.style.height = "auto"; // reset
-                textarea.style.height = textarea.scrollHeight + "px"; // crece
-            });
-        }
-    });
-    function seleccionarPrivacidad(valor) {
-        document.getElementById("valorPrivacidad").textContent = valor;
-        document.getElementById("togglePrivacidad").checked = false;
-    }
-</script>
+<script src="{% static 'js/feed_conectati.js' %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 {% endblock %}
+
