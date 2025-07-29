@@ -1,6 +1,6 @@
 {
   "build": {
-    "builder": "docker",
+    "builder": "dockerfile",
     "path": "web"
   }
 }
