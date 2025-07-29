@@ -45,4 +45,5 @@ urlpatterns = [
     path("guardar-idioma/", views.guardar_idioma, name="guardar_idioma"),
     path("marcar_leida_individual/", views.marcar_notificacion_individual, name="marcar_leida_individual"),
     path("guardar-privacidad/", views.guardar_privacidad, name="guardar_privacidad"),
+    path("guardar-tema/", views.guardar_tema, name="guardar_tema"),
 ]

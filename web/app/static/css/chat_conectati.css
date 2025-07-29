@@ -5,6 +5,14 @@
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
 }
 
+.tema-oscuro {
+  --color-fondo: #2C2B4F;
+  --color-iconos: #8E9BFF;
+  --color-texto: #FFFFFF;
+  --color-sub: #d5ebff;
+  --lavanda-translucido: rgba(155, 155, 212, 0.4);
+}
+
 
 /* Área de mensajes */
 .area-info {
@@ -16,7 +24,7 @@
 }
 
 .mensajes-sin-mensajes, .mensajes-sin-solicitud, #selecciona-chat,
-.mensaje-vacío-chat {
+.mensaje-vacio-chat {
   color: var(--color-sub);
   text-align: center;
   padding: 1rem 0;

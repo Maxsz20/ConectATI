@@ -7,8 +7,10 @@
 
 .tema-oscuro {
   --color-fondo: #2C2B4F;
-  --color-iconos: #b6bfff;
-  --lavanda-translucido:rgba(155, 155, 212, 0.4);
+  --color-iconos: #8E9BFF;
+  --color-texto: #FFFFFF;
+  --color-sub: #d5ebff;
+  --lavanda-translucido: rgba(155, 155, 212, 0.4);
 }
 
 /* Área de mensajes */
@@ -19,7 +21,7 @@
   width: calc(100% - 440px);
 }
 
-.mensajes-sin-mensajes, .mensajes-sin-solicitud, .mensaje-vacío-chat {
+.mensajes-sin-mensajes, .mensajes-sin-solicitud, .mensaje-vacio-chat {
   color: var(--color-sub);
   text-align: center;
   padding: 1rem 0;
@@ -52,6 +54,9 @@
   z-index: 1; 
 }
 
+.grupo-opcion label{
+  color: var(--color-texto);
+}
 /* PICKERS PERSONALIZADOS */
 .selector-toggle {
   position: relative;
@@ -61,7 +66,7 @@
 
 .btn-privacidad {
   background-color: var(--color-iconos);
-  color: white;
+  color: var(--color-texto);
   font-weight: bold;
   border-radius: 2rem;
   padding: 0.4rem 1rem;
@@ -92,7 +97,7 @@
   padding: 0.6rem 1rem;
   cursor: pointer;
   font-size: 1rem;
-  color: white;
+  color: var(--color-texto);
 }
 
 .menu-privacidad li:hover {

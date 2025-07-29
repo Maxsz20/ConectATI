@@ -730,3 +730,20 @@ def guardar_privacidad(request):
             pass
 
     return redirect(request.META.get("HTTP_REFERER", "/"))
+
+@require_POST
+def guardar_tema(request):
+    tema = request.POST.get("tema", "").strip().lower()
+    if tema not in ["claro", "oscuro"]:
+        return redirect(request.META.get("HTTP_REFERER", "/"))
+
+    usuario_id = request.session.get("usuario_id")
+    if usuario_id:
+        try:
+            configuracion = Configuracion.objects.using("conectati").get(usuario_id=usuario_id)
+            configuracion.tema = tema
+            configuracion.save(using="conectati")
+        except Configuracion.DoesNotExist:
+            pass
+
+    return redirect(request.META.get("HTTP_REFERER", "/"))

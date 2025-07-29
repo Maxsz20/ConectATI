@@ -20,7 +20,13 @@
       <div class="selector-toggle">
         <input type="checkbox" id="toggleTema" hidden />
         <label for="toggleTema" class="btn-privacidad">
-          <span id="valorTema">{% trans "Claro" %}</span>
+          <span id="valorTema">
+            {% if configuracion and configuracion.tema == "oscuro" %}
+              {% trans "Oscuro" %}
+            {% else %}
+              {% trans "Claro" %}
+            {% endif %}
+          </span>
           <i class="fas fa-chevron-down"></i>
         </label>
         <ul class="menu-privacidad">
@@ -151,6 +157,12 @@
     {% endif %}
   </div>
 </div>
+
+<!-- FORM OCULTO PARA CAMBIO DE TEMA -->
+<form id="formTema" method="POST" action="{% url 'guardar_tema' %}">
+  {% csrf_token %}
+  <input type="hidden" name="tema" id="inputTema">
+</form>
 
 <!-- FORM OCULTO PARA CAMBIO DE IDIOMA -->
 <form id="formIdioma" method="POST" action="{% url 'guardar_idioma' %}">

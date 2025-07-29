@@ -1,4 +1,4 @@
-// Cambiar idioma
+// Cambiar opcion
 function cambiarOpcion(spanID, textoVisible, toggleID) {
   const span = document.getElementById(spanID);
   const toggle = document.getElementById(toggleID);
@@ -14,12 +14,14 @@ function cambiarOpcion(spanID, textoVisible, toggleID) {
 
   // Cambiar tema claro/oscuro
   if (spanID === 'valorTema') {
-    if (textoVisible === 'Oscuro') {
-      document.body.classList.add('tema-oscuro');
-      localStorage.setItem('tema', 'oscuro');
-    } else {
-      document.body.classList.remove('tema-oscuro');
-      localStorage.setItem('tema', 'claro');
+    const tema = textoVisible === 'Oscuro' ? 'oscuro' : 'claro';
+    document.documentElement.classList.toggle('tema-oscuro', tema === 'oscuro');
+    localStorage.setItem('tema', tema);
+
+    const inputTema = document.getElementById('inputTema');
+    if (inputTema) {
+      inputTema.value = tema;
+      document.getElementById('formTema').submit();
     }
   }
 }
@@ -62,16 +64,3 @@ if (input && dropdown) {
   });
 }
 
-// Al cargar la página, aplicar el tema guardado
-document.addEventListener('DOMContentLoaded', function () {
-  const tema = localStorage.getItem('tema');
-  if (tema === 'oscuro') {
-    document.body.classList.add('tema-oscuro');
-    const spanTema = document.getElementById('valorTema');
-    if (spanTema) spanTema.textContent = 'Oscuro';
-  } else {
-    document.body.classList.remove('tema-oscuro');
-    const spanTema = document.getElementById('valorTema');
-    if (spanTema) spanTema.textContent = 'Claro';
-  }
-});

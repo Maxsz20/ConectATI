@@ -64,6 +64,13 @@
   border-bottom: 1px solid #e0e0e0;
   position: relative; /* clave para posicionar el ícono */
   border-bottom: 1px solid var(--color-bordes);
+  border-radius: 12px;
+}
+
+.item-notif:hover {
+  background-color: var(--lavanda-translucido);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 }
 
 .item-notif .icono-envuelto {
