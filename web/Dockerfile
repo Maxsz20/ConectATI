@@ -1,7 +1,7 @@
-    FROM python:3.11-slim
+FROM python:3.11-slim
 
-    # Instalación de Apache y dependencias
-    RUN apt-get update && apt-get install -y --no-install-recommends \
+# Instalación de Apache y dependencias
+RUN apt-get update && apt-get install -y --no-install-recommends \
     apache2 \
     libapache2-mod-wsgi-py3 \
     build-essential \
@@ -9,29 +9,27 @@
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-    # Carpeta de la app
-    WORKDIR /web
+# Crear carpetas necesarias
+WORKDIR /app
+RUN mkdir -p /app/web/static /app/web/db /app/web/media
 
-    # Instalación de dependencias
-    COPY requirements.txt .
-    RUN pip install --no-cache-dir -r requirements.txt
+# Copiar requirements.txt y dependencias
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
-    # Copia del proyecto
-    COPY . /web
+# Copiar todo el proyecto al contenedor
+COPY . /app
 
-    # Configuración de Apache
-    COPY django.conf /etc/apache2/sites-available/django.conf
-    RUN a2ensite django.conf && a2dissite 000-default.conf
+# Configurar Apache con archivo WSGI personalizado
+COPY web/django.conf /etc/apache2/sites-available/django.conf
+RUN a2ensite django.conf && a2dissite 000-default.conf
 
-    # Asegura que la ruta STATIC_ROOT exista antes del collectstatic
-    RUN mkdir -p /web/static
+# Collect static sin crashear si falla
+RUN mkdir -p /app/web/static && \
+    python3 /app/web/manage.py collectstatic --noinput || true
 
-    # Ejecuta collectstatic en la ruta correcta
-    RUN mkdir -p /web/static && \
-        python manage.py collectstatic --noinput || true
+# Exponer puerto (Apache corre en 80)
+EXPOSE 80
 
-    # Exponer puerto
-    EXPOSE 80
-
-    # Ejecutar Apache
-    CMD ["apachectl", "-D", "FOREGROUND"]
+# Comando para ejecutar Apache
+CMD ["apachectl", "-D", "FOREGROUND"]

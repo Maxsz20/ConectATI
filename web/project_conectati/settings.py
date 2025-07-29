@@ -160,10 +160,11 @@ MIDDLEWARE = [
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = Path("/web/static")  # <- importante para que Django recoja ahí
 STATICFILES_DIRS = [
-    BASE_DIR / 'web' / 'app' / 'static',  # <- donde están tus CSS, imágenes, etc.
+    BASE_DIR / 'web' / 'app' / 'static',  # ← así sí busca bien dentro del contenedor
 ]
+STATIC_ROOT = BASE_DIR / 'web' / 'static'  # ← o simplemente BASE_DIR / 'static'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
