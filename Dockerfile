@@ -27,7 +27,7 @@
     RUN mkdir -p /web/static
 
     # Ejecuta collectstatic en la ruta correcta
-    RUN python manage.py collectstatic --noinput \
+    RUN python /web/manage.py collectstatic --noinput \
         && chmod -R 755 /web/app/static
 
     # Exponer puerto
