@@ -23,7 +23,7 @@ from django.views.i18n import JavaScriptCatalog
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', InicioRedirectView, name='inicio_redirect'),
+    path('', InicioRedirectView.as_view(), name='inicio_redirect'),
     path('app/', include('app.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
