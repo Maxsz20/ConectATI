@@ -13,21 +13,21 @@
     WORKDIR /web
 
     # Instalación de dependencias
-    COPY web/requirements.txt ./requirements.txt
+    COPY requirements.txt ./requirements.txt
     RUN pip install --no-cache-dir -r requirements.txt
 
     # Copia del proyecto
     COPY . /web
 
     # Configuración de Apache
-    COPY web/django.conf /etc/apache2/sites-available/django.conf
+    COPY django.conf /etc/apache2/sites-available/django.conf
     RUN a2ensite django.conf && a2dissite 000-default.conf
 
     # Asegura que la ruta STATIC_ROOT exista antes del collectstatic
     RUN mkdir -p /web/static
 
     # Ejecuta collectstatic en la ruta correcta
-    RUN python /web/manage.py collectstatic --noinput || true \
+    RUN python manage.py collectstatic --noinput || true \
         && chmod -R 755 /web/static
 
     # Exponer puerto
