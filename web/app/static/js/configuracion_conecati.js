@@ -11,6 +11,17 @@ function cambiarOpcion(spanID, textoVisible, toggleID) {
     document.getElementById('inputIdioma').value = idioma;
     document.getElementById('formIdioma').submit();
   }
+
+  // Cambiar tema claro/oscuro
+  if (spanID === 'valorTema') {
+    if (textoVisible === 'Oscuro') {
+      document.body.classList.add('tema-oscuro');
+      localStorage.setItem('tema', 'oscuro');
+    } else {
+      document.body.classList.remove('tema-oscuro');
+      localStorage.setItem('tema', 'claro');
+    }
+  }
 }
 
 // Cambiar privacidad
@@ -50,3 +61,17 @@ if (input && dropdown) {
     }
   });
 }
+
+// Al cargar la página, aplicar el tema guardado
+document.addEventListener('DOMContentLoaded', function () {
+  const tema = localStorage.getItem('tema');
+  if (tema === 'oscuro') {
+    document.body.classList.add('tema-oscuro');
+    const spanTema = document.getElementById('valorTema');
+    if (spanTema) spanTema.textContent = 'Oscuro';
+  } else {
+    document.body.classList.remove('tema-oscuro');
+    const spanTema = document.getElementById('valorTema');
+    if (spanTema) spanTema.textContent = 'Claro';
+  }
+});

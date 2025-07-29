@@ -5,12 +5,24 @@
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
 }
 
+.tema-oscuro {
+  --color-fondo: #2C2B4F;
+  --color-iconos: #b6bfff;
+  --lavanda-translucido:rgba(155, 155, 212, 0.4);
+}
+
 /* Área de mensajes */
 .area-info {
   margin-left: 440px;
   flex-direction: column;
   height: 100vh;
   width: calc(100% - 440px);
+}
+
+.mensajes-sin-mensajes, .mensajes-sin-solicitud, .mensaje-vacío-chat {
+  color: var(--color-sub);
+  text-align: center;
+  padding: 1rem 0;
 }
 
 /* Contenido inferior */

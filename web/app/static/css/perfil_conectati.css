@@ -2,7 +2,16 @@
   --color-fondo: #E5E7EB;
   --color-iconos: #8E9BFF;
   --color-bordes: #ccc;
+  --color-sub: #666;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
+}
+
+.tema-oscuro {
+  --color-fondo: #2C2B4F;
+  --color-iconos: #8E9BFF;
+  --color-texto: #FFFFFF;
+  --color-sub: #d5ebff;
+  --lavanda-translucido: rgba(155, 155, 212, 0.4);
 }
 
 
@@ -102,11 +111,6 @@
 
 }
 
-.perfil-header .info-texto .usuario {
-  font-size: 1rem;
-  color: #666;
-}
-
 .editar-perfil {
   background-color: var(--color-iconos);
   color: white;
@@ -154,6 +158,10 @@
   gap: 0.7rem;
   min-width: 200px;
   flex-wrap: wrap; /* 🔄 Útil para que se acomode en mobile */
+}
+
+.bio{
+  color: #212121;
 }
 
 .info-extra {
@@ -248,7 +256,6 @@
   flex-direction: column;
   width: 100%;
   background-color: #dfe8ff;
-
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -275,8 +282,6 @@
 }
 
 .usuario {
- 
- 
   border-radius: 8px;
   font-size: 1.2rem;
   color: #666;
@@ -306,6 +311,11 @@
 }
 
 /* Styling for posts as cards */
+.perfil-vacio{
+  color: var(--color-texto);
+  text-align: center;
+}
+
 .post {
   border-bottom: 1px solid #666;
   padding: 1.5rem;
@@ -339,11 +349,12 @@
 
 .post-header .info-texto .usuario {
   font-size: 1.1rem;
+  color: var(--color-sub);
 }
 
 .post-texto {
   font-size: 1.1rem;
-  color: #3f3d56;
+  color: var(--color-texto);
 }
 
 .post-acciones {
@@ -355,7 +366,7 @@
 .post-acciones .accion {
   background: none;
   border: none;
-  color: #666;
+  color: var(--color-texto);
   font-size: 1.1rem;
   cursor: pointer;
   display: flex;
@@ -407,7 +418,7 @@
 .meta {
   font-size: 1em;
   text-align: right;
-  color: #666;
+  color: var(--color-sub);
 }
 /* HEADER MOBILE */
 .header-mobile {

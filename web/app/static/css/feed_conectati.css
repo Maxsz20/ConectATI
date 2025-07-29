@@ -2,7 +2,16 @@
   --color-fondo: #E5E7EB;
   --color-iconos: #8E9BFF;
   --color-bordes: #ccc;
+  --color-sub: #666;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
+}
+
+.tema-oscuro {
+  --color-fondo: #2C2B4F;
+  --color-iconos: #8E9BFF;
+  --color-texto: #FFFFFF;
+  --color-sub: #d5ebff;
+  --lavanda-translucido: rgba(155, 155, 212, 0.4);
 }
 
 
@@ -14,6 +23,11 @@
   width: calc(100% - 440px);
 }
 
+.mensajes-sin-solicitud {
+  color: var(--color-sub);
+  text-align: center;
+  padding: 1rem 0;
+}
 
 /* Contenido inferior */
 .contenedor-info {
@@ -47,7 +61,6 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  box-shadow: 0 2px 8px rgba(188, 190, 255, 0.08);
 }
 
 /* Línea superior con perfil y privacidad */
@@ -82,9 +95,10 @@
   background: transparent;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #6c6c8a;
+  color: var(--color-texto);
   outline: none;
   overflow-y: hidden; /* <- importante para evitar barra scroll interna */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Íconos e interacción */
@@ -203,12 +217,12 @@
 .post-container .usuario .datos strong {
   display: block;
   font-size: 1rem;
-  color: #333;
+  color: var(--color-texto);
 }
 
 .post-container .usuario .datos span {
   font-size: 0.85rem;
-  color: #777;
+  color: var(--color-sub);
 }
 
 .post-container .seguir {
@@ -224,7 +238,7 @@
 
 .post-container .contenido-post {
   font-size: 1rem;
-  color: #333;
+  color: var(--color-texto);
   margin-bottom: 1rem;
 }
 
@@ -233,7 +247,7 @@
   justify-content: flex-end ;
   gap: 1rem;
   font-size: 1rem;
-  color: #666;
+  color: var(--color-texto);
   margin-bottom: 0.5rem;
 }
 
@@ -245,7 +259,7 @@
   font-size: 0.90em;
   text-align: right;
   margin-bottom: 1rem;
-  color: #666;
+  color: var(--color-sub);
 }
 
 .post-container .imagen-post {
@@ -270,6 +284,12 @@
   color: inherit;
   cursor: pointer;
   display: flex;
+}
+
+.mensaje-vacio-chat{
+  color: var(--color-sub); 
+  text-align: center; 
+  padding: 1rem 0;
 }
 
 @media (min-width: 877px) {
@@ -340,7 +360,7 @@
 
   .publicacion-respuesta .contenido {
     font-size: 0.95rem;
-    color: #333;
+    color: var(--color-texto);
   }
 
   .publicacion-respuesta .contenido strong {
@@ -387,12 +407,12 @@
     font-size: 1.1rem;
     resize: none;
     font-family: 'Segoe UI', sans-serif;
-    color: #212121;
+    color: var(--color-texto);;
     padding: 0;
   }
 
   .respuesta-input textarea::placeholder {
-    color: #aaa;
+    color: var(--color-texto);
   }
   .acciones-respuesta {
     display: flex;

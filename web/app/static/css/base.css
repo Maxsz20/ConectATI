@@ -2,7 +2,17 @@
   --color-fondo: #E5E7EB;
   --color-iconos: #8E9BFF;
   --color-bordes: #ccc;
+  --color-texto: #333;
+  --color-sub: #666;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
+}
+
+.tema-oscuro {
+  --color-fondo: #2C2B4F;
+  --color-iconos: #8E9BFF;
+  --color-texto: #FFFFFF;
+  --color-sub: #d5ebff;
+  --lavanda-translucido: rgba(155, 155, 212, 0.4);
 }
 
 /* ------------- Reset y estructura base ------------- */
@@ -36,7 +46,7 @@ aside .logo-conectati {
   gap: 0.6rem;
   font-weight: bold;
   font-size: 3rem;
-  color: #212022;
+  color: var(--color-texto);
   margin-bottom: 4rem;
 }
 
@@ -47,7 +57,7 @@ aside .logo-circulo {
   background: linear-gradient(-135deg, #addbfd 50%, #a9a7f2 50%);
 }
 a, a:visited {
-  color: #333;
+  color: var(--color-texto);
   text-decoration: none;
 }
 
@@ -63,7 +73,7 @@ a, a:visited {
   font-weight: 700;
   text-decoration: none;
   font-size: 1.5rem;
-  color: #3f3d56;
+  ;
   margin-left: 0.3rem; 
   gap: 0.8rem;        
 }
@@ -80,6 +90,7 @@ a, a:visited {
 
 .menu .texto {
   display: inline-block;
+  color: var(--color-texto);
 }
 
 .perfil-contenedor {
@@ -93,7 +104,7 @@ a, a:visited {
 .cerrar-sesion {
   background-color: transparent;
   border: 2px solid var(--color-iconos);
-  color: #212121;
+  color: var(--color-texto);
   padding: 0.4rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -168,7 +179,7 @@ a, a:visited {
 
 .encabezado-lista h2 {
   font-size: 1.6rem;
-  color: #3f3d56;
+  ;
 }
 
 .encabezado-chat {
@@ -205,7 +216,7 @@ a, a:visited {
 }
 
 .buscador i {
-  color: #888;
+  color: var(--color-texto);
 }
 
 .buscador input {
@@ -213,12 +224,16 @@ a, a:visited {
   background: transparent;
   outline: none;
   font-size: 0.9rem;
-  color: #4b4b4b;
+  color: var(--color-texto);
   width: 100%;
 }
 
 .buscador input::placeholder {
-  color: #888;
+  color: var(--color-sub);
+}
+
+form textarea::placeholder{
+  color: var(--color-sub);
 }
 
 /* ---------- MENU BUSCADOR ---------- */
@@ -302,7 +317,6 @@ a, a:visited {
 .panel-lateral h3 {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #3f3d56;
   margin: 1rem 0 0.6rem;
   padding-bottom: 0.4rem;
   border-bottom: 1px solid #eee;
@@ -332,28 +346,34 @@ a, a:visited {
   flex-shrink: 0;
 }
 
+.mensaje-sin-solicitud {
+  color: var(--color-sub);
+  text-align: center;
+  padding: 1rem 0;
+}
+
 .mensaje-info {
   display: flex;
   flex-direction: column;
   font-size: 0.95rem;
-  color: #444;
+  color: var(--color-sub);
   flex-grow: 1;
 }
 
 .mensaje-info .nombre {
   font-weight: 600;
-  color: #212121;
+  color: var(--color-texto);
 }
 
 .mensaje-info .usuario-tiempo {
-  color: #666;
+  color: var(--color-texto);
   font-size: 0.85rem;
   margin-bottom: 0.3rem;
 }
 
 .mensaje-info .texto-preview {
   font-size: 0.9rem;
-  color: #333;
+  color: var(--color-sub);
   line-height: 1.3;
 }
 
@@ -445,7 +465,7 @@ a, a:visited {
 .titulo-mobile h2 {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #3f3d56;
+  
   margin: 0;
 }
 
@@ -657,5 +677,6 @@ a, a:visited {
 }
 
 
-
-
+body{
+  color: var(--color-texto);
+}

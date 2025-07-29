@@ -15,6 +15,21 @@
 
 }
 
+.mensajes-sin-mensajes, .mensajes-sin-solicitud, #selecciona-chat,
+.mensaje-vacío-chat {
+  color: var(--color-sub);
+  text-align: center;
+  padding: 1rem 0;
+}
+
+#chatinput {
+  color: var(--color-texto);
+}
+
+input::placeholder{
+  color: var(--color-sub);
+}
+
 /* Encabezados */
 .fila-encabezados {
   display: flex;
@@ -32,7 +47,7 @@
 
 .encabezado-lista h2 {
   font-size: 1.6rem;
-  color: #3f3d56;
+  color: var(--color-texto);
 }
 
 .fas.fa-trash {
@@ -112,7 +127,7 @@
 .chat-user-info small {
   display: block;
   font-size: 0.95rem;
-  color: #666;
+  color: var(--color-sub);
 }
 
 .chat-user:hover {
@@ -180,13 +195,13 @@
   background: transparent;
   font-size: 1rem;
   outline: none;
-  color: #4b4b4b;
+  color: var(--color-texto);
   font-weight: 500;
 }
 
 .chat-input i {
   font-size: 1.1rem;
-  color: #6b6b6b;
+  color: var(--color-iconos);
   cursor: pointer;
   transition: color 0.2s ease;
 }
@@ -226,7 +241,7 @@
   margin-bottom: 0.8rem;
   font-size: 1.2rem;
   font-weight: bold;
-  color: #212121;
+  color: var(--color-texto);
   z-index: 10;
 }
 
@@ -248,18 +263,18 @@
 .item-solicitud .contenido {
   flex: 1;
   font-size: 0.95rem;
-  color: #333;
+  color: var(--color-sub);
 }
 
 .item-solicitud strong {
   display: block;
   font-size: 1.1rem;
-  color: #000;
+  color: var(--color-texto);
 }
 
 .item-solicitud .nombre {
   font-weight: normal;
-  color: #444;
+  color: var(--color-texto);
 }
 
 .acciones {

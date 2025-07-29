@@ -128,6 +128,18 @@
   <script src="{% static 'js/base.js' %}"></script>
   <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 
+  <!-- Script para aplicar el tema claro/oscuro en todas las páginas -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const tema = localStorage.getItem('tema');
+      if (tema === 'oscuro') {
+        document.body.classList.add('tema-oscuro');
+      } else {
+        document.body.classList.remove('tema-oscuro');
+      }
+    });
+  </script>
+
   {% block extra_js %}{% endblock %}
 </body>
 </html>

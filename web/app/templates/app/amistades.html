@@ -29,7 +29,7 @@
           </div>
         {% endfor %}
       {% else %}
-        <div class="mensaje-vacio-chat" id="mensaje-sin-amigos" style="color: #888; text-align: center; padding: 1rem 0;">
+        <div class="mensaje-vacio-chat" id="mensaje-sin-amigos" >
           {% trans "No tienes amigos aún." %}
         </div>
       {% endif %}
@@ -54,7 +54,7 @@
           {% endwith %}
         {% endfor %}
       {% else %}
-        <div class="mensaje-vacio-solicitudes" id="mensaje-sin-solicitudes" style="color: #888; text-align: center; padding: 1rem 0;">
+        <div class="mensaje-vacio-solicitudes" id="mensaje-sin-solicitudes">
           {% trans "No tienes solicitudes de amistad." %}
         </div>
       {% endif %}
@@ -82,7 +82,7 @@
           </a>
           {% endfor %}
       {% else %}
-          <div id="mensaje-sin-mensajes" class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">
+          <div id="mensaje-sin-mensajes" class="mensaje-vacio-chat">
             {% trans "No hay mensajes." %}
           </div>
       {% endif %}
@@ -106,7 +106,7 @@
           </div>
           {% endfor %}
       {% else %}
-          <div style="color: #888; text-align: center; padding: 1rem 0;">
+          <div class="mensajes-sin-solicitud">
             {% trans "No tienes solicitudes de chat pendientes." %}
           </div>
       {% endif %}

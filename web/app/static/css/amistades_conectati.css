@@ -2,9 +2,16 @@
   --color-fondo: #E5E7EB;
   --color-iconos: #8E9BFF;
   --color-bordes: #ccc;
+  -color-sub: #666;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
 }
-
+.tema-oscuro {
+  --color-fondo: #2C2B4F;
+  --color-iconos: #8E9BFF;
+  --color-texto: #FFFFFF;
+  --color-sub: #d5ebff;
+  --lavanda-translucido: rgba(155, 155, 212, 0.4);
+}
 
 
 /* Área de mensajes */
@@ -13,6 +20,12 @@
   flex-direction: column;
   height: 100vh;
   width: calc(100% - 440px);
+}
+
+.mensajes-sin-solicitud {
+  color: var(--color-sub);
+  text-align: center;
+  padding: 1rem 0;
 }
 
 /* Contenido inferior */
@@ -51,7 +64,7 @@
 .amigos h3{
   font-size: 1.1rem;
   font-weight: bold;
-  color: #7a7a7a;
+  color: var(--color-sub);
   margin-bottom: 0.6rem;
   margin-top: 1.5rem;
   border-bottom: 1px solid #ddd;
@@ -68,7 +81,25 @@
   border-bottom: 1px solid var(--color-bordes);
   font-size: 1.2rem;
   font-weight: bold;
-  color: #212121;
+  color: var(--color-texto);
+}
+
+#mensaje-sin-amigos {
+  text-align: center;
+  color: var(--color-sub);
+  padding: 1rem;
+}
+
+#mensaje-sin-solicitudes {
+  text-align: center;
+  color: var(--color-sub);
+  padding: 1rem;
+}
+
+#mensaje-sin-mensajes {
+  text-align: center;
+  color: var(--color-sub);
+  padding: 1rem;
 }
 
 /* Items */
@@ -97,19 +128,19 @@
 .item-amigo .contenido, .item-solicitud .contenido {
   flex: 1;
   font-size: 0.95rem;
-  color: #333;
+  color: var(--color-sub);
 }
 
 .item-amigo .contenido strong, .item-solicitud .contenido strong {
   display: block;
   font-size: 1.2rem;
-  color: #000;
+  color: var(--color-sub);
 }
 .item-amigo i , .item-solicitud i {
   font-size: 1.2rem;
   margin-left: 0.5rem;
   cursor: pointer;
-  color: #888;
+  color: var(--color-sub);
 }
 
 .item-amigo {
@@ -143,7 +174,7 @@
 
 .item-amigo .contenido strong {
   font-size: 1.2rem;
-  color: #000;
+  color: var(--color-sub);
 }
 
 .acciones-amigos {
@@ -153,7 +184,7 @@
 .acciones-amigos .eliminar {
   font-size: 1.4rem;
   cursor: pointer;
-  color: #888;
+  color: var(--color-sub);
 }
 
 .acciones-amigos .eliminar:hover {

@@ -25,7 +25,7 @@
         {% for notif in grupo_hoy %}
             {% include "app/_item_notificacion.html" with n=notif %}
         {% empty %}
-            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "Sin notificaciones recientes." %}</div>
+            <div >{% trans "Sin notificaciones recientes." %}</div>
         {% endfor %}
         </div>
 
@@ -34,7 +34,7 @@
         {% for notif in grupo_ayer %}
             {% include "app/_item_notificacion.html" with n=notif %}
         {% empty %}
-            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "Sin notificaciones ayer." %}</div>
+            <div >{% trans "Sin notificaciones ayer." %}</div>
         {% endfor %}
         </div>
 
@@ -43,7 +43,7 @@
         {% for notif in grupo_semana %}
             {% include "app/_item_notificacion.html" with n=notif %}
         {% empty %}
-            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay más notificaciones esta semana." %}</div>
+            <div >{% trans "No hay más notificaciones esta semana." %}</div>
         {% endfor %}
         </div>
     </section>
@@ -67,7 +67,7 @@
             </a>
             {% endfor %}
         {% else %}
-            <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay mensajes." %}</div>
+            <div class="mensaje-vacio-chat">{% trans "No hay mensajes." %}</div>
         {% endif %}
 
         <h3>{% trans "Solicitudes de mensajes" %}</h3>
@@ -89,7 +89,7 @@
             </div>
             {% endfor %}
         {% else %}
-            <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
+            <div class="mensajes-sin-solicitud" >{% trans "No tienes solicitudes de chat pendientes." %}</div>
         {% endif %}
     </div>
     {% endblock %}

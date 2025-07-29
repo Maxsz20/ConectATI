@@ -2,7 +2,17 @@
   --color-fondo: #E5E7EB;
   --color-iconos: #8E9BFF;
   --color-bordes: #ccc;
+  --color-sub: #666;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
+}
+
+.tema-oscuro {
+  --color-fondo: #2C2B4F;
+  --color-iconos: #8E9BFF;
+  --color-bordes: #333;
+  --color-texto: #FFFFFF;
+  --color-sub: #d5ebff;
+  --lavanda-translucido: rgba(155, 155, 212, 0.4);;
 }
 
 /* Área de mensajes */
@@ -11,6 +21,12 @@
   flex-direction: column;
   height: 100vh;
   width: calc(100% - 440px);
+}
+
+.mensajes-sin-mensajes, .mensajes-sin-solicitud, .mensaje-vacío-chat {
+  color: var(--color-sub);
+  text-align: center;
+  padding: 1rem 0;
 }
 
 /* Contenido inferior */
@@ -64,12 +80,12 @@
 .post-principal .usuario .datos strong {
   display: block;
   font-size: 1.1rem;
-  color: #333;
+  color: var(--color-texto);
 }
 
 .post-principal .usuario .datos span {
   font-size: 0.95rem;
-  color: #777;
+  color: var(--color-texto);
 }
 
 .post-principal .seguir {
@@ -85,7 +101,7 @@
 
 .post-principal .contenido-post {
   font-size: 1rem;
-  color: #333;
+  color: var(--color-texto);
   margin-bottom: 1rem;
 }
 
@@ -94,7 +110,7 @@
   justify-content: flex-end ;
   gap: 1rem;
   font-size: 0.95rem;
-  color: #666;
+  color: var(--color-texto);
   margin-bottom: 0.5rem;
 }
 
@@ -106,7 +122,7 @@
 .post-principal .meta {
   font-size: 0.90em;
   text-align: right;
-  color: #666;
+  color: var(--color-sub);
 }
 
 .post-principal .imagen-post {
@@ -117,6 +133,12 @@
   margin-top: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   margin-bottom: 0.45rem;
+}
+
+.sin-comentario {
+  text-align: center;
+  color: var(--color-sub);
+  margin-top: 1rem;
 }
 
 /* Formulario de respuesta */
@@ -150,6 +172,11 @@
   background-color: var(--lavanda-translucido);
   border-radius: 20px;
   font-size: 0.95rem;
+  color: var(--color-texto);
+}
+
+input::placeholder{
+  color: var(--color-sub);
 }
 
 
@@ -173,7 +200,7 @@
   font-size: 1.3rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  color: #3f3d56;
+  color: var(--color-texto);
 }
 
 .comentario {
@@ -193,7 +220,7 @@
   border-radius: 10px;
   padding: 1rem;
   flex: 1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px var(--lavanda-translucido);
 }
 
 .comentario .usuario {
@@ -206,16 +233,16 @@
 
 
 .comentario .usuario strong {
-  color: #333;
+  color: var(--color-texto);
 }
 
 .comentario .usuario span {
-  color: #888;
+  color: var(--color-sub);;
 }
 
 .comentario p {
   font-size: 0.95rem;
-  color: #444;
+  color: var(--color-texto);;
   margin-bottom: 0.5rem;
 }
 
@@ -224,7 +251,7 @@
   justify-content: flex-end;
   gap: 1rem;
   font-size: 0.95rem;
-  color: #666;
+  color: var(--color-texto)
 }
 
 .comentario .acciones i {
@@ -236,7 +263,7 @@
   font-size: 0.90em;
   text-align: right;
   margin-bottom: 1rem;
-  color: #666;
+  color: var(--color-sub);
 }
 .comentario a .meta{
   display: block;
@@ -329,13 +356,13 @@
 
   .publicacion-respuesta .contenido {
     font-size: 0.95rem;
-    color: #333;
+    color: var(--color-texto);
   }
 
   .publicacion-respuesta .contenido strong {
     display: block;
     margin-bottom: 0.2rem;
-    color: #212121;
+    color: var(--color-texto);;
   }
 
   .campo-respuesta {
@@ -359,7 +386,7 @@
 
   .respondiendo-a {
     font-size: 0.95rem;
-    color: #888;
+    color: var(--color-texto);;
   }
 
   .respondiendo-a span {
@@ -376,7 +403,7 @@
     font-size: 1.1rem;
     resize: none;
     font-family: 'Segoe UI', sans-serif;
-    color: #212121;
+    color: var(--color-texto);;
     padding: 0;
   }
 
@@ -395,7 +422,7 @@
   }
 
   .acciones-respuesta i {
-    color: #444;
+    color: var(--color-texto);
     font-size: 1.4rem;
     cursor: pointer;
   }

@@ -56,7 +56,7 @@
         </div>
         {% endfor %}
       {% else %}
-        <div class="mensaje-vacio-chat" style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No hay mensajes." %}</div>
+        <div class="mensaje-vacio-chat">{% trans "No hay mensajes." %}</div>
       {% endif %}
     </section>
 
@@ -77,7 +77,7 @@
         </div>
         {% endfor %}
       {% else %}
-        <div style="color: #888; text-align: center; padding: 1rem 0;">{% trans "No tienes solicitudes de chat pendientes." %}</div>
+        <div class="mensajes-sin-solicitud">{% trans "No tienes solicitudes de chat pendientes." %}</div>
       {% endif %}
     </section>
   </div>
@@ -88,21 +88,22 @@
       {% if primer_chat %}
         {% if mensajes %}
           {% for msg in mensajes %}
-            <div class="mensaje {% if msg.emisor.id == request.session.usuario_id %}enviado{% else %}recibido{% endif %}">
-              {{ msg.texto }}
-            </div>
+        <div class="mensaje {% if msg.emisor.id == request.session.usuario_id %}enviado{% else %}recibido{% endif %}">
+          {{ msg.texto }}
+        </div>
           {% endfor %}
         {% else %}
-          <div style="color:#888; text-align:center; padding:1rem;">{% trans "No hay mensajes aún." %}</div>
+          <div class="mensajes-sin-mensajes">{% trans "No hay mensajes aún." %}</div>
         {% endif %}
       {% else %}
-        <div style="color:#888; text-align:center; padding:1rem;">{% trans "Selecciona un chat para comenzar a conversar." %}</div>
+        <div id="selecciona-chat">{% trans "Selecciona un chat para comenzar a conversar." %}</div>
+      
       {% endif %}
     </div>
 
     <div class="chat-input" {% if not primer_chat %}style="display: none;"{% endif %}>
       <i class="fas fa-camera"></i>
-      <input type="text" placeholder="{% trans 'Escribir mensaje...' %}" />
+      <input id="chatinput" type="text" placeholder="{% trans 'Escribir mensaje...' %}" />
       <i class="fas fa-microphone"></i>
       <i class="fas fa-image"></i>
       <i class="fas fa-paper-plane"></i>

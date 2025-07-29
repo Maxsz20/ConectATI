@@ -11,6 +11,15 @@
   --color-azul-header: #dfe8ff; /* Fondo del header de perfil (en otras páginas, no directamente aquí) */
   --sombra-ligera: 0 2px 4px rgba(0,0,0,0.05); /* Sombra común */
   --sombra-media: 0 4px 8px rgba(0,0,0,0.1); /* Sombra más pronunciada */
+  --color-sub: #666;
+}
+
+.tema-oscuro {
+  --color-fondo: #2C2B4F;
+  --color-iconos: #8E9BFF;
+  --color-texto: #FFFFFF;
+  --color-sub: #d5ebff;
+  --lavanda-translucido: rgba(155, 155, 212, 0.4);
 }
 
 /* Reset y estructura base */
@@ -56,9 +65,14 @@ textarea,
 select,
 .input-campo {
   font-family: 'Segoe UI', sans-serif;
+  color: var(--color-texto);
 }
 .perfil-formulario a, .perfil-formulario a:visited {
   color: white;
+}
+
+input::placeholder{
+  color: var(--color-texto-claro);
 }
 
 /* Main content area for profile editing */

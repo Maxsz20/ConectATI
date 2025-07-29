@@ -2,9 +2,16 @@
   --color-fondo: #E5E7EB;
   --color-iconos: #8E9BFF;
   --color-bordes: #ccc;
+  -color-sub: #666;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
 }
-
+.tema-oscuro {
+  --color-fondo: #2C2B4F;
+  --color-iconos: #8E9BFF;
+  --color-texto: #FFFFFF;
+  --color-sub: #d5ebff;
+  --lavanda-translucido: rgba(155, 155, 212, 0.4);
+}
 
 /* Área de mensajes */
 .area-info {
@@ -13,6 +20,13 @@
   height: 100vh;
   width: calc(100% - 440px);
 }
+
+.mensajes-sin-solicitud {
+  color: var(--color-sub);
+  text-align: center;
+  padding: 1rem 0;
+}
+
 /* Contenido inferior */
 .contenedor-info {
   display: flex;
@@ -31,11 +45,15 @@
 .notificaciones .grupo h3 {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #7a7a7a;
+  color: var(--color-texto);
   margin-bottom: 0.6rem;
   margin-top: 1.5rem;
   border-bottom: 1px solid #ddd;
   padding-bottom: 0.3rem;
+}
+
+.notificaciones .grupo div{
+  color: var(--color-sub);
 }
 
 .item-notif {
@@ -53,6 +71,7 @@
   top: 8px;
   display: flex;
   justify-content: center;
+  color: #00c3d5;
 }
 
 .item-notif .icono-envuelto i {
@@ -69,19 +88,19 @@
 .item-notif .contenido {
   flex: 1;
   font-size: 1.1rem;
-  color: #333;
+  color: #d5ebff;
 }
 
 .item-notif .preview {
   font-size: 1rem;
-  color: #666;
+  color: var(--color-sub);
   margin-top: 0.2rem;
   line-height: 1.3;
 }
 
 .item-notif .contenido strong {
   font-weight: 600;
-  color: #212121;
+  color: var(--color-texto);
 }
 .item-notif.no-leida {
   background-color: var(--lavanda-translucido);
@@ -91,7 +110,7 @@
 
 .item-notif .meta {
   font-size: 0.95rem;
-  color: #888;
+  color: var(--color-sub);
   margin-top: 0.1rem;
 }
 
@@ -124,6 +143,11 @@
   background-color: #4a3bd1;
 }
 
+.mensaje-vacio-chat{
+  color: var(--color-sub); 
+  text-align: center; 
+  padding: 1rem 0;
+}
 
 /* VERSIÓN RESPONSIVE */
 @media (max-width: 876px) {
