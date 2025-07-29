@@ -4,6 +4,10 @@
   --color-bordes: #ccc;
   --color-sub: #666;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
+  --color-fondo-perfil: #dfe8ff;
+  --color-barra: #3f3d56;
+  --color-texto: #212121;
+  --color-fondo-info-extra: rgba(255, 255, 255, 0.5);
 }
 
 .tema-oscuro {
@@ -12,6 +16,9 @@
   --color-texto: #FFFFFF;
   --color-sub: #d5ebff;
   --lavanda-translucido: rgba(155, 155, 212, 0.4);
+  --color-barra: #3f3d56;
+  --color-fondo-perfil: #353372;
+  --color-fondo-info-extra: #2C2B4F;
 }
 
 
@@ -41,12 +48,12 @@
 
 .perfil-header .datos h2 {
   font-size: 1.3rem;
-  color: #212121;
+  color: var(--color-texto);
   margin-bottom: 0.3rem;
 }
 
 .perfil-header .usuario {
-  color: #666;
+  color: var(--color-sub);
   font-size: 1rem;
 }
 
@@ -69,7 +76,7 @@
   background-color: var(--lavanda-translucido);
   padding: 0.6rem 1.5rem;
   font-weight: bold;
-  color: #3f3d56;
+  color: var(--color-sub);
 }
 
 .area-perfil {
@@ -83,7 +90,7 @@
 .perfil-header {
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: var(--color-fondo);
 
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -126,13 +133,6 @@
   background-color: #6c63ff;
 }
 
-.barra-inferior {
-  padding: 0.8rem 2rem;
-  background-color: var(--lavanda-translucido);
-  font-weight: 500;
-  color: #3f3d56;
-}
-
 
 .perfil-header {
   display: flex;
@@ -146,7 +146,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  background-color: #dfe8ff;
   padding: 1.5rem 2rem;
   flex-wrap: wrap; /* Esto es importante para mobile */
 }
@@ -161,7 +160,7 @@
 }
 
 .bio{
-  color: #212121;
+  color: var(--color-texto);
 }
 
 .info-extra {
@@ -181,7 +180,7 @@
 .info-extra > div {
   flex: 1 1 30%;
   min-width: 140px;
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--color-fondo-info-extra);
   border-radius: 6px;
   padding: 0.6em 0.8em;
 }
@@ -198,15 +197,6 @@
   width: 100%;
 }
 
-/* Franja lavanda igual a lo ancho */
-.barra-inferior {
-  background-color: var(--lavanda-translucido);
-  padding: 0.6rem 2rem;
-  font-weight: bold;
-  color: #3f3d56;
-  width: 100%;
-}
-
 /* Avatar e info */
 .avatar {
   width: 90px;
@@ -218,7 +208,7 @@
 .info-texto h2 {
   font-size: 1.5rem;
   margin: 0;
-  color: #212121;
+  color: var(--color-texto);
 }
 
 .usuario {
@@ -255,7 +245,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  background-color: #dfe8ff;
+  background-color: var(--color-fondo-perfil);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -275,11 +265,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.info-texto h2 {
-  font-size: 1.8rem;
-  color: #212121;
-
-}
 
 .usuario {
   border-radius: 8px;
@@ -306,7 +291,6 @@
   background-color: var(--lavanda-translucido);
   padding: 0.8rem 2rem;
   font-weight: bold;
-  color: #3f3d56;
   margin-top: 1.5rem;
 }
 
@@ -442,7 +426,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 1.7rem; /* antes 1.4rem */
-  color: #212121;
+  color: var(--color-texto);
   font-weight: bold;
   margin: 0;
 }

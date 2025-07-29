@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         formData.append('foto_archivo', archivo);
 
-        fetch("{% url 'editprofile' %}", {
+        fetch(urls.subirFoto, {
           method: "POST",
           headers: {
             "X-Requested-With": "XMLHttpRequest",
@@ -63,10 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (valorFotoOriginal !== "") {
           profileImage.src = valorFotoOriginal;
         } else {
-          profileImage.src = "{% static 'images/default_user.avif' %}";
+          profileImage.src = urls.defaultFoto;
         }
       } else if (valorFotoOriginal !== "") {
-        fetch("{% url 'eliminar_foto_perfil' %}", {
+        fetch(urls.eliminarFoto, {
           method: "POST",
           headers: {
             "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value

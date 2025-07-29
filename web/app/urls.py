@@ -35,6 +35,7 @@ urlpatterns = [
     path('obtener-mensajes-chat/', views.obtener_mensajes_chat, name='obtener_mensajes_chat'),
     path('comentar/', views.crear_comentario, name='crear_comentario'),
     path('eliminar-foto-perfil/', views.eliminar_foto_perfil, name='eliminar_foto_perfil'),
+    path('subir-foto-perfil/', views.subir_foto_perfil, name='subir_foto_perfil'),
     path('notificaciones/marcar_leidas/', views.marcar_notificaciones_leidas, name='marcar_leidas'),
     path('eliminar-amistad/', views.eliminar_amistad, name='eliminar_amistad'),
     path('eliminar-chat/', views.eliminar_chat, name='eliminar_chat'),
@@ -46,4 +47,5 @@ urlpatterns = [
     path("marcar_leida_individual/", views.marcar_notificacion_individual, name="marcar_leida_individual"),
     path("guardar-privacidad/", views.guardar_privacidad, name="guardar_privacidad"),
     path("guardar-tema/", views.guardar_tema, name="guardar_tema"),
+    path("enviar-mensaje-chat/", views.enviar_mensaje_chat, name="enviar_mensaje_chat"),
 ]

@@ -81,6 +81,34 @@ def eliminar_foto_perfil(request):
 
 
 @require_POST
+def subir_foto_perfil(request):
+    if not request.session.get('usuario_id'):
+        return JsonResponse({'ok': False, 'error': 'No autenticado'}, status=403)
+
+    usuario = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
+
+    if request.FILES.get('foto_archivo'):
+        archivo = request.FILES['foto_archivo']
+        nombre_archivo = f"{timezone.now().strftime('%Y%m%d%H%M%S')}_{archivo.name}"
+        ruta_guardado = os.path.join(settings.MEDIA_ROOT, 'fotos_perfil', nombre_archivo)
+
+        os.makedirs(os.path.dirname(ruta_guardado), exist_ok=True)
+        with open(ruta_guardado, 'wb+') as destino:
+            for chunk in archivo.chunks():
+                destino.write(chunk)
+
+        usuario.foto = f"/media/fotos_perfil/{nombre_archivo}"
+        usuario.save(using='conectati')
+
+        return JsonResponse({
+            "ok": True,
+            "foto_url": usuario.foto
+        })
+
+    return JsonResponse({'ok': False, 'error': 'No se recibió archivo'}, status=400)
+
+
+@require_POST
 def marcar_notificaciones_leidas(request):
     """Funcion de utilidad para marcar las notificaciones como leidas"""
     if not request.session.get('usuario_id'):
@@ -623,3 +651,41 @@ def obtener_hilo_completo(comentario):
         actual = actual.respuesta_a
 
     return hilo
+
+@csrf_exempt
+@require_POST
+def enviar_mensaje_chat(request):
+    """Funcion de utilidad para enviar un nuevo mensaje y mostrarlo"""
+    if not request.session.get('usuario_id'):
+        return JsonResponse({'ok': False, 'error': 'No autenticado'}, status=403)
+
+    try:
+        data = json.loads(request.body)
+        texto = data.get("texto", "").strip()
+        chat_id = data.get("chat_id")
+
+        if not texto or not chat_id:
+            return JsonResponse({'ok': False, 'error': 'Faltan datos'})
+
+        emisor_id = request.session['usuario_id']
+        emisor = Usuario.objects.using('conectati').get(id=emisor_id)
+        chat = Chat.objects.using('conectati').get(id=chat_id)
+
+        mensaje = Mensaje.objects.using('conectati').create(
+            chat=chat,
+            emisor=emisor,
+            texto=texto,
+            fecha=timezone.now()
+        )
+
+        return JsonResponse({
+            'ok': True,
+            'mensaje': {
+                'texto': mensaje.texto,
+                'es_emisor': True
+            }
+        })
+
+    except Exception as e:
+        print("Error al enviar mensaje:", e)
+        return JsonResponse({'ok': False, 'error': str(e)}, status=500)

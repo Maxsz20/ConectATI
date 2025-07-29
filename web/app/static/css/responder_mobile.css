@@ -9,8 +9,18 @@ aside, .boton-publicar-mobile {
 :root {
   --color-fondo: #E5E7EB;
   --color-iconos: #8E9BFF;
-  --lavanda-translucido: rgba(188, 190, 255, 0.4);
   --color-bordes: #ccc;
+  --color-texto: #333;
+  --color-sub: #666;
+  --lavanda-translucido: rgba(188, 190, 255, 0.4);
+}
+
+.tema-oscuro {
+  --color-fondo: #2C2B4F;
+  --color-iconos: #8E9BFF;
+  --color-texto: #FFFFFF;
+  --color-sub: #d5ebff;
+  --lavanda-translucido: rgba(155, 155, 212, 0.4);
 }
 
 * {
@@ -48,7 +58,7 @@ body {
   align-items: center;
   gap: 0.5rem;
   font-size: 1.7rem;
-  color: #212121;
+  color: var(--color-texto);
   font-weight: bold;
   margin: 0;
 }
@@ -100,7 +110,7 @@ body {
 }
 
 .barra-superior .cancelar {
-  color: #888;
+  color: var(--color-sub);
   font-size: 1.1rem;
   text-decoration: none;
 }
@@ -132,7 +142,7 @@ body {
 
 .publicacion-original .contenido {
   font-size: 1.1rem;
-  color: #333;
+  color: var(--color-texto);
   display: flex;
   align-items: center;
   gap: 0.5rem; /* Espacio entre el nombre y el username */
@@ -144,12 +154,12 @@ body {
   display: block;
   font-size: 1.1rem;
   margin-bottom: 0.2rem;
-  color: #212121;
+  color: var(--color-texto);
 }
 
 .publicacion-original .username {
   font-size: 1rem;
-  color: #888;
+  color: var(--color-sub);
 }
 .publicacion-original .contenido p {
   flex-basis: 100%;
@@ -179,7 +189,7 @@ body {
 
 .respondiendo-a {
   font-size: 0.95rem;
-  color: #888;
+  color: var(--color-sub);
 }
 
 .respondiendo-a span {
@@ -196,7 +206,7 @@ body {
   font-size: 1.2rem;
   resize: none;
   min-height: 80px;
-  color: #212121;
+  color: var(--color-texto);
   font-family: 'Segoe UI', sans-serif;
 }
 .imagen-mini{
@@ -226,7 +236,7 @@ body {
 }
 
 .acciones-respuesta i {
-  color: #444;
+  color: var(--color-sub);
   font-size: 1.4rem;
   cursor: pointer;
 }

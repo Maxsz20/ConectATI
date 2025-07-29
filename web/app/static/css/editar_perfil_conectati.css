@@ -403,7 +403,7 @@ input::placeholder{
   align-items: center;
   gap: 0.5rem;
   font-size: 1.7rem;
-  color: var(--color-texto-oscuro);
+  color: var(--color-texto);
   font-weight: bold;
   margin: 0;
 }
@@ -489,7 +489,7 @@ input::placeholder{
   
 
 
-@media (max-width: 768px) {
+@media (max-width: 876px) {
   /* Ocultar elementos de escritorio */
   aside,
   .conversacion, /* Asumo que estas clases son de otras páginas */

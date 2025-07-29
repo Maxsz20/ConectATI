@@ -19,6 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const nombreDesktop = document.getElementById("chat-nombre-desktop");
   const usuarioDesktop = document.getElementById("chat-usuario-desktop");
   const mensajesContainer = document.querySelector('.chat-mensajes');
+  const inputMensaje = document.getElementById("chatinput");
+  const btnEnviar = document.querySelector(".fa-paper-plane");
+
+  let chatActivoId = null;  // Se actualiza dinámicamente
+
+  
 
   function getCookie(name) {
     let cookieValue = null;
@@ -34,6 +40,51 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return cookieValue;
   }
+
+  // Botón enviar mensaje del input
+  btnEnviar.addEventListener("click", () => {
+    const texto = inputMensaje.value.trim();
+    if (!texto || !chatActivoId) return;
+
+    fetch("/app/enviar-mensaje-chat/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken")
+      },
+      body: JSON.stringify({
+        chat_id: chatActivoId,
+        texto: texto
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok && data.mensaje) {
+        const vacio = mensajesContainer.querySelector('.mensajes-sin-mensajes');
+        if (vacio) vacio.remove();
+
+        const div = document.createElement("div");
+        div.classList.add("mensaje", "enviado");
+        div.textContent = data.mensaje.texto;
+        mensajesContainer.appendChild(div);
+        inputMensaje.value = "";
+        scrollToBottom();
+      }
+    })
+    .catch(err => {
+      console.error("🚨 Error en fetch:", err);
+    });
+  });
+
+
+  // Enter para enviar mensaje
+  inputMensaje.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      btnEnviar.click(); // simula el clic en el avión
+    }
+  });
+
 
   function scrollToBottom() {
     if (mensajesContainer) {
@@ -54,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Buscar el chat id asociado
         let chatId = item.dataset.chatId;
+        chatActivoId = chatId;
         if (!chatId && item.getAttribute('data-chat-id')) chatId = item.getAttribute('data-chat-id');
 
         // Si tienes el chat id, usa obtener-conversacion, si no, usa obtener-mensajes-chat
@@ -93,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
             mensajesContainer.innerHTML = "";
             let mensajes = data.mensajes || [];
             if (mensajes.length === 0) {
-              mensajesContainer.innerHTML = `<div style=\"color:#888; text-align:center; padding:1rem;\">${gettext("No hay mensajes aún.")}</div>`;
+              mensajesContainer.innerHTML = `<div style=\"text-align:center; padding:1rem;\">${gettext("No hay mensajes aún.")}</div>`;
             } else {
               mensajes.forEach(msg => {
                 const div = document.createElement("div");
@@ -196,6 +248,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     });
+    if (!chatActivoId) {
+      const primerChat = document.querySelector(".chat-user");
+      if (primerChat) {
+        const primerChatId = primerChat.getAttribute("data-chat-id");
+        if (primerChatId) {
+          chatActivoId = primerChatId;
+          if (!isMobile()) {
+            primerChat.click(); 
+          }
+        }
+      }
+    }
   }
 
   activarClickChats();
@@ -275,7 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
             nombreMobile.textContent = data.chat.nombre;
             if (chatInput) chatInput.style.display = 'flex';
             if (mensajesContainer) {
-              mensajesContainer.innerHTML = `<div style="color:#888; text-align:center; padding:1rem;">${gettext("No hay mensajes aún.")}</div>`;
+              mensajesContainer.innerHTML = `<div style="text-align:center; padding:1rem;">${gettext("No hay mensajes aún.")}</div>`;
             }
           }
         }

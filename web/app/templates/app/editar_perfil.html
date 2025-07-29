@@ -79,7 +79,17 @@
     </form>
   </div>
 </main>
+{% endblock %}
 
+{% block extra_js %}
+<script>
+  window.urls = {
+    subirFoto: "{% url 'subir_foto_perfil' %}",
+    eliminarFoto: "{% url 'eliminar_foto_perfil' %}",
+    defaultFoto: "{% static 'images/default_user.avif' %}"
+  };
+</script>
 <script src="{% static 'js/editar_perfil.js' %}"></script>
 <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+
 {% endblock %}

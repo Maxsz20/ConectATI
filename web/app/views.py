@@ -18,10 +18,10 @@ from django.views.decorators.http import require_POST
 from django.utils import translation
 from django.urls import reverse
 
-from .utils import (crear_notificacion, procesar_publicacion, eliminar_foto_perfil, marcar_notificaciones_leidas, 
+from .utils import (crear_notificacion, procesar_publicacion, eliminar_foto_perfil, subir_foto_perfil, marcar_notificaciones_leidas, 
 obtener_mensajes_chat, crear_comentario, dar_estrella, buscar_usuarios, obtener_conversacion,
 enviar_solicitud_chat, aceptar_solicitud_chat, rechazar_solicitud_chat, enviar_solicitud_amistad, aceptar_solicitud, 
-rechazar_solicitud, eliminar_amistad, eliminar_chat, obtener_hilo_completo, marcar_notificacion_individual)
+rechazar_solicitud, eliminar_amistad, eliminar_chat, obtener_hilo_completo, marcar_notificacion_individual, enviar_mensaje_chat)
 
 # Create your views here.
 def InicioRedirectView(request):
@@ -747,3 +747,5 @@ def guardar_tema(request):
             pass
 
     return redirect(request.META.get("HTTP_REFERER", "/"))
+
+

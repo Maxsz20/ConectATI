@@ -2,7 +2,7 @@
   --color-fondo: #E5E7EB;
   --color-iconos: #8E9BFF;
   --color-bordes: #ccc;
-  -color-sub: #666;
+  --color-sub: #666;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
 }
 .tema-oscuro {
@@ -128,13 +128,13 @@
 .item-amigo .contenido, .item-solicitud .contenido {
   flex: 1;
   font-size: 0.95rem;
-  color: var(--color-sub);
+  color: var(--color-texto);
 }
 
 .item-amigo .contenido strong, .item-solicitud .contenido strong {
   display: block;
   font-size: 1.2rem;
-  color: var(--color-sub);
+  color: var(--color-texto);
 }
 .item-amigo i , .item-solicitud i {
   font-size: 1.2rem;

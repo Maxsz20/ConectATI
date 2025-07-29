@@ -2,6 +2,7 @@
   --color-fondo: #E5E7EB;
   --color-iconos: #8E9BFF;
   --color-bordes: #ccc;
+  --color-recibido: #f0eaff;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
 }
 
@@ -11,6 +12,7 @@
   --color-texto: #FFFFFF;
   --color-sub: #d5ebff;
   --lavanda-translucido: rgba(155, 155, 212, 0.4);
+  --color-recibido: rgba(81, 81, 247, 0.4);
 }
 
 
@@ -60,6 +62,7 @@ input::placeholder{
 
 .fas.fa-trash {
   color: #f44336;
+  font-size: 1.2rem;
   transition: color 0.2s ease;
 }
 
@@ -83,6 +86,10 @@ input::placeholder{
 }
 
 .encabezado-chat strong {
+  font-size: 1.2rem;
+  text-align: center;
+}
+.encabezado-chat small {
   font-size: 1rem;
   text-align: center;
 }
@@ -139,7 +146,7 @@ input::placeholder{
 }
 
 .chat-user:hover {
-  background-color: #e3e1fc;
+  background-color: var(--lavanda-translucido);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
@@ -155,11 +162,14 @@ input::placeholder{
 .chat-mensajes {
   flex: 1;
   display: flex;
-  flex-direction: column-reverse;
-  justify-content: flex-start;  
+  flex-direction: column;
+  justify-content: flex-end;
   padding: 1.5rem;
   gap: 1.2rem;
   overflow-y: auto;
+}
+.chat-mensajes div{
+  color: var(--color-sub);
 }
 
 .mensaje {
@@ -173,13 +183,13 @@ input::placeholder{
 }
 
 .recibido {
-  background-color: #f0eaff;
+  background-color: var(--color-recibido);
   align-self: flex-start;
   margin-left: 1.5rem;
 }
 
 .enviado {
-  background-color: #cfc3f9;
+  background-color: var(--lavanda-translucido);
   align-self: flex-end;
   margin-right: 1.5rem;
 }
