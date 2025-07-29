@@ -21,8 +21,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.i18n import JavaScriptCatalog
 
+from django.http import HttpResponse
+
+def test_view(request):
+    return HttpResponse("¡ConectATI desplegado correctamente!")
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('test/', test_view),
     path('', InicioRedirectView.as_view(), name='inicio_redirect'),
     path('app/', include('app.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
