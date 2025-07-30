@@ -63,10 +63,31 @@ document.addEventListener("DOMContentLoaded", () => {
         const vacio = mensajesContainer.querySelector('.mensajes-sin-mensajes');
         if (vacio) vacio.remove();
 
+        // Verifica si ya hay separador de la fecha actual
+        const ultimaFecha = [...mensajesContainer.querySelectorAll('.separador-fecha')].pop();
+        if (!ultimaFecha || ultimaFecha.textContent !== data.mensaje.fecha) {
+          const separador = document.createElement("div");
+          separador.classList.add("separador-fecha");
+          separador.textContent = data.mensaje.fecha;
+          mensajesContainer.appendChild(separador);
+        }
+
+        // Crear burbuja
         const div = document.createElement("div");
         div.classList.add("mensaje", "enviado");
-        div.textContent = data.mensaje.texto;
+
+        const contenido = document.createElement("div");
+        contenido.classList.add("contenido-mensaje");
+        contenido.textContent = data.mensaje.texto;
+
+        const hora = document.createElement("span");
+        hora.classList.add("hora-mensaje");
+        hora.textContent = data.mensaje.hora;
+
+        div.appendChild(contenido);
+        div.appendChild(hora);
         mensajesContainer.appendChild(div);
+
         inputMensaje.value = "";
         scrollToBottom();
       }
@@ -143,15 +164,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // --- Actualizar mensajes ---
             mensajesContainer.innerHTML = "";
-            let mensajes = data.mensajes || [];
-            if (mensajes.length === 0) {
+            let mensajes = data.mensajes || {};
+            if (Object.keys(mensajes).length === 0) {
               mensajesContainer.innerHTML = `<div style=\"text-align:center; padding:1rem;\">${gettext("No hay mensajes aún.")}</div>`;
             } else {
-              mensajes.forEach(msg => {
-                const div = document.createElement("div");
-                div.classList.add("mensaje", msg.propio || msg.es_emisor ? "enviado" : "recibido");
-                div.textContent = msg.texto;
-                mensajesContainer.appendChild(div);
+              Object.entries(data.mensajes).forEach(([fecha, lista]) => {
+                const separador = document.createElement("div");
+                separador.classList.add("separador-fecha");
+                separador.textContent = fecha;
+                mensajesContainer.appendChild(separador);
+
+                lista.forEach(msg => {
+                  const div = document.createElement("div");
+                  div.classList.add("mensaje", msg.propio ? "enviado" : "recibido");
+
+                  const contenido = document.createElement("div");
+                  contenido.classList.add("contenido-mensaje");
+                  contenido.textContent = msg.texto;
+
+                  const hora = document.createElement("span");
+                  hora.classList.add("hora-mensaje");
+                  hora.textContent = msg.hora;
+
+                  div.appendChild(contenido);
+                  div.appendChild(hora);
+                  mensajesContainer.appendChild(div);
+                });
               });
             }
 

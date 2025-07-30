@@ -2,7 +2,8 @@
   --color-fondo: #E5E7EB;
   --color-iconos: #8E9BFF;
   --color-bordes: #ccc;
-  --color-recibido: #f0eaff;
+  --color-texto: #000000;
+  --color-enviado: #8E9BFF;
   --lavanda-translucido: rgba(188, 190, 255, 0.4);
 }
 
@@ -12,7 +13,7 @@
   --color-texto: #FFFFFF;
   --color-sub: #d5ebff;
   --lavanda-translucido: rgba(155, 155, 212, 0.4);
-  --color-recibido: rgba(81, 81, 247, 0.4);
+  --color-enviado: rgba(81, 81, 247, 0.4);
 }
 
 
@@ -168,24 +169,36 @@ input::placeholder{
   gap: 1.2rem;
   overflow-y: auto;
 }
-.chat-mensajes div{
-  color: var(--color-sub);
-}
 
 .mensaje {
+  position: relative;
   max-width: 70%;
-  padding: 0.8rem 1rem;
+  padding: 0.8rem 1rem 1.4rem 1rem; /* más espacio abajo para la hora */
   border-radius: 16px;
   line-height: 1.4;
-  font-size: 0.95rem;
+  font-size: 1rem;
   display: inline-block;
-  position: relative;
+  animation: aparecer 0.3s ease;
+  color: var(--color-sub);
+  margin-bottom: 0.5rem;
+  word-break: break-word;
+}
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .recibido {
-  background-color: var(--color-recibido);
+  background-color: var(--lavanda-translucido);
   align-self: flex-start;
   margin-left: 1.5rem;
+  color: var(--color-texto);
 }
 
 .enviado {
@@ -324,9 +337,33 @@ input::placeholder{
 .encabezado-chat-mobile{
   display: none;
 }
+.separador-fecha {
+  text-align: center;
+  color: var(--color-sub);
+  font-size: 0.95rem;
+  margin: 1rem 0 0.5rem;
+}
 
-/* MENÚ MOBILE */
 
+.mensaje.enviado {
+  align-self: flex-end;
+  background: var(--color-enviado);
+  color: var(--color-texto);
+}
+
+.hora-mensaje {
+  position: absolute;
+  display: block;
+  right: 12px;
+  font-size: 0.7rem;
+  color: var(--color-sub);
+  line-height: 1;
+  text-align: right;  
+}
+.contenido-mensaje {
+  display: block;
+  white-space: pre-wrap;
+}
 
 /* RESPONSIVE */
 @media (max-width: 876px) {

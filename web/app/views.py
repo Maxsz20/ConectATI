@@ -1,22 +1,31 @@
-from django.shortcuts import render, redirect
-from .forms import RegistroForm, PublicacionForm, EditarPerfilForm
-from django.utils.crypto import get_random_string
-from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import EmailMessage
-from django.utils import timezone
-from .models import Usuario, Publicacion, Estrella, Amistad, SolicitudChat, Chat, Mensaje, Comentario, Notificacion, CodigoRecuperacion, Configuracion
-from django.contrib import messages
-from django.contrib.auth.hashers import make_password, check_password
-from django.db import models
 import os
 import json
+from collections import defaultdict
+from datetime import timedelta, date
+
+from django.shortcuts import render, redirect
 from django.conf import settings
-from django.db.models import Q, Count
 from django.http import JsonResponse
-from datetime import timedelta
+from django.urls import reverse
+from django.db import models
+from django.db.models import Q, Count
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password, check_password
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils import translation
-from django.urls import reverse
+from django.utils.crypto import get_random_string
+from django.utils import timezone
+from django.utils.timezone import localtime
+
+from django.core.mail import EmailMessage
+
+from .forms import RegistroForm, PublicacionForm, EditarPerfilForm
+from .models import (
+    Usuario, Publicacion, Estrella, Amistad,
+    SolicitudChat, Chat, Mensaje, Comentario,
+    Notificacion, CodigoRecuperacion, Configuracion
+)
 
 from .utils import (crear_notificacion, procesar_publicacion, eliminar_foto_perfil, subir_foto_perfil, marcar_notificaciones_leidas, 
 obtener_mensajes_chat, crear_comentario, dar_estrella, buscar_usuarios, obtener_conversacion,
@@ -371,22 +380,43 @@ def ChatView(request):
 
     chats_data = []
     for chat in chats_qs:
-        otro_usuario = chat.usuario2 if chat.usuario1.id == usuario_id else chat.usuario1
+        otro = chat.usuario2 if chat.usuario1.id == usuario_id else chat.usuario1
         chats_data.append({
             'id': chat.id,
-            'username': otro_usuario.username,
-            'nombre': otro_usuario.nombre,
-            'foto': otro_usuario.foto or '/static/images/default_user.avif',
-            'usuario_id': otro_usuario.id,
+            'username': otro.username,
+            'nombre': otro.nombre,
+            'foto': otro.foto or '/static/images/default_user.avif',
+            'usuario_id': otro.id,
         })
 
-    # Obtener mensajes del primer chat si existe
     primer_chat = chats_qs.first()
-    mensajes = []
+    mensajes_por_fecha = {}
+
     if primer_chat:
         mensajes = Mensaje.objects.using('conectati') \
             .filter(chat=primer_chat) \
+            .select_related('emisor') \
             .order_by('fecha')
+
+        agrupados = defaultdict(list)
+        hoy = date.today()
+        ayer = hoy - timedelta(days=1)
+
+        for msg in mensajes:
+            fecha_msg = localtime(msg.fecha).date()
+            msg.hora = localtime(msg.fecha).strftime('%H:%M')
+            msg.propio = (msg.emisor_id == usuario_id)
+
+            if fecha_msg == hoy:
+                etiqueta = "Hoy"
+            elif fecha_msg == ayer:
+                etiqueta = "Ayer"
+            else:
+                etiqueta = fecha_msg.strftime("%d de %B").capitalize()
+
+            agrupados[etiqueta].append(msg)
+
+        mensajes_por_fecha = dict(agrupados)
 
     solicitudes_chat_pendientes = SolicitudChat.objects.using('conectati') \
         .filter(para_usuario_id=usuario_id, estado='pendiente') \
@@ -396,9 +426,10 @@ def ChatView(request):
     return render(request, 'app/chat.html', {
         'chats': chats_data,
         'primer_chat': chats_data[0] if chats_data else None,
-        'mensajes': mensajes,
+        'mensajes_por_fecha': mensajes_por_fecha,
         'solicitudes_chat_pendientes': solicitudes_chat_pendientes,
     })
+
 
 def SettingsView(request):
     if not request.session.get('usuario_id'):

@@ -86,18 +86,21 @@
   <div class="conversacion">
     <div class="chat-mensajes">
       {% if primer_chat %}
-        {% if mensajes %}
-          {% for msg in mensajes %}
-        <div class="mensaje {% if msg.emisor.id == request.session.usuario_id %}enviado{% else %}recibido{% endif %}">
-          {{ msg.texto }}
-        </div>
+        {% if mensajes_por_fecha %}
+          {% for fecha, mensajes in mensajes_por_fecha.items %}
+            <div class="separador-fecha">{{ fecha }}</div>
+            {% for msg in mensajes %}
+              <div class="mensaje {% if msg.propio %}enviado{% else %}recibido{% endif %}">
+                <div class="contenido-mensaje">{{ msg.texto }}</div>
+                <span class="hora-mensaje">{{ msg.hora }}</span>
+              </div>
+            {% endfor %}
           {% endfor %}
         {% else %}
           <div class="mensajes-sin-mensajes">{% trans "No hay mensajes aún." %}</div>
         {% endif %}
       {% else %}
         <div id="selecciona-chat">{% trans "Selecciona un chat para comenzar a conversar." %}</div>
-      
       {% endif %}
     </div>
 

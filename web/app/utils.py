@@ -8,6 +8,11 @@ from django.views.decorators.http import require_POST
 from django.db.models import Q
 import json
 from django.utils.translation import gettext as _
+from datetime import date, timedelta
+from django.utils.timezone import localtime
+from django.views.decorators.http import require_GET
+from collections import defaultdict
+from django.utils.timezone import localtime
 
 def crear_notificacion(usuario_destino, tipo, contenido, emisor=None, por_correo=False, publicacion_id=None, comentario_id=None):
     """Funcion de utilidad para crear notificaciones"""
@@ -141,8 +146,9 @@ def marcar_notificacion_individual(request):
     except Exception as e:
         return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
+
+@require_GET
 def obtener_mensajes_chat(request):
-    """Funcion de utilidad para obtener los mensajes de chat entre usuarios"""
     if not request.session.get('usuario_id'):
         return JsonResponse({'error': 'No autenticado'}, status=403)
 
@@ -151,18 +157,39 @@ def obtener_mensajes_chat(request):
 
     try:
         chat = Chat.objects.using('conectati').get(
-            (Q(usuario1_id=usuario_id, usuario2_id=otro_id) |
-             Q(usuario1_id=otro_id, usuario2_id=usuario_id))
+            Q(usuario1_id=usuario_id, usuario2_id=otro_id) |
+            Q(usuario1_id=otro_id, usuario2_id=usuario_id)
         )
         mensajes = Mensaje.objects.using('conectati').filter(chat=chat).order_by('fecha')
-        datos = [{
-            'texto': m.texto,
-            'propio': m.emisor_id == usuario_id
-        } for m in mensajes]
-        return JsonResponse({'ok': True, 'mensajes': datos})
-    except Chat.DoesNotExist:
-        return JsonResponse({'ok': True, 'mensajes': []})
 
+        hoy = date.today()
+        ayer = hoy - timedelta(days=1)
+        agrupados = defaultdict(list)
+
+        for m in mensajes:
+            fecha_local = localtime(m.fecha).date()
+            hora_local = localtime(m.fecha).strftime('%H:%M')
+
+            if fecha_local == hoy:
+                etiqueta = "Hoy"
+            elif fecha_local == ayer:
+                etiqueta = "Ayer"
+            else:
+                etiqueta = fecha_local.strftime("%d de %B").capitalize()
+
+            agrupados[etiqueta].append({
+                'texto': m.texto,
+                'hora': hora_local,
+                'propio': m.emisor_id == usuario_id
+            })
+
+        # 🔁 Convertir defaultdict a dict antes de enviar
+        mensajes_dict = dict(agrupados)
+
+        return JsonResponse({'ok': True, 'mensajes': mensajes_dict})
+
+    except Chat.DoesNotExist:
+        return JsonResponse({'ok': True, 'mensajes': {}})
 
 @csrf_exempt
 def crear_comentario(request):
@@ -337,8 +364,9 @@ def buscar_usuarios(request):
     except Exception as e:
         return JsonResponse({'error': 'Error interno en la búsqueda'}, status=500)
 
+@require_GET
 def obtener_conversacion(request):
-    """Funcion de utilidad para obtener los mensajes de chat entre usuarios"""
+    """Devuelve los mensajes del chat agrupados por fecha con hora"""
     if not request.session.get('usuario_id'):
         return JsonResponse({'error': 'No autenticado'}, status=403)
 
@@ -347,17 +375,33 @@ def obtener_conversacion(request):
 
     try:
         chat = Chat.objects.using('conectati').get(id=chat_id)
-        mensajes = Mensaje.objects.using('conectati').filter(chat=chat).order_by('fecha')
+        mensajes = Mensaje.objects.using('conectati') \
+            .filter(chat=chat) \
+            .order_by('fecha')
 
-        mensajes_data = []
-        for msg in mensajes:
-            mensajes_data.append({
-                'id': msg.id,
-                'texto': msg.texto,
-                'es_emisor': msg.emisor.id == usuario_id
+        hoy = date.today()
+        ayer = hoy - timedelta(days=1)
+        agrupados = defaultdict(list)
+
+        for m in mensajes:
+            fecha_local = localtime(m.fecha).date()
+            hora_local = localtime(m.fecha).strftime('%H:%M')
+
+            if fecha_local == hoy:
+                etiqueta = "Hoy"
+            elif fecha_local == ayer:
+                etiqueta = "Ayer"
+            else:
+                etiqueta = fecha_local.strftime("%d de %B").capitalize()
+
+            agrupados[etiqueta].append({
+                'texto': m.texto,
+                'hora': hora_local,
+                'propio': m.emisor_id == usuario_id
             })
 
-        return JsonResponse({'ok': True, 'mensajes': mensajes_data})
+        return JsonResponse({'ok': True, 'mensajes': dict(agrupados)})
+
     except Chat.DoesNotExist:
         return JsonResponse({'error': 'Chat no encontrado'}, status=404)
 
@@ -655,7 +699,7 @@ def obtener_hilo_completo(comentario):
 @csrf_exempt
 @require_POST
 def enviar_mensaje_chat(request):
-    """Funcion de utilidad para enviar un nuevo mensaje y mostrarlo"""
+    """Función para enviar un nuevo mensaje y devolver su información formateada"""
     if not request.session.get('usuario_id'):
         return JsonResponse({'ok': False, 'error': 'No autenticado'}, status=403)
 
@@ -671,6 +715,7 @@ def enviar_mensaje_chat(request):
         emisor = Usuario.objects.using('conectati').get(id=emisor_id)
         chat = Chat.objects.using('conectati').get(id=chat_id)
 
+        # Crear el mensaje
         mensaje = Mensaje.objects.using('conectati').create(
             chat=chat,
             emisor=emisor,
@@ -678,14 +723,26 @@ def enviar_mensaje_chat(request):
             fecha=timezone.now()
         )
 
+        # Formatear hora y fecha para el frontend
+        fecha_local = localtime(mensaje.fecha).date()
+        hora_local = localtime(mensaje.fecha).strftime('%H:%M')
+
+        if fecha_local == date.today():
+            etiqueta_fecha = "Hoy"
+        elif fecha_local == date.today() - timedelta(days=1):
+            etiqueta_fecha = "Ayer"
+        else:
+            etiqueta_fecha = fecha_local.strftime("%d de %B").capitalize()
+
         return JsonResponse({
             'ok': True,
             'mensaje': {
                 'texto': mensaje.texto,
-                'es_emisor': True
+                'hora': hora_local,
+                'fecha': etiqueta_fecha,
+                'propio': True
             }
         })
-
     except Exception as e:
         print("Error al enviar mensaje:", e)
         return JsonResponse({'ok': False, 'error': str(e)}, status=500)
