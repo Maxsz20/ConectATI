@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
+  // Boton para subir foto
   if (inputFoto && profileImage) {
     inputFoto.addEventListener('change', () => {
       const archivo = inputFoto.files[0];
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Boton para eliminar foto
   if (eliminarBtn) {
     eliminarBtn.addEventListener('click', () => {
       if (inputFoto.files.length > 0) {

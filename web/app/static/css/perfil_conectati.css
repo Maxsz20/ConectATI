@@ -359,6 +359,10 @@
   
 }
 
+.post-acciones .accion i:hover {
+  opacity: 0.7;
+}
+
 .post-acciones .accion i {
   font-size: 1.1rem;
 }
@@ -536,7 +540,8 @@
 @media (max-width: 876px) {
   aside,
   .conversacion,
-  .fila-encabezados {
+  .fila-encabezados, 
+  .modal-respuesta {
     display: none;
   }
 

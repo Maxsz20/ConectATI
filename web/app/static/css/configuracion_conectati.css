@@ -166,6 +166,7 @@
   .configuracion {
     width: 100%;
     padding: 2rem 1.5rem;
+    border-right: none;
     gap: 1.8rem;
     justify-content: center;
     align-items: center;

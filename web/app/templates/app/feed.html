@@ -165,37 +165,7 @@
 {% endblock %}
 
 {% block extra_body_content %}
-<div class="modal-respuesta" id="modalRespuesta">
-  <div class="contenido-modal">
-    <div class="barra-superior-modal">
-      <a href="#" class="cancelar-modal" id="btnCancelarModal">{% trans "Cancelar" %}</a>
-      <button class="btn-subir" id="btnEnviarComentario">{% trans "Subir" %}</button>
-    </div>
-
-    <div class="publicacion-respuesta">
-      <img class="imagen-avatar" id="avatarPublicacion" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Avatar del autor' %}" />
-      <div class="contenido">
-        <strong id="nombreAutor">{% trans "Nombre del autor" %}</strong>
-        <p id="textoOriginal">{% trans "Texto original de la publicación o comentario" %}</p>
-        <img id="imagen-publicacion" class="imagen-mini" src="media/publicaciones/{{ publicacion.archivo_nombre }}" alt="{% trans 'Imagen adjunta' %}" style="display: none;" />
-      </div>
-    </div>
-
-    <div class="campo-respuesta">
-      <img class="imagen-avatar" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{% trans 'Mi perfil' %}" />
-      <div class="respuesta-input">
-        <span class="respondiendo-a">{% trans "Respondiendo a" %} <span id="usuarioMencionado">@usuario</span></span>
-        <textarea id="inputRespuesta" placeholder="{% trans 'Escribe tu respuesta' %}"></textarea>
-        <input type="hidden" id="idPadreRespuesta" value="">
-      </div>
-    </div>
-
-    <div class="acciones-respuesta">
-      <i class="fas fa-camera"></i>
-      <i class="fas fa-image"></i>
-    </div>
-  </div>
-</div>
+    {% include "app/_modal_respuesta.html" %}
 {% endblock %}
 
 {% block extra_js %}

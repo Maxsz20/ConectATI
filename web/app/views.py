@@ -8,7 +8,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.urls import reverse
 from django.db import models
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Max  
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.views.decorators.csrf import csrf_exempt
@@ -17,7 +17,7 @@ from django.utils import translation
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 from django.utils.timezone import localtime
-
+from django.utils.translation import gettext as _
 from django.core.mail import EmailMessage
 
 from .forms import RegistroForm, PublicacionForm, EditarPerfilForm
@@ -28,7 +28,7 @@ from .models import (
 )
 
 from .utils import (crear_notificacion, procesar_publicacion, eliminar_foto_perfil, subir_foto_perfil, marcar_notificaciones_leidas, 
-obtener_mensajes_chat, crear_comentario, dar_estrella, buscar_usuarios, obtener_conversacion,
+obtener_conversacion, crear_comentario, dar_estrella, buscar_usuarios,
 enviar_solicitud_chat, aceptar_solicitud_chat, rechazar_solicitud_chat, enviar_solicitud_amistad, aceptar_solicitud, 
 rechazar_solicitud, eliminar_amistad, eliminar_chat, obtener_hilo_completo, marcar_notificacion_individual, enviar_mensaje_chat)
 
@@ -49,8 +49,18 @@ def FriendView(request):
     amistades = Amistad.objects.using('conectati').filter(
         Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id),
         estado='aceptada'
+    ).select_related('de_usuario', 'para_usuario').order_by('-fecha')
+
+    solicitudes_chat = SolicitudChat.objects.using('conectati').filter(
+        Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id)
     ).select_related('de_usuario', 'para_usuario')
 
+    # Mapea por pares de ID para búsqueda rápida
+    estado_chats = {}
+    for s in solicitudes_chat:
+        otro_id = s.para_usuario_id if s.de_usuario_id == usuario_id else s.de_usuario_id
+        estado_chats[otro_id] = s.estado
+    
     amigos = []
     for a in amistades:
         if a.de_usuario_id == usuario_id:
@@ -63,7 +73,8 @@ def FriendView(request):
             'username': amigo.username,
             'descripcion': amigo.descripcion or '',
             'foto': amigo.foto or '/static/images/default_user.avif',
-            'amistad_id': a.id
+            'amistad_id': a.id,
+            'estado_chat': estado_chats.get(amigo.id, None)
         })
 
     # Solicitudes pendientes recibidas (donde yo soy el receptor)
@@ -153,11 +164,62 @@ def LogoutView(request):
 def ForgottenPassView(request):
     return render(request, 'app/forgotten_password.html', {})
 
+@csrf_exempt
 def CheckCodeView(request):
-    return render(request, 'app/check_code.html', {})
+    if request.method == 'GET':
+        # Mostrar la página de verificación de código
+        return render(request, 'app/check_code.html', {})
+    
+    elif request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            codigo = data.get('codigo')
 
+            recuperacion = CodigoRecuperacion.objects.using('conectati').get(codigo=codigo)
+            if recuperacion.expirado():
+                recuperacion.delete()
+                return JsonResponse({'ok': False, 'error': 'Código expirado'}, status=410)
+
+            # Guardar ID temporal en sesión para el siguiente paso
+            request.session['recuperacion_usuario_id'] = recuperacion.usuario.id
+            recuperacion.delete()
+            return JsonResponse({'ok': True})
+
+        except CodigoRecuperacion.DoesNotExist:
+            return JsonResponse({'ok': False, 'error': 'Código inválido'}, status=404)
+        except Exception as e:
+            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
+    
+    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
+
+@csrf_exempt
 def ChangePassView(request):
-    return render(request, 'app/change_password.html', {})
+    if request.method == 'GET':
+        # Mostrar la página de cambio de contraseña
+        return render(request, 'app/change_password.html', {})
+    
+    elif request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            nueva = data.get('nueva')
+
+            usuario_id = request.session.get('recuperacion_usuario_id')
+            if not usuario_id:
+                return JsonResponse({'ok': False, 'error': 'Sesión expirada'}, status=403)
+
+            usuario = Usuario.objects.using('conectati').get(id=usuario_id)
+            usuario.contrasena = make_password(nueva)  # Hashear la nueva contraseña
+            usuario.save(using='conectati')
+            del request.session['recuperacion_usuario_id']
+            return JsonResponse({'ok': True})
+            
+        except Usuario.DoesNotExist:
+            return JsonResponse({'ok': False, 'error': 'Usuario no encontrado'}, status=404)
+        except Exception as e:
+            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
+    
+    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
+
 
 def ProfileView(request, usuario_id=None):
     if not request.session.get('usuario_id'):
@@ -374,9 +436,11 @@ def ChatView(request):
     usuario_id = request.session['usuario_id']
 
     # Obtener todos los chats donde participa el usuario
-    chats_qs = Chat.objects.using('conectati').filter(
-        Q(usuario1_id=usuario_id) | Q(usuario2_id=usuario_id)
-    ).select_related('usuario1', 'usuario2').order_by('-fecha_inicio')
+    chats_qs = Chat.objects.using('conectati') \
+        .filter(Q(usuario1_id=usuario_id) | Q(usuario2_id=usuario_id)) \
+        .annotate(ultima_fecha=Max('mensaje__fecha')) \
+        .select_related('usuario1', 'usuario2') \
+        .order_by('-ultima_fecha')
 
     chats_data = []
     for chat in chats_qs:
@@ -408,11 +472,11 @@ def ChatView(request):
             msg.propio = (msg.emisor_id == usuario_id)
 
             if fecha_msg == hoy:
-                etiqueta = "Hoy"
+                etiqueta = _("Hoy")
             elif fecha_msg == ayer:
-                etiqueta = "Ayer"
+                etiqueta = _("Ayer")
             else:
-                etiqueta = fecha_msg.strftime("%d de %B").capitalize()
+                etiqueta = fecha_msg.strftime(_("%d de %B")).capitalize()
 
             agrupados[etiqueta].append(msg)
 
@@ -666,63 +730,6 @@ def enviar_codigo(request):
             print("Error en enviar_codigo:", e)
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
-    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
-
-@csrf_exempt
-def verificar_codigo(request):
-    if request.method == 'GET':
-        # Mostrar la página de verificación de código
-        return render(request, 'app/check_code.html', {})
-    
-    elif request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            codigo = data.get('codigo')
-
-            recuperacion = CodigoRecuperacion.objects.using('conectati').get(codigo=codigo)
-            if recuperacion.expirado():
-                recuperacion.delete()
-                return JsonResponse({'ok': False, 'error': 'Código expirado'}, status=410)
-
-            # Guardar ID temporal en sesión para el siguiente paso
-            request.session['recuperacion_usuario_id'] = recuperacion.usuario.id
-            recuperacion.delete()
-            return JsonResponse({'ok': True})
-
-        except CodigoRecuperacion.DoesNotExist:
-            return JsonResponse({'ok': False, 'error': 'Código inválido'}, status=404)
-        except Exception as e:
-            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
-    
-    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
-
-
-@csrf_exempt
-def cambiar_password(request):
-    if request.method == 'GET':
-        # Mostrar la página de cambio de contraseña
-        return render(request, 'app/change_password.html', {})
-    
-    elif request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            nueva = data.get('nueva')
-
-            usuario_id = request.session.get('recuperacion_usuario_id')
-            if not usuario_id:
-                return JsonResponse({'ok': False, 'error': 'Sesión expirada'}, status=403)
-
-            usuario = Usuario.objects.using('conectati').get(id=usuario_id)
-            usuario.contrasena = make_password(nueva)  # Hashear la nueva contraseña
-            usuario.save(using='conectati')
-            del request.session['recuperacion_usuario_id']
-            return JsonResponse({'ok': True})
-            
-        except Usuario.DoesNotExist:
-            return JsonResponse({'ok': False, 'error': 'Usuario no encontrado'}, status=404)
-        except Exception as e:
-            return JsonResponse({'ok': False, 'error': str(e)}, status=500)
-    
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
 
 

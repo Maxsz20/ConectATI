@@ -24,8 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let chatActivoId = null;  // Se actualiza dinámicamente
 
-  
-
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -63,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const vacio = mensajesContainer.querySelector('.mensajes-sin-mensajes');
         if (vacio) vacio.remove();
 
-        // Verifica si ya hay separador de la fecha actual
+        // Verifica si ya hay separador de la fecha actual, si no se crea y se coloca
         const ultimaFecha = [...mensajesContainer.querySelectorAll('.separador-fecha')].pop();
         if (!ultimaFecha || ultimaFecha.textContent !== data.mensaje.fecha) {
           const separador = document.createElement("div");
@@ -88,12 +86,23 @@ document.addEventListener("DOMContentLoaded", () => {
         div.appendChild(hora);
         mensajesContainer.appendChild(div);
 
-        inputMensaje.value = "";
-        scrollToBottom();
+        inputMensaje.value = ""; // Limpia el input
+
+        // Mover el chat activo al inicio con animación
+        const chatItemActual = document.querySelector(`.chat-user[data-chat-id="${chatActivoId}"]`);
+        if (chatItemActual) {
+          chatItemActual.classList.add('animado-subida');
+          chatList.prepend(chatItemActual);
+
+          setTimeout(() => {
+            chatItemActual.classList.remove('animado-subida');
+          }, 300);
+        }
+        requestAnimationFrame(() => scrollToBottom()); // Mueve el chat activo al inicio
       }
     })
     .catch(err => {
-      console.error("🚨 Error en fetch:", err);
+      console.error("Error en fetch:", err);
     });
   });
 
@@ -102,20 +111,36 @@ document.addEventListener("DOMContentLoaded", () => {
   inputMensaje.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      btnEnviar.click(); // simula el clic en el avión
+      btnEnviar.click(); // simula el clic al boton
     }
   });
 
 
-  function scrollToBottom() {
+  function scrollToBottom() { // Mueve el chat activo al inicio para abajo
     if (mensajesContainer) {
       mensajesContainer.scrollTop = mensajesContainer.scrollHeight;
     }
   }
 
+  // Activa los chats
   function activarClickChats() {
     const chatItems = document.querySelectorAll(".chat-user");
 
+    // Si no hay chat activo, se activa el primer chat para que se muestre a la derecha
+    if (!chatActivoId) {
+      const primerChat = document.querySelector(".chat-user");
+      if (primerChat) {
+        const primerChatId = primerChat.getAttribute("data-chat-id");
+        if (primerChatId) {
+          chatActivoId = primerChatId;
+          if (!isMobile()) {
+            primerChat.click(); 
+          }
+        }
+      }
+    }
+
+    // Se activa el chat al hacer clic
     chatItems.forEach(item => {
       item.addEventListener("click", () => {
         const usuarioId = item.dataset.usuarioId;
@@ -126,17 +151,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Buscar el chat id asociado
         let chatId = item.dataset.chatId;
-        chatActivoId = chatId;
         if (!chatId && item.getAttribute('data-chat-id')) chatId = item.getAttribute('data-chat-id');
+        if (chatId) chatActivoId = chatId;
 
-        // Si tienes el chat id, usa obtener-conversacion, si no, usa obtener-mensajes-chat
-        let url = chatId ? `/app/obtener-conversacion/?chat_id=${chatId}` : `/app/obtener-mensajes-chat/?usuario_id=${usuarioId}`;
+        // Se obtiene la conversacion
+        let url = `/app/obtener-conversacion/?chat_id=${chatActivoId}`;
 
         fetch(url)
           .then(res => res.json())
           .then(data => {
-            // --- Actualizar encabezado Desktop ---
-
+            // --- Actualizar encabezado Desktop con la nueva conversacion ---
+            const usuarioId = item.dataset.usuarioId;
+            const linkPerfilMobile = document.getElementById("link-perfil-chat-mobile");
+            if (linkPerfilMobile && usuarioId) {
+              linkPerfilMobile.setAttribute("href", `/app/usuario/${usuarioId}/`);
+            }
             if (item.querySelector('img')) {
               avatarDesktop.src = item.querySelector('img').src;
               avatarDesktop.alt = item.querySelector('img').alt;
@@ -162,11 +191,14 @@ document.addEventListener("DOMContentLoaded", () => {
               usuarioMobile.textContent = item.querySelector('span').textContent.match(/@\w+/)?.[0] || '';
             }
 
+            
+
             // --- Actualizar mensajes ---
             mensajesContainer.innerHTML = "";
             let mensajes = data.mensajes || {};
             if (Object.keys(mensajes).length === 0) {
-              mensajesContainer.innerHTML = `<div style=\"text-align:center; padding:1rem;\">${gettext("No hay mensajes aún.")}</div>`;
+              mensajesContainer.innerHTML = `<div class="mensajes-sin-mensajes" style="text-align:center; padding:1rem;">${gettext("No hay mensajes aún.")}</div>`;
+              mensajesContainer.classList.add("mensajes-sin-mensajes");
             } else {
               Object.entries(data.mensajes).forEach(([fecha, lista]) => {
                 const separador = document.createElement("div");
@@ -192,16 +224,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
               });
             }
-
-            const linkPerfil = document.getElementById("link-perfil-chat");
-            if (linkPerfil && usuarioId) {
-              linkPerfil.href = `/app/usuario/${usuarioId}/`;
-            }
-
             // --- Mostrar input ---
             if (chatInput) chatInput.style.display = "flex";
-
-            scrollToBottom();
 
             // --- Mobile UI ---
             if (isMobile()) {
@@ -216,9 +240,12 @@ document.addEventListener("DOMContentLoaded", () => {
               botonPublicar.style.display = "none";
               columnaCentral.style.display = "none";
             }
+            requestAnimationFrame(() => scrollToBottom());
+            
           });
       });
 
+      // Boton para eliminar chat
       const botonEliminar = item.querySelector(".eliminar-chat");
       if (botonEliminar) {
         botonEliminar.addEventListener("click", (e) => {
@@ -239,6 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (data.ok) {
               item.remove();
 
+              // Si no queda ningún chat, mostrar mensaje de "No hay mensajes"
               const restantes = document.querySelectorAll('.chat-user');
               const chatVacio = document.querySelector('.chat-mensajes');
               const chatInput = document.querySelector('.chat-input');
@@ -286,22 +314,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     });
-    if (!chatActivoId) {
-      const primerChat = document.querySelector(".chat-user");
-      if (primerChat) {
-        const primerChatId = primerChat.getAttribute("data-chat-id");
-        if (primerChatId) {
-          chatActivoId = primerChatId;
-          if (!isMobile()) {
-            primerChat.click(); 
-          }
-        }
-      }
-    }
   }
 
   activarClickChats();
 
+  // Boton para volver en mobile
   const btnVolver = encabezadoChatMobile.querySelector(".btn-volver-chat");
   btnVolver.addEventListener("click", () => {
     chatList.style.display = "block";
@@ -316,6 +333,7 @@ document.addEventListener("DOMContentLoaded", () => {
     columnaCentral.style.display = "block";
   });
 
+  // Boton para aceptar solicitud de chat
   document.querySelectorAll('.solicitudes-chat .aceptar').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
@@ -342,7 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
             solicitudesSection.appendChild(vacio);
           }
 
-          // --- NUEVO: Crear el chat con ambos atributos ---
+          // Crear el chat con ambos atributos
           const nuevo = document.createElement('div');
           nuevo.classList.add('chat-user');
           // Usa el id del usuario con quien se chatea, si está disponible
@@ -385,6 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Boton para rechazar solicitud de chat
   document.querySelectorAll('.solicitudes-chat .rechazar').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
@@ -415,9 +434,37 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   window.addEventListener('load', scrollToBottom);
-  
-  // Add resize event listener to handle responsive changes
-  window.addEventListener('resize', handleResponsiveLayout);
+
+  window.addEventListener('resize', () => {
+    if (!isMobile()) {
+      encabezadoChatMobile.style.display = "none";
+      headerMobile.style.display = "none";
+      menuMobile.style.display = "none";
+      tituloMobile.style.display = "none";
+      botonPublicar.style.display = "none";
+      chatList.style.display = "block";
+      conversacion.style.display = "none";
+      encabezadoLista.style.display = "flex";
+      headerMobile.style.display = "flex";
+      tituloMobile.style.display = "block";
+      chatInput.style.display = "none";
+      menuMobile.style.display = "flex";
+    }
+    else {
+      encabezadoChatMobile.style.display = "block";
+      headerMobile.style.display = "none";
+      menuMobile.style.display = "none";
+      tituloMobile.style.display = "none";
+      botonPublicar.style.display = "none";
+      chatList.style.display = "block";
+      conversacion.style.display = "none";
+      encabezadoLista.style.display = "flex";
+      headerMobile.style.display = "flex";
+      tituloMobile.style.display = "block";
+      chatInput.style.display = "none";
+      menuMobile.style.display = "flex";
+    }
+  });
   
   const primerChat = document.querySelector(".chat-user");
   if (primerChat) {
@@ -450,8 +497,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (botonPublicar) botonPublicar.style.display = "flex";
       columnaCentral.style.display = "block";
     }
+    handleResponsiveLayout();
   }
-  
-  // Initialize responsive layout
-  handleResponsiveLayout();
 });

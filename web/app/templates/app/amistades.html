@@ -23,6 +23,19 @@
                 <p>{{ amigo.descripcion|default:"" }}</p>
               </div>
             </a>
+            {% if amigo.estado_chat == None %}
+              <button id="btn-chatear" class="editar-perfil" data-id="{{ amigo.id }}">
+                <span>{% trans "Chatear" %}</span>
+              </button>
+            {% elif amigo.estado_chat == 'pendiente' %}
+              <button class="editar-perfil" disabled style="cursor:not-allowed;opacity:0.7;">
+                <span>{% trans "Chat pendiente" %}</span>
+              </button>
+            {% elif amigo.estado_chat == 'aceptada' %}
+              <a href="{% url 'chat' %}" class="editar-perfil" style="background:#5793fb;">
+                <span>{% trans "Ir al chat" %}</span>
+              </a>
+            {% endif %}
             <div class="acciones-amigos">
               <i class="fas fa-user-slash eliminar" title="{% trans 'Eliminar amigo' %}" data-id="{{ amigo.amistad_id }}"></i>
             </div>

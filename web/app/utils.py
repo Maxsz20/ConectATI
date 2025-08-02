@@ -147,50 +147,6 @@ def marcar_notificacion_individual(request):
         return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
 
-@require_GET
-def obtener_mensajes_chat(request):
-    if not request.session.get('usuario_id'):
-        return JsonResponse({'error': 'No autenticado'}, status=403)
-
-    usuario_id = request.session['usuario_id']
-    otro_id = request.GET.get('usuario_id')
-
-    try:
-        chat = Chat.objects.using('conectati').get(
-            Q(usuario1_id=usuario_id, usuario2_id=otro_id) |
-            Q(usuario1_id=otro_id, usuario2_id=usuario_id)
-        )
-        mensajes = Mensaje.objects.using('conectati').filter(chat=chat).order_by('fecha')
-
-        hoy = date.today()
-        ayer = hoy - timedelta(days=1)
-        agrupados = defaultdict(list)
-
-        for m in mensajes:
-            fecha_local = localtime(m.fecha).date()
-            hora_local = localtime(m.fecha).strftime('%H:%M')
-
-            if fecha_local == hoy:
-                etiqueta = "Hoy"
-            elif fecha_local == ayer:
-                etiqueta = "Ayer"
-            else:
-                etiqueta = fecha_local.strftime("%d de %B").capitalize()
-
-            agrupados[etiqueta].append({
-                'texto': m.texto,
-                'hora': hora_local,
-                'propio': m.emisor_id == usuario_id
-            })
-
-        # 🔁 Convertir defaultdict a dict antes de enviar
-        mensajes_dict = dict(agrupados)
-
-        return JsonResponse({'ok': True, 'mensajes': mensajes_dict})
-
-    except Chat.DoesNotExist:
-        return JsonResponse({'ok': True, 'mensajes': {}})
-
 @csrf_exempt
 def crear_comentario(request):
     """Función para crear comentarios o respuestas"""
@@ -388,11 +344,11 @@ def obtener_conversacion(request):
             hora_local = localtime(m.fecha).strftime('%H:%M')
 
             if fecha_local == hoy:
-                etiqueta = "Hoy"
+                etiqueta = _("Hoy")
             elif fecha_local == ayer:
-                etiqueta = "Ayer"
+                etiqueta = _("Ayer")
             else:
-                etiqueta = fecha_local.strftime("%d de %B").capitalize()
+                etiqueta = fecha_local.strftime(_("%d de %B")).capitalize()
 
             agrupados[etiqueta].append({
                 'texto': m.texto,
@@ -728,11 +684,11 @@ def enviar_mensaje_chat(request):
         hora_local = localtime(mensaje.fecha).strftime('%H:%M')
 
         if fecha_local == date.today():
-            etiqueta_fecha = "Hoy"
+            etiqueta_fecha = _("Hoy")
         elif fecha_local == date.today() - timedelta(days=1):
-            etiqueta_fecha = "Ayer"
+            etiqueta_fecha = _("Ayer")
         else:
-            etiqueta_fecha = fecha_local.strftime("%d de %B").capitalize()
+            etiqueta_fecha = fecha_local.strftime(_("%d de %B")).capitalize()
 
         return JsonResponse({
             'ok': True,

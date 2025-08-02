@@ -6,6 +6,7 @@ function cambiarOpcion(spanID, textoVisible, toggleID) {
   if (span) span.textContent = textoVisible;
   if (toggle) toggle.checked = false;
 
+  // Cambiar idioma
   if (spanID === 'valorIdioma') {
     const idioma = textoVisible === 'EN' ? 'en' : 'es';
     document.getElementById('inputIdioma').value = idioma;

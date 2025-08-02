@@ -114,13 +114,15 @@
 </div>
 
 <!-- Encabezado alternativo mobile -->
-<div class="encabezado-chat-mobile" style="display: none;">
+<div class="encabezado-chat-mobile">
   <i class="fas fa-arrow-left btn-volver-chat"></i>
-  <img id="chat-avatar" src="" alt="{% trans 'Avatar usuario' %}" />
-  <div class="nombre-chat-info">
-    <strong id="chat-nombre">{% trans "Nombre" %}</strong>
-    <small id="chat-usuario">@usuario</small>
-  </div>
+  <a href="#" class="link-perfil-chat" id="link-perfil-chat-mobile">
+    <img id="chat-avatar" src="" alt="{% trans 'Avatar usuario' %}" />
+    <div class="nombre-chat-info">
+      <strong id="chat-nombre">{% trans "Nombre" %}</strong>
+      <small id="chat-usuario">@usuario</small>
+    </div>
+  </a>
 </div>
 {% endblock %}
 

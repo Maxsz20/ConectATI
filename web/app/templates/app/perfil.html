@@ -108,7 +108,16 @@
           <span class="estrella {% if post.id in estrellas_usuario %}marcada{% endif %}" data-id="{{ post.id }}">
             <i class="fas fa-star"></i> <span class="contador">{{ post.estrellas }}</span>
           </span>
-          <button class="accion comentario-btn"><i class="far fa-comment"></i> {{ post.num_comentarios }}</button>
+          <button class="accion stop-click">
+            <i class="far fa-comment comentario-btn"
+              data-id="{{ post.id }}"
+              data-tipo="publicacion"
+              data-texto="{{ post.texto|escapejs }}"
+              data-nombre="{{ post.usuario.nombre }}"
+              data-username="@{{ post.usuario.username }}"
+              data-foto="{% if post.usuario.foto %}{{ post.usuario.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}"
+              data-imagen="{% if post.archivo_nombre %}/media/publicaciones/{{ post.archivo_nombre }}{% endif %}"></i> {{ post.num_comentarios }}
+          </button>
         </div>
         <div class="meta">{{ post.fecha|time:"H:i" }} · {{ post.fecha|date:"d/m/Y" }}</div>
       </div>
@@ -117,6 +126,10 @@
     <p class="perfil-vacio">{% trans "Este usuario aún no tiene publicaciones." %}</p>
   {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_body_content %}
+{% include "app/_modal_respuesta.html" %}
 {% endblock %}
 
 {% block extra_js %}
@@ -132,6 +145,7 @@
       });
     });
   });
+
 function enviarSolicitudAmistad(para_usuario_id) {
   var btn = document.getElementById('btn-aniadir-amigo');
   btn.disabled = true;
@@ -190,6 +204,7 @@ function enviarSolicitudChat(para_usuario_id) {
   });
 }
 
+
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
@@ -205,4 +220,5 @@ function getCookie(name) {
   return cookieValue;
 }
 </script>
+<script src="{% static 'js/feed_conectati.js' %}"></script>
 {% endblock %}

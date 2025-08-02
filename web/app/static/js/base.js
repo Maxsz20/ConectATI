@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!input || !dropdown) return;
 
+  // Buscador de usuarios
   input.addEventListener('input', () => {
     const query = input.value.trim();
     const contenedor = dropdown.querySelector('.usuarios-buscados');

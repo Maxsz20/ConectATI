@@ -18,10 +18,6 @@ class RegistroForm(forms.Form):
         max_length=20,
         widget=forms.TextInput(attrs={'placeholder': 'Cédula de identidad', 'required': True})
     )
-    telefono = forms.CharField(
-        max_length=20,
-        widget=forms.TextInput(attrs={'placeholder': 'Teléfono', 'required': True})
-    )
     contrasena = forms.CharField(
         widget=forms.PasswordInput(attrs={'placeholder': 'Contraseña', 'id': 'password', 'required': True})
     )

@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const { gettext } = window;
+
+  // Boton para aceptar solicitud de amistad
   document.querySelectorAll('.aceptar').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
@@ -68,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Boton para rechazar solicitud de amistad
   document.querySelectorAll('.rechazar').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
@@ -101,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Eliminar amistad
+  // Boton para eliminar amistad
   document.querySelectorAll('.eliminar').forEach(btn => {
     btn.addEventListener('click', () => {
       const amistadId = btn.getAttribute('data-id');
@@ -133,6 +136,45 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+
+  document.querySelectorAll(".btn-chatear").forEach(btn => {
+    btn.addEventListener("click", function () {
+      const usuarioId = this.dataset.id;
+      enviarSolicitudChat(usuarioId, this);
+    });
+  });
+
+  function enviarSolicitudChat(para_usuario_id, boton) {
+
+    if (!boton) return;
+    boton.disabled = true;
+    boton.innerHTML = '<span>{% trans "Enviando..." %}</span>';
+
+    fetch("/app/enviar-solicitud-chat/", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ para_usuario_id: para_usuario_id })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok || (data.error && data.error.includes('Ya existe solicitud'))) {
+        boton.outerHTML = `<button class='btn-chatear' disabled style='cursor:not-allowed;opacity:0.7;'>
+          <i class="fas fa-comments"></i> {% trans "Pendiente" %}
+        </button>`;
+      } else {
+        alert(data.error || '{% trans "Error enviando solicitud" %}');
+        boton.innerHTML = '<i class="fas fa-comments"></i> {% trans "Chatear" %}';
+        boton.disabled = false;
+      }
+    })
+    .catch(err => {
+      boton.innerHTML = '<i class="fas fa-comments"></i> {% trans "Error" %}';
+      boton.disabled = false;
+    });
+  }
 
   function getCookie(name) {
     let cookieValue = null;

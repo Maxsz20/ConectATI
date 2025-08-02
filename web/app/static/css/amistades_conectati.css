@@ -177,9 +177,6 @@
   color: var(--color-sub);
 }
 
-.acciones-amigos {
-  margin-left: 1rem;
-}
 
 .acciones-amigos .eliminar {
   font-size: 1.4rem;
@@ -222,6 +219,21 @@
   height: 0px;
 }
 
+.editar-perfil {
+  background-color: var(--color-iconos);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.editar-perfil:hover {
+  background-color: #6c63ff;
+}
+
 /* RESPONSIVE */
 @media (max-width: 876px) {
 
@@ -246,6 +258,7 @@
   }
   .columna-central {
     width: 100%;
+    border-right: none;
 
   }
   .titulo-mobile {
