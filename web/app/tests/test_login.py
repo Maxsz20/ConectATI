@@ -1,6 +1,6 @@
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
-from app.models import Usuario
+from app.models import Usuario, Configuracion
 from app.tests.base_test import BaseTestConectati
 
 class LoginTestCase(BaseTestConectati):
@@ -14,6 +14,15 @@ class LoginTestCase(BaseTestConectati):
             email='daniela@example.com',
             ci='12345678',
             contrasena=make_password('contrasena_segura')
+        )
+        Configuracion.objects.using('conectati').create(
+            usuario=self.usuario,
+            tema="claro",
+            idioma="es",
+            publicaciones_privadas=False,
+            notificar_chat=True,
+            notificar_comentario=True,
+            notificar_amistad=True
         )
 
     def test_renderizado_login_html(self):
