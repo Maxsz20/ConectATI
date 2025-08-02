@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import make_password
 from app.tests.base_test import BaseTestConectati
 
 
+
 class RegistroTestCase(BaseTestConectati):
     def setUp(self):
         super().setUp()
@@ -28,7 +29,6 @@ class RegistroTestCase(BaseTestConectati):
             'username': 'daniela',
             'email': 'daniela@example.com',
             'ci': '12345678',
-            'telefono': '04141234567',
             'contrasena': 'contrasena_segura',
             'confirmar_contrasena': 'contrasena_segura',
         }
@@ -45,7 +45,6 @@ class RegistroTestCase(BaseTestConectati):
             'username': 'daniela',
             'email': 'daniela@example.com',
             'ci': '12345678',
-            'telefono': '04141234567',
             'contrasena': 'clave1',
             'confirmar_contrasena': 'clave2',
         }
@@ -69,7 +68,6 @@ class RegistroTestCase(BaseTestConectati):
             'username': 'daniela',
             'email': 'nuevo@example.com',
             'ci': '12345678',
-            'telefono': '04141234567',
             'contrasena': 'clave123',
             'confirmar_contrasena': 'clave123',
         }
@@ -90,7 +88,6 @@ class RegistroTestCase(BaseTestConectati):
             'username': 'nuevo',
             'email': 'daniela@example.com',
             'ci': '12345678',
-            'telefono': '04141234567',
             'contrasena': 'clave123',
             'confirmar_contrasena': 'clave123',
         }
@@ -111,7 +108,6 @@ class RegistroTestCase(BaseTestConectati):
             'username': 'nuevo',
             'email': 'nuevo@example.com',
             'ci': '12345678',
-            'telefono': '04141234567',
             'contrasena': 'clave123',
             'confirmar_contrasena': 'clave123',
         }
