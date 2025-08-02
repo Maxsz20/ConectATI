@@ -13,6 +13,7 @@ from django.utils.timezone import localtime
 from django.views.decorators.http import require_GET
 from collections import defaultdict
 from django.utils.timezone import localtime
+from django.utils.formats import date_format
 
 def crear_notificacion(usuario_destino, tipo, contenido, emisor=None, por_correo=False, publicacion_id=None, comentario_id=None):
     """Funcion de utilidad para crear notificaciones"""
@@ -348,7 +349,7 @@ def obtener_conversacion(request):
             elif fecha_local == ayer:
                 etiqueta = _("Ayer")
             else:
-                etiqueta = fecha_local.strftime(_("%d de %B")).capitalize()
+                etiqueta = date_format(fecha_local, format='j \d\e F', use_l10n=True).capitalize()
 
             agrupados[etiqueta].append({
                 'texto': m.texto,

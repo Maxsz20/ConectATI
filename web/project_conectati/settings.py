@@ -17,8 +17,6 @@ import io
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -170,9 +168,6 @@ STATICFILES_DIRS = [
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-DATABASE_ROUTERS = ['db_router.ConectATIRouter']
-APPEND_SLASH = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'web', 'media')
@@ -197,3 +192,18 @@ EMAIL_TIMEOUT = 60
 
 # Para volver a testing en consola:
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Configuración para tests: usar base de datos en memoria y desactivar router
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        },
+        'conectati': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',  # Misma base temporal
+        }
+    }
+
+    DATABASE_ROUTERS = []  # desactiva el router durante tests

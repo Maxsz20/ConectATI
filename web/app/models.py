@@ -27,7 +27,7 @@ class Usuario(models.Model):
     contrasena = models.TextField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Usuario'
         app_label = 'app'
 
@@ -42,7 +42,7 @@ class Amistad(models.Model):
     fecha = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Amistad'
         app_label = 'app'
 
@@ -53,7 +53,7 @@ class Chat(models.Model):
     fecha_inicio = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Chat'
         app_label = 'app'
 
@@ -66,13 +66,13 @@ class Comentario(models.Model):
     respuesta_a = models.ForeignKey('self', on_delete=models.CASCADE, db_column='respuesta_a', blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Comentario'
         app_label = 'app'
 
 
 class Configuracion(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
     tema = models.TextField(blank=True, null=True)
     idioma = models.TextField(blank=True, null=True)
     publicaciones_privadas = models.BooleanField(blank=True, null=True)
@@ -81,7 +81,7 @@ class Configuracion(models.Model):
     notificar_amistad = models.BooleanField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Configuracion'
         app_label = 'app'
 
@@ -89,11 +89,11 @@ class Configuracion(models.Model):
 class Mensaje(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
     emisor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    texto = models.TextField()
+    texto = models.TextField(blank = True)
     fecha = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Mensaje'
         app_label = 'app'
 
@@ -110,7 +110,7 @@ class Notificacion(models.Model):
     comentario_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Notificacion'
         app_label = 'app'
 
@@ -124,7 +124,7 @@ class Publicacion(models.Model):
     estrellas = models.IntegerField(default=0)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Publicacion'
         app_label = 'app'
 
@@ -133,7 +133,7 @@ class Estrella(models.Model):
     publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Estrella'
         app_label = 'app'
         unique_together = ('usuario', 'publicacion')
@@ -146,7 +146,7 @@ class SolicitudChat(models.Model):
     fecha_aceptada = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'SolicitudChat'
         app_label = 'app'
         unique_together = ('de_usuario', 'para_usuario')
@@ -163,6 +163,6 @@ class CodigoRecuperacion(models.Model):
         return timezone.now() > self.creado_en + timedelta(minutes=10)
 
     class Meta:
-        managed = False
+        managed = True
         app_label = 'app'
         db_table = 'CodigoRecuperacion'

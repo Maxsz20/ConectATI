@@ -33,6 +33,23 @@ class RegistroForm(forms.Form):
         if password != confirm:
             raise forms.ValidationError("Las contraseñas no coinciden")
         return cleaned_data
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if Usuario.objects.filter(username=username).exists():
+            raise forms.ValidationError("Este nombre de usuario ya está en uso.")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if Usuario.objects.filter(email=email).exists():
+            raise forms.ValidationError("Este correo electrónico ya está registrado.")
+        return email
+
+    def clean_ci(self):
+        ci = self.cleaned_data.get('ci')
+        if Usuario.objects.filter(ci=ci).exists():
+            raise forms.ValidationError("Esta cédula ya está registrada.")
+        return ci
 
 class PublicacionForm(forms.Form):
     texto = forms.CharField(
