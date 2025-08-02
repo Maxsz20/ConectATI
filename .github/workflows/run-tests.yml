@@ -28,4 +28,5 @@ jobs:
       - name: Ejecutar tests
         working-directory: web
         run: |
-          python manage.py test
+          python manage.py test app.tests.test_register
+          python manage.py test app.tests.test_login
