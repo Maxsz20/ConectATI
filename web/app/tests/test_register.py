@@ -1,7 +1,7 @@
 from django.urls import reverse
 from app.models import Usuario
 from django.contrib.auth.hashers import make_password
-from app.tests.app.base_test import BaseTestConectati
+from app.tests.base_test import BaseTestConectati
 
 
 class RegistroTestCase(BaseTestConectati):

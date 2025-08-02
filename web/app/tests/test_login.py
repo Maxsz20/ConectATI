@@ -1,9 +1,7 @@
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
-from django.contrib import messages
 from app.models import Usuario
-from app.tests.app.base_test import BaseTestConectati
-
+from app.tests.base_test import BaseTestConectati
 
 class LoginTestCase(BaseTestConectati):
     def setUp(self):
