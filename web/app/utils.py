@@ -478,6 +478,8 @@ def enviar_solicitud_amistad(request):
             de_id = request.session['usuario_id']  # ID del usuario que envía la solicitud
             para_id = int(data.get('para_usuario_id'))  # ID del usuario que recibirá la solicitud
 
+            usuario_destino = Usuario.objects.using('conectati').get(id=para_id)
+
             # Verificar si ya existe una solicitud de amistad entre estos usuarios
             ya_existe = Amistad.objects.using('conectati').filter(
                 de_usuario_id=de_id,
@@ -492,7 +494,7 @@ def enviar_solicitud_amistad(request):
                     estado='pendiente'
                 )
                 crear_notificacion(
-                    usuario_destino=Usuario.objects.using('conectati').get(id=para_id),
+                    usuario_destino=usuario_destino,
                     tipo='amistad',
                     contenido=_(" te envió una solicitud de amistad"),
                     emisor=Usuario.objects.using('conectati').get(id=de_id)
@@ -501,9 +503,9 @@ def enviar_solicitud_amistad(request):
             else:
                 # Si ya existe, informar que no se puede crear duplicada
                 return JsonResponse({'ok': False, 'error': 'Ya existe'})
+        except Usuario.DoesNotExist:
+            return JsonResponse({'ok': False, 'error': 'Usuario destino no existe'}, status=404)
         except Exception as e:
-            # Manejar errores durante el proceso de creación
-            print("❌ Error:", e)
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
     # Si no es POST o no está autenticado, retornar error de método no permitido

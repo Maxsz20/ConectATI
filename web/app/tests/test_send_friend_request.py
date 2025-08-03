@@ -51,8 +51,8 @@ class SolicitudAmistadTestCase(BaseTestConectati):
     def test_enviar_solicitud_usuario_inexistente(self):
         data = {'para_usuario_id': 99999}
         response = self.client.post(self.url, data=json.dumps(data), content_type="application/json")
-        self.assertEqual(response.status_code, 500)  # Tu endpoint devuelve 500 en excepción
-        self.assertIn('error', response.json())
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json(), {'ok': False, 'error': 'Usuario destino no existe'})
         self.assertEqual(Amistad.objects.using('conectati').filter(
             de_usuario=self.usuario1, para_usuario_id=99999).count(), 0)
 
