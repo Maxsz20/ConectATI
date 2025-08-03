@@ -32,3 +32,4 @@ jobs:
           python manage.py test app.tests.test_login
           python manage.py test app.tests.test_forgotten_password
           python manage.py test app.tests.test_post
+          python manage.py test app.tests.test_send_friend_request
