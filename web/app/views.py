@@ -370,6 +370,8 @@ def FeedView(request):
         nueva = procesar_publicacion(request, form)
         if nueva:
             return redirect('feed')
+        else:
+            form.add_error(None, "No puedes publicar algo vacío.")
 
     return render(request, 'app/feed.html', {
         'form': form,
@@ -599,6 +601,8 @@ def PostMobileView(request):
         nueva = procesar_publicacion(request, form)
         if nueva:
             return redirect('feed')
+        else:
+            form.add_error(None, "No puedes publicar algo vacío.")
 
     configuracion = Configuracion.objects.using('conectati').get(usuario_id=request.session['usuario_id'])        
 

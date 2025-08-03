@@ -8,6 +8,13 @@
 {% endblock %}
 
 {% block contenido %}
+{% if form.non_field_errors %}
+  <div class="form-errors">
+    {% for error in form.non_field_errors %}
+      <p>{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
 <form method="POST" enctype="multipart/form-data" class="area-publicar">
   {% csrf_token %}
   

@@ -14,6 +14,13 @@
 <div class="contenedor-info">
     <section class="feed">
         <form method="POST" enctype="multipart/form-data" class="crear-post">
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
             {% csrf_token %}
             <div class="top-line">
                 <img style="width: 50px; height: 50px; border-radius: 50%;" src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
