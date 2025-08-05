@@ -196,7 +196,7 @@ EMAIL_TIMEOUT = 60
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Configuración para tests: usar base de datos en memoria y desactivar router
-""" if 'test' in sys.argv:
+if 'test' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -208,4 +208,4 @@ EMAIL_TIMEOUT = 60
         }
     }
 
-    DATABASE_ROUTERS = []  # desactiva el router durante tests """
+    DATABASE_ROUTERS = []  # desactiva el router durante tests
