@@ -22,6 +22,9 @@
 .card-publicacion{
     cursor: pointer;
 }
+.card-comentario{
+    cursor: pointer;
+}
 
 @media (max-width: 876px) {
     .post-principal{

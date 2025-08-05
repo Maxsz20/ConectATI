@@ -554,8 +554,8 @@ def PostView(request, publicacion_id):
         return redirect('feed')
 
 def CommentThreadView(request, comentario_id):
-    comentario = Comentario.objects.select_related('publicacion', 'usuario', 'respuesta_a').get(id=comentario_id)
-    respuestas = Comentario.objects.filter(respuesta_a=comentario).order_by('fecha')
+    comentario = Comentario.objects.using('conectati').select_related('publicacion', 'usuario', 'respuesta_a').get(id=comentario_id)
+    respuestas = Comentario.objects.using('conectati').filter(respuesta_a=comentario).order_by('fecha')
     usuario = Usuario.objects.using('conectati').get(id=request.session['usuario_id'])
 
     estrellas_usuario = Estrella.objects.using('conectati') \
@@ -563,21 +563,21 @@ def CommentThreadView(request, comentario_id):
             .values_list('publicacion_id', flat=True)
 
     # Número total de comentarios directos a la publicación original
-    num_comentarios = Comentario.objects.filter(publicacion=comentario.publicacion, respuesta_a__isnull=True).count()
+    num_comentarios = Comentario.objects.using('conectati').filter(publicacion=comentario.publicacion, respuesta_a__isnull=True).count()
 
     # Obtener cantidad de respuestas del comentario actual
-    comentario.num_comentarios = Comentario.objects.filter(respuesta_a=comentario).count()
+    comentario.num_comentarios = Comentario.objects.using('conectati').filter(respuesta_a=comentario).count()
 
     # Hilo de padres (desde el más antiguo hasta el comentario padre directo)
     hilo = obtener_hilo_completo(comentario)  # devuelve lista [padre, abuelo, ...]
 
     # Anotar a cada comentario del hilo su número de respuestas
     for c in hilo:
-        c.num_comentarios = Comentario.objects.filter(respuesta_a=c).count()
+        c.num_comentarios = Comentario.objects.using('conectati').filter(respuesta_a=c).count()
 
     # Anotar a cada comentario nuevo su número de respuestas
     for r in respuestas:
-        r.num_comentarios = Comentario.objects.filter(respuesta_a=r).count()
+        r.num_comentarios = Comentario.objects.using('conectati').filter(respuesta_a=r).count()
     
     return render(request, 'app/hilo_comentario.html', {
         'comentario': comentario,
