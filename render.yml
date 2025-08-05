@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: conectati
+    env: docker
+    plan: free
+    rootDir: web
