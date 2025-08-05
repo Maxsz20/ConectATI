@@ -296,6 +296,11 @@
   padding: 1rem 0;
 }
 
+.feed::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 @media (min-width: 877px) {
   .modal-respuesta {
     display: none;

@@ -374,13 +374,19 @@ def enviar_solicitud_chat(request):
             if de_id == para_id:
                 return JsonResponse({'ok': False, 'error': 'No puedes enviarte solicitud a ti mismo'})
 
-            # Verifica si ya existe
-            ya_existe = SolicitudChat.objects.using('conectati').filter(
-                de_usuario_id=de_id, para_usuario_id=para_id
-            ).exists()
+            # Buscar si ya existe una solicitud
+            solicitud_existente = SolicitudChat.objects.using('conectati').filter(
+                de_usuario_id=de_id,
+                para_usuario_id=para_id
+            ).first()
 
-            if ya_existe:
+            # Si ya existe y no está rechazada, bloquear
+            if solicitud_existente and solicitud_existente.estado != 'rechazada':
                 return JsonResponse({'ok': False, 'error': 'Ya existe solicitud'})
+
+            # Si existe y fue rechazada, eliminarla
+            if solicitud_existente and solicitud_existente.estado == 'rechazada':
+                solicitud_existente.delete()
 
             SolicitudChat.objects.using('conectati').create(
                 de_usuario_id=de_id,
@@ -395,7 +401,7 @@ def enviar_solicitud_chat(request):
             )
             return JsonResponse({'ok': True})
         except Exception as e:
-            print("❌ Error solicitud chat:", e)
+            print("Error solicitud chat:", e)
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
 
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
@@ -544,8 +550,7 @@ def aceptar_solicitud(request):
             # Retornar confirmación exitosa junto con los datos del amigo
             return JsonResponse({'ok': True, 'amigo': amigo_data})
         except Exception as e:
-            # Manejar errores durante el proceso de aceptación
-            print("❌ Error aceptando:", e)
+            print("Error aceptando:", e)
             return JsonResponse({'ok': False, 'error': str(e)}, status=500)
     
     # Si no es POST o no está autenticado, retornar error

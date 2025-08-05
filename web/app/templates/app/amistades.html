@@ -23,7 +23,7 @@
                 <p>{{ amigo.descripcion|default:"" }}</p>
               </div>
             </a>
-            {% if amigo.estado_chat == None %}
+            {% if amigo.estado_chat == None or amigo.estado_chat == 'rechazada' %}
               <button id="btn-chatear" class="editar-perfil" data-id="{{ amigo.id }}">
                 <span>{% trans "Chatear" %}</span>
               </button>

@@ -22,6 +22,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Insertar nuevo amigo
           const amigo = data.amigo;
+
+          let btnChat = "";
+          if (amigo.estado_chat === null) {
+            btnChat = `
+              <button class="editar-perfil btn-chatear" data-id="${amigo.id}">
+                <span>${gettext("Chatear")}</span>
+              </button>
+            `;
+          } else if (amigo.estado_chat === "pendiente") {
+            btnChat = `
+              <button class="editar-perfil" disabled style="cursor:not-allowed;opacity:0.7;">
+                <span>${gettext("Chat pendiente")}</span>
+              </button>
+            `;
+          } else if (amigo.estado_chat === "aceptada") {
+            btnChat = `
+              <a href="/app/chat/" class="editar-perfil" style="background:#5793fb;">
+                <span>${gettext("Ir al chat")}</span>
+              </a>
+            `;
+          }
+
           const nuevoHTML = `
             <div class="item-amigo card-amigo">
               <a href="/app/usuario/${amigo.id}/" class="item-amigo-link">
@@ -31,11 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
                   <p>${amigo.descripcion || ""}</p>
                 </div>
               </a>
-              <div class="acciones-amigoz">
-                <i class="fas fa-user-slash eliminar" data-id="${amigo.amistad_id}"></i>
+              ${btnChat}
+              <div class="acciones-amigos">
+                <i class="fas fa-user-slash eliminar" title="Eliminar amigo" data-id="${amigo.amistad_id}"></i>
               </div>
             </div>
-          `;  
+          `;
 
           const temp = document.createElement('div');
           temp.innerHTML = nuevoHTML.trim();
@@ -137,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.querySelectorAll(".btn-chatear").forEach(btn => {
+  document.querySelectorAll("#btn-chatear").forEach(btn => {
     btn.addEventListener("click", function () {
       const usuarioId = this.dataset.id;
       enviarSolicitudChat(usuarioId, this);
@@ -148,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!boton) return;
     boton.disabled = true;
-    boton.innerHTML = '<span>{% trans "Enviando..." %}</span>';
+    boton.innerHTML = `<span>${gettext("Enviando...")}</span>`;
 
     fetch("/app/enviar-solicitud-chat/", {
       method: 'POST',
@@ -161,17 +184,17 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => response.json())
     .then(data => {
       if (data.ok || (data.error && data.error.includes('Ya existe solicitud'))) {
-        boton.outerHTML = `<button class='btn-chatear' disabled style='cursor:not-allowed;opacity:0.7;'>
-          <i class="fas fa-comments"></i> {% trans "Pendiente" %}
+        boton.outerHTML = `<button class='btn-chatear editar-perfil' disabled style='cursor:not-allowed;opacity:0.7;'>
+          ${gettext("Chat pendiente")}
         </button>`;
       } else {
-        alert(data.error || '{% trans "Error enviando solicitud" %}');
-        boton.innerHTML = '<i class="fas fa-comments"></i> {% trans "Chatear" %}';
+        alert(data.error || gettext("Error enviando solicitud"));
+        boton.innerHTML = `<i class="fas fa-comments"></i> ${gettext("Chatear")}`;
         boton.disabled = false;
       }
     })
     .catch(err => {
-      boton.innerHTML = '<i class="fas fa-comments"></i> {% trans "Error" %}';
+      boton.innerHTML = '<i class="fas fa-comments"></i> ${gettext("Error")}';
       boton.disabled = false;
     });
   }

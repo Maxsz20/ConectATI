@@ -28,7 +28,7 @@
           </a>
         {% else %}
           <div class="perfil-botones-acciones">
-            {% if estado_amistad == None %}
+            {% if estado_amistad == None or estado_amistad == 'rechazada' %}
               <button id="btn-aniadir-amigo" class="editar-perfil" onclick="enviarSolicitudAmistad('{{ usuario_perfil.id }}')">
                 <span>{% trans "Añadir amigo" %}</span>
               </button>
@@ -41,7 +41,7 @@
                 <span>{% trans "Amigo" %}</span>
               </button>
             {% endif %}
-            {% if estado_chat == None %}
+            {% if estado_chat == None or estado_chat == 'rechazada' %}
               <button id="btn-chatear" class="editar-perfil" onclick="enviarSolicitudChat('{{ usuario_perfil.id }}')">
                 <span>{% trans "Chatear" %}</span>
               </button>

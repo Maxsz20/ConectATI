@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-02 11:19-0400\n"
+"POT-Creation-Date: 2025-08-05 14:03-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,13 +34,13 @@ msgstr "This notification was also sent to you by email."
 
 #: .\app\templates\app\_modal_respuesta.html:5
 #: .\app\templates\app\editar_perfil.html:76
-#: .\app\templates\app\publicar_mobile.html:15
+#: .\app\templates\app\publicar_mobile.html:22
 #: .\app\templates\app\responder_mobile.html:20
 msgid "Cancelar"
 msgstr "Cancel"
 
 #: .\app\templates\app\_modal_respuesta.html:6
-#: .\app\templates\app\publicar_mobile.html:42
+#: .\app\templates\app\publicar_mobile.html:49
 #: .\app\templates\app\responder_mobile.html:21
 msgid "Subir"
 msgstr "Upload"
@@ -64,7 +64,7 @@ msgstr "Attached image"
 #: .\app\templates\app\_modal_respuesta.html:19
 #: .\app\templates\app\hilo_comentario.html:127
 #: .\app\templates\app\publicacion.html:60
-#: .\app\templates\app\publicar_mobile.html:46
+#: .\app\templates\app\publicar_mobile.html:53
 msgid "Mi perfil"
 msgstr "My profile"
 
@@ -79,7 +79,7 @@ msgid "Escribe tu respuesta"
 msgstr "Write your response"
 
 #: .\app\templates\app\amistades.html:4 .\app\templates\app\amistades.html:9
-#: .\app\templates\app\amistades.html:10 .\app\templates\app\base.html:54
+#: .\app\templates\app\amistades.html:10 .\app\templates\app\base.html:58
 msgid "Amistades"
 msgstr "Friends"
 
@@ -111,7 +111,7 @@ msgstr "Friend requests"
 
 #: .\app\templates\app\amistades.html:63 .\app\templates\app\amistades.html:116
 #: .\app\templates\app\chat.html:74 .\app\templates\app\configuracion.html:150
-#: .\app\templates\app\feed.html:154
+#: .\app\templates\app\feed.html:161
 #: .\app\templates\app\hilo_comentario.html:211
 #: .\app\templates\app\notificaciones.html:86
 #: .\app\templates\app\publicacion.html:144
@@ -120,7 +120,7 @@ msgstr "Accept"
 
 #: .\app\templates\app\amistades.html:64 .\app\templates\app\amistades.html:117
 #: .\app\templates\app\chat.html:75 .\app\templates\app\configuracion.html:151
-#: .\app\templates\app\feed.html:155
+#: .\app\templates\app\feed.html:162
 #: .\app\templates\app\hilo_comentario.html:212
 #: .\app\templates\app\notificaciones.html:87
 #: .\app\templates\app\publicacion.html:145
@@ -131,10 +131,10 @@ msgstr "Reject"
 msgid "No tienes solicitudes de amistad."
 msgstr "You don't have any friend requests."
 
-#: .\app\templates\app\amistades.html:80 .\app\templates\app\base.html:55
+#: .\app\templates\app\amistades.html:80 .\app\templates\app\base.html:59
 #: .\app\templates\app\chat.html:10 .\app\templates\app\chat.html:11
 #: .\app\templates\app\chat.html:16 .\app\templates\app\chat.html:34
-#: .\app\templates\app\configuracion.html:116 .\app\templates\app\feed.html:120
+#: .\app\templates\app\configuracion.html:116 .\app\templates\app\feed.html:127
 #: .\app\templates\app\hilo_comentario.html:177
 #: .\app\templates\app\notificaciones.html:52
 #: .\app\templates\app\publicacion.html:110
@@ -142,7 +142,7 @@ msgid "Mensajes"
 msgstr "Messages"
 
 #: .\app\templates\app\amistades.html:91
-#: .\app\templates\app\configuracion.html:127 .\app\templates\app\feed.html:131
+#: .\app\templates\app\configuracion.html:127 .\app\templates\app\feed.html:138
 #: .\app\templates\app\hilo_comentario.html:188
 #: .\app\templates\app\notificaciones.html:63
 #: .\app\templates\app\publicacion.html:121
@@ -150,7 +150,7 @@ msgid "Haz clic para conversar"
 msgstr "Click to chat"
 
 #: .\app\templates\app\amistades.html:99 .\app\templates\app\chat.html:59
-#: .\app\templates\app\configuracion.html:134 .\app\templates\app\feed.html:138
+#: .\app\templates\app\configuracion.html:134 .\app\templates\app\feed.html:145
 #: .\app\templates\app\hilo_comentario.html:195
 #: .\app\templates\app\notificaciones.html:70
 #: .\app\templates\app\publicacion.html:128
@@ -158,7 +158,7 @@ msgid "No hay mensajes."
 msgstr "No messages."
 
 #: .\app\templates\app\amistades.html:103
-#: .\app\templates\app\configuracion.html:137 .\app\templates\app\feed.html:141
+#: .\app\templates\app\configuracion.html:137 .\app\templates\app\feed.html:148
 #: .\app\templates\app\hilo_comentario.html:198
 #: .\app\templates\app\notificaciones.html:73
 #: .\app\templates\app\publicacion.html:131
@@ -166,7 +166,7 @@ msgid "Solicitudes de mensajes"
 msgstr "Message requests"
 
 #: .\app\templates\app\amistades.html:113 .\app\templates\app\chat.html:71
-#: .\app\templates\app\configuracion.html:147 .\app\templates\app\feed.html:151
+#: .\app\templates\app\configuracion.html:147 .\app\templates\app\feed.html:158
 #: .\app\templates\app\hilo_comentario.html:208
 #: .\app\templates\app\notificaciones.html:83
 #: .\app\templates\app\publicacion.html:141
@@ -174,7 +174,7 @@ msgid "¿Podemos hablar por aquí?"
 msgstr "Can we chat here?"
 
 #: .\app\templates\app\amistades.html:123 .\app\templates\app\chat.html:80
-#: .\app\templates\app\configuracion.html:156 .\app\templates\app\feed.html:160
+#: .\app\templates\app\configuracion.html:156 .\app\templates\app\feed.html:167
 #: .\app\templates\app\hilo_comentario.html:217
 #: .\app\templates\app\notificaciones.html:92
 #: .\app\templates\app\publicacion.html:150
@@ -185,40 +185,40 @@ msgstr "You don't have any pending chat requests."
 msgid "¡Comentario publicado!"
 msgstr "Comment published!"
 
-#: .\app\templates\app\base.html:52 .\app\templates\app\feed.html:4
+#: .\app\templates\app\base.html:56 .\app\templates\app\feed.html:4
 msgid "Inicio"
 msgstr "Home"
 
-#: .\app\templates\app\base.html:53 .\app\templates\app\configuracion.html:98
+#: .\app\templates\app\base.html:57 .\app\templates\app\configuracion.html:98
 #: .\app\templates\app\notificaciones.html:5
 #: .\app\templates\app\notificaciones.html:11
 #: .\app\templates\app\notificaciones.html:12
 msgid "Notificaciones"
 msgstr "Notifications"
 
-#: .\app\templates\app\base.html:56 .\app\templates\app\configuracion.html:4
+#: .\app\templates\app\base.html:60 .\app\templates\app\configuracion.html:4
 #: .\app\templates\app\configuracion.html:10
 #: .\app\templates\app\configuracion.html:11
 msgid "Configuración"
 msgstr "Configuration"
 
-#: .\app\templates\app\base.html:61
+#: .\app\templates\app\base.html:65
 msgid "Cerrar Sesión"
 msgstr "Logout"
 
-#: .\app\templates\app\base.html:91 .\app\templates\app\busqueda_mobile.html:15
+#: .\app\templates\app\base.html:95 .\app\templates\app\busqueda_mobile.html:15
 msgid "Buscar..."
 msgstr "Search..."
 
-#: .\app\templates\app\base.html:94 .\app\templates\app\busqueda_mobile.html:20
+#: .\app\templates\app\base.html:98 .\app\templates\app\busqueda_mobile.html:20
 msgid "Recientes"
 msgstr "Recent"
 
-#: .\app\templates\app\base.html:95 .\app\templates\app\busqueda_mobile.html:21
+#: .\app\templates\app\base.html:99 .\app\templates\app\busqueda_mobile.html:21
 msgid "Ver todo"
 msgstr "See all"
 
-#: .\app\templates\app\base.html:120 .\app\templates\app\publicar_mobile.html:4
+#: .\app\templates\app\base.html:124 .\app\templates\app\publicar_mobile.html:4
 msgid "Publicar"
 msgstr "Post"
 
@@ -363,17 +363,17 @@ msgstr "Privacy"
 
 #: .\app\templates\app\configuracion.html:69
 #: .\app\templates\app\configuracion.html:79
-#: .\app\templates\app\configuracion.html:83 .\app\templates\app\feed.html:31
-#: .\app\templates\app\feed.html:47 .\app\templates\app\publicar_mobile.html:24
-#: .\app\templates\app\publicar_mobile.html:38
+#: .\app\templates\app\configuracion.html:83 .\app\templates\app\feed.html:38
+#: .\app\templates\app\feed.html:54 .\app\templates\app\publicar_mobile.html:31
+#: .\app\templates\app\publicar_mobile.html:45
 msgid "Privado"
 msgstr "Private"
 
 #: .\app\templates\app\configuracion.html:71
 #: .\app\templates\app\configuracion.html:87
-#: .\app\templates\app\configuracion.html:91 .\app\templates\app\feed.html:33
-#: .\app\templates\app\feed.html:43 .\app\templates\app\publicar_mobile.html:26
-#: .\app\templates\app\publicar_mobile.html:34
+#: .\app\templates\app\configuracion.html:91 .\app\templates\app\feed.html:40
+#: .\app\templates\app\feed.html:50 .\app\templates\app\publicar_mobile.html:33
+#: .\app\templates\app\publicar_mobile.html:41
 msgid "Público"
 msgstr "Public"
 
@@ -446,25 +446,25 @@ msgstr "Languages:"
 msgid "Feed"
 msgstr "Feed"
 
-#: .\app\templates\app\feed.html:53
+#: .\app\templates\app\feed.html:60
 msgid "¿Qué estás pensando?"
 msgstr "What are you thinking?"
 
-#: .\app\templates\app\feed.html:57 .\app\templates\app\publicar_mobile.html:51
+#: .\app\templates\app\feed.html:64 .\app\templates\app\publicar_mobile.html:58
 msgid "Vista previa"
 msgstr "Preview"
 
-#: .\app\templates\app\feed.html:69
+#: .\app\templates\app\feed.html:76
 msgid "Postear"
 msgstr "Post"
 
-#: .\app\templates\app\feed.html:88 .\app\templates\app\hilo_comentario.html:32
+#: .\app\templates\app\feed.html:95 .\app\templates\app\hilo_comentario.html:32
 #: .\app\templates\app\perfil.html:105 .\app\templates\app\publicacion.html:38
 #: .\app\templates\app\responder_mobile.html:40
 msgid "Imagen de la publicación"
 msgstr "Image of the post"
 
-#: .\app\templates\app\feed.html:114
+#: .\app\templates\app\feed.html:121
 msgid "No hay publicaciones aún."
 msgstr "No posts yet."
 
@@ -541,7 +541,7 @@ msgid "Marcar todas como leídas"
 msgstr "Mark all as read"
 
 #: .\app\templates\app\notificaciones.html:24 .\app\utils.py:348
-#: .\app\utils.py:688 .\app\views.py:475
+#: .\app\utils.py:695 .\app\views.py:476
 msgid "Hoy"
 msgstr "Today"
 
@@ -550,7 +550,7 @@ msgid "Sin notificaciones recientes."
 msgstr "No recent notifications."
 
 #: .\app\templates\app\notificaciones.html:33 .\app\utils.py:350
-#: .\app\utils.py:690 .\app\views.py:477
+#: .\app\utils.py:697 .\app\views.py:478
 msgid "Ayer"
 msgstr "Yesterday"
 
@@ -654,11 +654,11 @@ msgstr "Comments"
 msgid "Sin comentarios"
 msgstr "No comments"
 
-#: .\app\templates\app\publicar_mobile.html:47
+#: .\app\templates\app\publicar_mobile.html:54
 msgid "¿Qué estas pensando?"
 msgstr "What are you thinking?"
 
-#: .\app\templates\app\publicar_mobile.html:103
+#: .\app\templates\app\publicar_mobile.html:110
 msgid "Debe escribir un texto o subir una imagen para publicar."
 msgstr "You must write text or upload an image to post."
 
@@ -686,15 +686,15 @@ msgstr "commented on your post"
 msgid " dio estrella a tu publicación"
 msgstr "gave a star to your post"
 
-#: .\app\utils.py:393
+#: .\app\utils.py:399
 msgid " te envió una solicitud de chat"
 msgstr "sent you a chat request."
 
-#: .\app\utils.py:497
+#: .\app\utils.py:505
 msgid " te envió una solicitud de amistad"
 msgstr "sent you a friend request."
 
-#: .\app\utils.py:692 .\app\views.py:479
+#: .\app\utils.py:699 .\app\views.py:480
 msgid "%d de %B"
 msgstr "%d of %B"
 

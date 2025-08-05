@@ -31,10 +31,12 @@
     <a href="{% url 'profile' %}">
       <img src="{% if usuario_logueado.foto %}{{ usuario_logueado.foto }}{% else %}{% static 'images/default_user.avif' %}{% endif %}" alt="{{ usuario_logueado.nombre }}" />
     </a>
-    <h1>
-      <div class="logo-circulo"></div>
-      ConectATI
-    </h1>
+    <a href="{% url 'feed' %}">
+      <h1>
+        <div class="logo-circulo"></div>
+        ConectATI
+      </h1>
+    </a>
     <div class="acciones">
       <a href="{% url 'notifications' %}"><i class="fas fa-bell"></i></a>
       <a href="{% url 'settings' %}"><i class="fas fa-cog"></i></a>
@@ -44,10 +46,12 @@
   <!-- Sidebar -->
   <aside>
     <div>
-      <div class="logo-conectati">
-        <div class="logo-circulo"></div>
-        <span>ConectATI</span>
-      </div>
+      <a href="{% url 'feed' %}">
+        <div class="logo-conectati">
+          <div class="logo-circulo"></div>
+          <span>ConectATI</span>
+        </div>
+      </a>
       <div class="menu">
         <a href="{% url 'feed' %}"><span class="icono"><i class="fas fa-home"></i></span><span class="texto">{% trans "Inicio" %}</span></a>
         <a href="{% url 'notifications' %}"><span class="icono"><i class="fas fa-bell"></i></span><span class="texto">{% trans "Notificaciones" %}</span></a>

@@ -45,7 +45,7 @@ def FriendView(request):
 
     usuario_id = request.session['usuario_id']
 
-    # Amistades aceptadas (el usuario puede ser en cualquiera de los dos lados)
+    # Amistades aceptadas
     amistades = Amistad.objects.using('conectati').filter(
         Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id),
         estado='aceptada'
@@ -55,7 +55,6 @@ def FriendView(request):
         Q(de_usuario_id=usuario_id) | Q(para_usuario_id=usuario_id)
     ).select_related('de_usuario', 'para_usuario')
 
-    # Mapea por pares de ID para búsqueda rápida
     estado_chats = {}
     for s in solicitudes_chat:
         otro_id = s.para_usuario_id if s.de_usuario_id == usuario_id else s.de_usuario_id
@@ -413,7 +412,7 @@ def NotifyView(request):
         elif n.tipo == 'estrella' and n.publicacion_id:
             n.url_destino = reverse('post', args=[n.publicacion_id])
         else:
-            n.url_destino = None  # O "#" si prefieres
+            n.url_destino = None 
 
         # Agrupación por fecha
         fecha_notif = timezone.localtime(n.fecha).date()
@@ -569,7 +568,7 @@ def CommentThreadView(request, comentario_id):
     comentario.num_comentarios = Comentario.objects.using('conectati').filter(respuesta_a=comentario).count()
 
     # Hilo de padres (desde el más antiguo hasta el comentario padre directo)
-    hilo = obtener_hilo_completo(comentario)  # devuelve lista [padre, abuelo, ...]
+    hilo = obtener_hilo_completo(comentario)
 
     # Anotar a cada comentario del hilo su número de respuestas
     for c in hilo:
@@ -633,7 +632,7 @@ def ReplyMobileView(request, publicacion_id):
                 texto=texto,
                 fecha=timezone.now()
             )
-            return redirect('publicacion', publicacion_id=publicacion.id)
+            return redirect('post', publicacion_id=publicacion.id)
         else:
             error = 'El comentario no puede estar vacío.'
     return render(request, 'app/responder_mobile.html', {
@@ -708,7 +707,7 @@ def enviar_codigo(request):
             # Generar código aleatorio
             codigo = get_random_string(length=6, allowed_chars='0123456789')
 
-            # Guardar en la BD (eliminando códigos previos)
+            # Guardar en la BD
             CodigoRecuperacion.objects.using('conectati').filter(usuario=usuario).delete()
             CodigoRecuperacion.objects.using('conectati').create(usuario=usuario, codigo=codigo)
 
