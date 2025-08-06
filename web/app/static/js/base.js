@@ -67,10 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
   input.addEventListener('click', () => dropdown.classList.remove('oculto'));
 
   document.addEventListener('click', e => {
-    if (!document.querySelector('.buscador').contains(e.target)) {
+    const buscador = document.querySelector('.buscador') || document.querySelector('.buscador-busqueda');
+    if (buscador && !buscador.contains(e.target)) {
       dropdown.classList.add('oculto');
     }
-
     if (e.target.classList.contains('btn-agregar')) {
       const userId = e.target.getAttribute('data-id');
       fetch(`/app/enviar-solicitud-amistad/`, {

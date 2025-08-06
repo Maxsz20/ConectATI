@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-o76^a6f3gapu@vvl=2*6pw2-cz%3!4c#$gds+a*l=r509m81ww
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ 'localhost', 'operator-distant-transparent-beauty.trycloudflare.com', '192.168.68.121']
+ALLOWED_HOSTS = [ 'localhost', 'operator-distant-transparent-beauty.trycloudflare.com', '192.168.68.121', 'under-delegation-dominant-invitation.trycloudflare.com']
 
 # Application definition
 
@@ -164,7 +164,7 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'web', 'media')
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://192.168.68.121:8000']  # Ajusta según el dominio si estás en otro entorno
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://192.168.68.121:8000', 'https://under-delegation-dominant-invitation.trycloudflare.com']  # Ajusta según el dominio si estás en otro entorno
 
 DEFAULT_CHARSET = 'utf-8'
 
@@ -186,7 +186,7 @@ EMAIL_TIMEOUT = 60
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Configuración para tests: usar base de datos en memoria y desactivar router
-if 'test' in sys.argv:
+""" if 'test' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -198,4 +198,4 @@ if 'test' in sys.argv:
         }
     }
 
-    DATABASE_ROUTERS = []  # desactiva el router durante tests
+    DATABASE_ROUTERS = []  # desactiva el router durante tests """

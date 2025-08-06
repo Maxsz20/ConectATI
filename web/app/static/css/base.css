@@ -12,7 +12,7 @@
   --color-iconos: #8E9BFF;
   --color-texto: #FFFFFF;
   --color-sub: #d5ebff;
-  --lavanda-translucido: rgba(155, 155, 212, 0.4);
+  --lavanda-translucido: rgba(32, 32, 151, 0.562);
 }
 
 /* ------------- Reset y estructura base ------------- */
@@ -703,10 +703,6 @@ form textarea::placeholder{
 .usuario-busqueda .info {
   color: var(--color-texto);
 } 
-
-.usuario-busqueda:hover {
-  background-color: #f0f0f0;
-}
 
 .usuario-busqueda img {
   width: 32px;
