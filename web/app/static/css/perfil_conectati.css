@@ -379,7 +379,7 @@
   max-width: 700px;         /* Máximo ancho visible */
   max-height: 500px;        /* Limita la altura */
   height: auto;
-  object-fit: cover;        /* Recorta para que se vea bien */
+  object-fit: contain;        /* Recorta para que se vea bien */
   border-radius: 8px;
   margin: 10px auto;        /* Espaciado y centrado */
   display: block;

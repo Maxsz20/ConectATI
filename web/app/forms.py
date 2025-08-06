@@ -16,7 +16,7 @@ class RegistroForm(forms.Form):
     )
     ci = forms.CharField(
         max_length=20,
-        widget=forms.TextInput(attrs={'placeholder': 'Cédula de identidad', 'required': True})
+        widget=forms.TextInput(attrs={'placeholder': 'Cédula de identidad', 'required': True, })
     )
     contrasena = forms.CharField(
         widget=forms.PasswordInput(attrs={'placeholder': 'Contraseña', 'id': 'password', 'required': True})
@@ -47,6 +47,12 @@ class RegistroForm(forms.Form):
 
     def clean_ci(self):
         ci = self.cleaned_data.get('ci')
+        if not ci.isdigit():
+            raise forms.ValidationError("La CI debe contener solo números.")
+
+        if len(ci) < 6 or len(ci) > 8:
+            raise forms.ValidationError("La CI debe tener entre 6 y 8 dígitos.")
+
         if Usuario.objects.filter(ci=ci).exists():
             raise forms.ValidationError("Esta cédula ya está registrada.")
         return ci

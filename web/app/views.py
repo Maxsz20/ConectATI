@@ -34,10 +34,16 @@ rechazar_solicitud, eliminar_amistad, eliminar_chat, obtener_hilo_completo, marc
 
 # Create your views here.
 def InicioRedirectView(request):
-    if request.session.get('usuario_id'):
-        return redirect('feed')
-    else:
-        return redirect('login')
+    usuario_id = request.session.get('usuario_id')
+
+    if usuario_id:
+        try:
+            Usuario.objects.using('conectati').get(id=usuario_id)
+            return redirect('feed')
+        except Usuario.DoesNotExist:
+            request.session.flush()
+
+    return redirect('login')
 
 def FriendView(request):
     if not request.session.get('usuario_id'):
@@ -88,29 +94,26 @@ def FriendView(request):
     })
 
 def LoginView(request):
-
     if request.session.get('usuario_id'):
-        return redirect('feed')  # Ya está logueado, no mostrar login otra vez
+        return redirect('feed') 
 
     if request.method == "POST":
         email_o_usuario = request.POST.get("correo_usuario")
         password = request.POST.get("password")
 
-        try:
-            usuario = Usuario.objects.using('conectati').filter(
-                models.Q(email=email_o_usuario) |
-                models.Q(username=email_o_usuario)
-            ).first()
+        usuario = Usuario.objects.using('conectati').filter(
+            models.Q(email=email_o_usuario) |
+            models.Q(username=email_o_usuario)
+        ).first()
 
-            if check_password(password, usuario.contrasena):
-                request.session['usuario_id'] = usuario.id
-                return redirect('feed')
-            else:
-                messages.error(request, "Credenciales incorrectas.")
-        except Usuario.DoesNotExist:
+        if usuario and check_password(password, usuario.contrasena):
+            request.session['usuario_id'] = usuario.id
+            return redirect('feed')
+        else:
             messages.error(request, "Credenciales incorrectas.")
 
     return render(request, 'app/iniciar_sesion.html', {})
+
 
 
 def RegisterView(request):
@@ -327,7 +330,15 @@ def EditProfileView(request):
     })
 
 def FeedView(request):
-    if not request.session.get('usuario_id'):
+    usuario_id = request.session.get('usuario_id')
+
+    if not usuario_id:
+        return redirect('login')
+
+    try:
+        Usuario.objects.using('conectati').get(id=usuario_id)
+    except Usuario.DoesNotExist:
+        request.session.flush()
         return redirect('login')
 
     form = PublicacionForm()
@@ -360,8 +371,15 @@ def FeedView(request):
     estrellas_usuario = Estrella.objects.using('conectati') \
         .filter(usuario_id=usuario_id) \
         .values_list('publicacion_id', flat=True)
+
+    try:
+        configuracion = Configuracion.objects.using('conectati').get(usuario_id=usuario_id)
+    except Configuracion.DoesNotExist:
+        configuracion = None
     
-    configuracion = Configuracion.objects.using('conectati').get(usuario_id=usuario_id)
+    if configuracion == None:
+        return render(request, 'app/login.html')
+
 
     # Manejo de publicación nueva
     if request.method == "POST":

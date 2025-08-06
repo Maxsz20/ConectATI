@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnEnviar = document.querySelector(".fa-paper-plane");
 
   let chatActivoId = null;  // Se actualiza dinámicamente
+  let mensajesPrevios = []; // Guardará texto y hora de cada mensaje para evitar repeticiones
+
 
   function getCookie(name) {
     let cookieValue = null;
@@ -121,6 +123,70 @@ document.addEventListener("DOMContentLoaded", () => {
       mensajesContainer.scrollTop = mensajesContainer.scrollHeight;
     }
   }
+
+  function verificarMensajesNuevos() {
+    if (!chatActivoId) return;
+
+    fetch(`/app/obtener-conversacion/?chat_id=${chatActivoId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.ok || !data.mensajes) return;
+
+        const fragmento = document.createDocumentFragment();
+        let nuevosAgregados = false;
+
+        Object.entries(data.mensajes).forEach(([fecha, lista]) => {
+          // Buscar si ya existe separador de fecha
+          let separadorExiste = [...mensajesContainer.querySelectorAll('.separador-fecha')]
+            .some(el => el.textContent === fecha);
+
+          if (!separadorExiste) {
+            const separador = document.createElement("div");
+            separador.classList.add("separador-fecha");
+            separador.textContent = fecha;
+            fragmento.appendChild(separador);
+          }
+
+          lista.forEach(msg => {
+            const yaExiste = [...mensajesContainer.querySelectorAll('.mensaje')]
+              .some(div => {
+                const contenido = div.querySelector('.contenido-mensaje')?.textContent.trim();
+                const hora = div.querySelector('.hora-mensaje')?.textContent.trim();
+                const clase = div.classList.contains(msg.propio ? "enviado" : "recibido");
+                return contenido === msg.texto && hora === msg.hora && clase;
+              });
+
+            if (yaExiste) return;
+
+            const div = document.createElement("div");
+            div.classList.add("mensaje", msg.propio ? "enviado" : "recibido");
+
+            const contenido = document.createElement("div");
+            contenido.classList.add("contenido-mensaje");
+            contenido.textContent = msg.texto;
+
+            const hora = document.createElement("span");
+            hora.classList.add("hora-mensaje");
+            hora.textContent = msg.hora;
+
+            div.appendChild(contenido);
+            div.appendChild(hora);
+            fragmento.appendChild(div);
+
+            nuevosAgregados = true;
+          });
+        });
+
+        // Insertar en el DOM de una sola vez
+        if (nuevosAgregados) {
+          mensajesContainer.appendChild(fragmento);
+          scrollToBottom();
+        }
+      });
+  }
+
+
+
 
   // Activa los chats
   function activarClickChats() {
@@ -499,4 +565,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     handleResponsiveLayout();
   }
+
+  // Verificar mensajes nuevos cada 2 segundos
+  setInterval(verificarMensajesNuevos, 2000);
 });

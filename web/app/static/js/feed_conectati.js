@@ -21,6 +21,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 
+  function decodeUnicodeEscapes(texto) {
+    try {
+      return JSON.parse(`"${texto}"`);
+    } catch (e) {
+      return texto;  // fallback si falla
+    }
+  }
+
   function inicializarPublicaciones() {
     document.querySelectorAll(".card-publicacion").forEach(card => {
       card.addEventListener("click", function () {
@@ -61,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (nombreAutor) nombreAutor.textContent = nombre;
       if (usuarioMencionado) usuarioMencionado.textContent = username;
-      if (textoOriginal) textoOriginal.textContent = texto;
+      if (textoOriginal) textoOriginal.textContent = decodeUnicodeEscapes(texto);
       if (avatarPublicacion) avatarPublicacion.src = foto;
       if (idPadreRespuesta) idPadreRespuesta.value = postId;
       if (imagenUrl && imagenPublicacion) {

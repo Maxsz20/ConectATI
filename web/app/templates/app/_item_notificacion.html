@@ -19,7 +19,19 @@
 
   <div class="contenido">
     <strong>@{{ n.emisor.username }}</strong>
-    {{ n.contenido }}
+    {% if n.contenido == 'comentario' %}
+      {% blocktrans %}comentó tu publicación{% endblocktrans %}
+    {% elif n.contenido == 'respuesta' %}
+      {% blocktrans %}respondió tu comentario{% endblocktrans %}
+    {% elif n.contenido == 'amistad' %}
+      {% blocktrans %}te envió una solicitud de amistad{% endblocktrans %}
+    {% elif n.contenido == 'chat' %}
+      {% blocktrans %}te envió una solicitud de chat{% endblocktrans %}
+    {% elif n.contenido == 'estrella' %}
+      {% blocktrans %}dio estrella a tu publicación{% endblocktrans %}
+    {% else %}
+      {{ n.contenido }}
+    {% endif %}
 
     <div class="meta">
       {% blocktrans with tiempo=n.fecha|naturaltime %}{{ tiempo }}{% endblocktrans %}

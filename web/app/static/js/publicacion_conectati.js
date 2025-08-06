@@ -20,6 +20,15 @@ document.addEventListener("DOMContentLoaded", () => {
       toast.style.display = "none";
     }, 3000);
   }
+
+  function decodeUnicodeEscapes(texto) {
+    try {
+      return JSON.parse(`"${texto}"`);
+    } catch (e) {
+      return texto;  // fallback si falla
+    }
+  }
+
   function inicializarPublicaciones() {
     document.querySelectorAll(".card-comentario").forEach(card => {
       card.addEventListener("click", function () {
@@ -70,9 +79,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (nombreAutor) nombreAutor.textContent = nombre;
       if (usuarioMencionado) usuarioMencionado.textContent = username;
-      if (textoOriginal) textoOriginal.textContent = texto;
+      if (textoOriginal) textoOriginal.textContent = decodeUnicodeEscapes(texto);
       if (avatarPublicacion) avatarPublicacion.src = foto;
       if (idPadreRespuesta) idPadreRespuesta.value = postId;
+      if (btn.dataset.tipo === "publicacion") {
+        idPadreRespuesta.value = "";
+      }
       const tipoPadreInput = document.getElementById("tipoPadre");
       if (tipoPadreInput) tipoPadreInput.value = btn.dataset.tipo || "publicacion";
       
@@ -125,7 +137,10 @@ document.addEventListener("DOMContentLoaded", () => {
     btnEnviarComentario.addEventListener("click", () => {
       const texto = document.getElementById("inputRespuesta").value.trim();
       const publicacionId = document.getElementById("idPublicacionOriginal").value;
+      console.log(publicacionId);
+    
       const comentarioId = document.getElementById("idPadreRespuesta").value;
+      console.log(comentarioId);
 
       if (!texto) {
         mostrarToast(gettext("Debes escribir algo para responder."));
@@ -135,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData();
       formData.append("texto", texto);
       formData.append("publicacion_id", publicacionId);
-      if (comentarioId) {
+      if (comentarioId !== null && comentarioId !== undefined && comentarioId !== "") {
         formData.append("comentario_id", comentarioId);
       }
 
@@ -371,6 +386,41 @@ document.addEventListener("DOMContentLoaded", () => {
           this.querySelector('i').style.color = 'gold';
         }
       });
+    });
+  });
+
+  function enviarSolicitud(usuarioId, boton) {
+    fetch("/app/enviar-solicitud-amistad/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCSRFToken()
+      },
+      body: JSON.stringify({ para_usuario_id: usuarioId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok) {
+        boton.textContent = "Pendiente";
+        boton.disabled = true;
+        boton.classList.add("pendiente");
+      } else {
+        alert(data.error || "Error al enviar solicitud");
+      }
+    })
+    .catch(error => {
+      console.error("Error al enviar solicitud:", error);
+      alert("Error de red");
+    });
+  }
+
+  // Si los botones ya están en pantalla al cargar
+  document.querySelectorAll('.seguir').forEach(btn => {
+    btn.addEventListener('click', function () {
+      if (this.classList.contains('pendiente') || this.disabled) return;
+
+      const usuarioId = this.dataset.id;
+      enviarSolicitud(usuarioId, this);
     });
   });
 

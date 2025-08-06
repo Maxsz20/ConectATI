@@ -156,6 +156,8 @@
       <div class="mensajes-sin-solicitud">{% trans "No tienes solicitudes de chat pendientes." %}</div>
     {% endif %}
   </div>
+
+  <a href="{% url 'logout' %}" class="cerrar-sesion mobile">{% trans "Cerrar Sesión" %}</a>
 </div>
 
 <!-- FORM OCULTO PARA CAMBIO DE TEMA -->

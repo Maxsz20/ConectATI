@@ -130,6 +130,10 @@
   height: 0px;
 }
 
+.mobile {
+  display: none;
+}
+
 /* VERSIÓN RESPONSIVE */
 @media (max-width: 876px) {
 
@@ -179,5 +183,28 @@
   .custom-select select {
     font-size: 0.95rem;
   }
+  .cerrar-sesion {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: transparent;
+      width: 50%;
+      margin: 1rem auto;  /* This centers the button horizontally */
+      border: 2px solid var(--color-iconos);
+      color: var(--color-texto);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;  /* Ensures text is centered */
+      text-decoration: none;  /* Removes underline from link */
+  }
 
+  .cerrar-sesion:hover {
+      background-color: var(--lavanda-translucido);
+      color: var(--color-iconos);
+      text-decoration: none;  /* Ensures no underline on hover */
+  }
 }

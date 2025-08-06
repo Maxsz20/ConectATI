@@ -184,7 +184,7 @@ def crear_comentario(request):
                     crear_notificacion(
                         usuario_destino=comentario_padre.usuario,
                         tipo="respuesta",
-                        contenido=_("respondió tu comentario"),
+                        contenido="respuesta",
                         emisor=usuario,
                         publicacion_id=publicacion.id,
                         comentario_id=comentario.id
@@ -195,7 +195,7 @@ def crear_comentario(request):
                     crear_notificacion(
                         usuario_destino=publicacion.usuario,
                         tipo="comentario",
-                        contenido=_("comentó tu publicación"),
+                        contenido="comentario",
                         emisor=usuario,
                         publicacion_id=publicacion.id
                     )
@@ -247,7 +247,7 @@ def dar_estrella(request, publicacion_id):
             crear_notificacion(
                 usuario_destino=publicacion.usuario,
                 tipo="estrella",
-                contenido=_(" dio estrella a tu publicación"),
+                contenido="estrella",
                 emisor=Usuario.objects.using('conectati').get(id=user_id)
             )
         # Guardar registro
@@ -396,7 +396,7 @@ def enviar_solicitud_chat(request):
             crear_notificacion(
                 usuario_destino=Usuario.objects.using('conectati').get(id=para_id),
                 tipo='chat',
-                contenido=_(" te envió una solicitud de chat"),
+                contenido="chat",
                 emisor=Usuario.objects.using('conectati').get(id=de_id)
             )
             return JsonResponse({'ok': True})
@@ -502,7 +502,7 @@ def enviar_solicitud_amistad(request):
                 crear_notificacion(
                     usuario_destino=usuario_destino,
                     tipo='amistad',
-                    contenido=_(" te envió una solicitud de amistad"),
+                    contenido="amistad",
                     emisor=Usuario.objects.using('conectati').get(id=de_id)
                 )
                 return JsonResponse({'ok': True})
