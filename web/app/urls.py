@@ -13,6 +13,7 @@ urlpatterns = [
     path('notifications/', views.NotifyView, name='notifications'),
     path('friends/', views.FriendView, name='friends'),
     path('chat/', views.ChatView, name='chat'),
+    path('chat_mobile/<int:chat_id>/', views.ChatMobileView, name='chat_mobile'),
     path('settings/', views.SettingsView, name='settings'),
     path('publicacion/<int:publicacion_id>/', views.PostView, name='post'),
     path('search_mobile/', views.SearchMobileView, name='search_mobile'),

@@ -1,0 +1,55 @@
+{% extends "app/base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Conversación" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/chat_conectati.css' %}">
+<link rel="stylesheet" href="{% static 'css/chat_mobile.css' %}"> 
+{% endblock %}
+
+{% block encabezado_unificado %}
+<div class="encabezado-chat-mobile">
+  <a href="{% url 'chat' %}" class="btn-volver-chat">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <a href="{% url 'ver_perfil_usuario' usuario_id=usuario.id %}" class="link-perfil-chat" id="link-perfil-chat-mobile">
+    <img id="chat-avatar" src="{{ usuario.foto|default:'/static/images/default_user.avif' }}" alt="{{ usuario.nombre }}" />
+    <div class="nombre-chat-info">
+      <strong id="chat-nombre">{{ usuario.nombre }}</strong>
+      <small id="chat-usuario">@{{ usuario.username }}</small>
+    </div>
+  </a>
+</div>
+{% endblock %}
+
+{% block contenido2 %}
+<div class="conversacion">
+  <div class="chat-mensajes">
+    {% if mensajes_por_fecha %}
+      {% for fecha, mensajes in mensajes_por_fecha.items %}
+        <div class="separador-fecha">{{ fecha }}</div>
+        {% for msg in mensajes %}
+          <div class="mensaje {% if msg.propio %}enviado{% else %}recibido{% endif %}">
+            <div class="contenido-mensaje">{{ msg.texto }}</div>
+            <span class="hora-mensaje">{{ msg.hora }}</span>
+          </div>
+        {% endfor %}
+      {% endfor %}
+    {% else %}
+      <div class="mensajes-sin-mensajes">{% trans "No hay mensajes aún." %}</div>
+    {% endif %}
+  </div>
+
+  <div class="chat-input">
+    <input id="chatinput" type="text" placeholder="{% trans 'Escribir mensaje...' %}" />
+    <i class="fas fa-paper-plane"></i>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/chat_conectati.js' %}"></script>
+<script src="{% static 'js/chat_mobile.js' %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+{% endblock %}

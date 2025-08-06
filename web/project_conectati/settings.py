@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-o76^a6f3gapu@vvl=2*6pw2-cz%3!4c#$gds+a*l=r509m81ww
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['leu-trees-everywhere-blink.trycloudflare.com', 'localhost', 'operator-distant-transparent-beauty.trycloudflare.com']
+ALLOWED_HOSTS = [ 'localhost', 'operator-distant-transparent-beauty.trycloudflare.com', '192.168.68.121']
 
 # Application definition
 
@@ -43,18 +43,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'app',
+    'django_user_agents',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'app.middleware.idioma_usuario.IdiomaUsuarioMiddleware', 
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'project_conectati.urls'
 
@@ -143,19 +147,6 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'web', 'locale'),
 ]
 
-# Middleware para detectar el idioma del usuario
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'app.middleware.idioma_usuario.IdiomaUsuarioMiddleware', 
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -173,7 +164,7 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'web', 'media')
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'https://leu-trees-everywhere-blink.trycloudflare.com', 'https://operator-distant-transparent-beauty.trycloudflare.com']  # Ajusta según el dominio si estás en otro entorno
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://192.168.68.121:8000']  # Ajusta según el dominio si estás en otro entorno
 
 DEFAULT_CHARSET = 'utf-8'
 
@@ -195,7 +186,7 @@ EMAIL_TIMEOUT = 60
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Configuración para tests: usar base de datos en memoria y desactivar router
-""" if 'test' in sys.argv:
+if 'test' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -207,4 +198,4 @@ EMAIL_TIMEOUT = 60
         }
     }
 
-    DATABASE_ROUTERS = []  # desactiva el router durante tests """
+    DATABASE_ROUTERS = []  # desactiva el router durante tests

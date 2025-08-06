@@ -333,4 +333,7 @@ input::placeholder{
   .form-respuesta {
     display: none;
   }
+  .post-principal .acciones i{
+    font-size: 1.1rem;
+  }
 }

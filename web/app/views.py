@@ -454,63 +454,107 @@ def ChatView(request):
 
     usuario_id = request.session['usuario_id']
 
-    # Obtener todos los chats donde participa el usuario
-    chats_qs = Chat.objects.using('conectati') \
+    # Traer todos los chats del usuario
+    chats = Chat.objects.using('conectati') \
         .filter(Q(usuario1_id=usuario_id) | Q(usuario2_id=usuario_id)) \
-        .annotate(ultima_fecha=Max('mensaje__fecha')) \
-        .select_related('usuario1', 'usuario2') \
-        .order_by('-ultima_fecha')
+        .select_related('usuario1', 'usuario2')
 
-    chats_data = []
-    for chat in chats_qs:
-        otro = chat.usuario2 if chat.usuario1.id == usuario_id else chat.usuario1
-        chats_data.append({
-            'id': chat.id,
+    # Agregar anotación con la fecha del último mensaje en cada chat
+    chats = chats.annotate(ultima_fecha=Max('mensaje__fecha')).order_by('-ultima_fecha')
+
+    # Traer solicitudes pendientes
+    solicitudes = SolicitudChat.objects.using('conectati') \
+        .filter(para_usuario_id=usuario_id, estado='pendiente') \
+        .select_related('de_usuario') \
+        .order_by('-fecha')
+
+    chat_data = []
+    for c in chats:
+        otro = c.usuario2 if c.usuario1_id == usuario_id else c.usuario1
+        chat_data.append({
+            'id': c.id,
             'username': otro.username,
             'nombre': otro.nombre,
             'foto': otro.foto or '/static/images/default_user.avif',
             'usuario_id': otro.id,
         })
 
-    primer_chat = chats_qs.first()
-    mensajes_por_fecha = {}
-
-    if primer_chat:
+    # Solo para escritorio, mostrar la primera conversación completa
+    if chats and not request.user_agent.is_mobile:
+        primer_chat = chats[0]
         mensajes = Mensaje.objects.using('conectati') \
             .filter(chat=primer_chat) \
-            .select_related('emisor') \
             .order_by('fecha')
 
-        agrupados = defaultdict(list)
-        hoy = date.today()
+        mensajes_por_fecha = defaultdict(list)
+        hoy = timezone.localdate()
         ayer = hoy - timedelta(days=1)
 
-        for msg in mensajes:
-            fecha_msg = localtime(msg.fecha).date()
-            msg.hora = localtime(msg.fecha).strftime('%H:%M')
-            msg.propio = (msg.emisor_id == usuario_id)
+        for m in mensajes:
+            fecha_local = timezone.localtime(m.fecha).date()
+            hora = timezone.localtime(m.fecha).strftime('%H:%M')
 
-            if fecha_msg == hoy:
+            if fecha_local == hoy:
                 etiqueta = _("Hoy")
-            elif fecha_msg == ayer:
+            elif fecha_local == ayer:
                 etiqueta = _("Ayer")
             else:
-                etiqueta = fecha_msg.strftime(_("%d de %B")).capitalize()
+                etiqueta = fecha_local.strftime(_("%d de %B")).capitalize()
 
-            agrupados[etiqueta].append(msg)
-
-        mensajes_por_fecha = dict(agrupados)
-
-    solicitudes_chat_pendientes = SolicitudChat.objects.using('conectati') \
-        .filter(para_usuario_id=usuario_id, estado='pendiente') \
-        .select_related('de_usuario') \
-        .order_by('-fecha')
+            mensajes_por_fecha[etiqueta].append({
+                'texto': m.texto,
+                'hora': hora,
+                'propio': m.emisor_id == usuario_id
+            })
+    else:
+        primer_chat = None
+        mensajes_por_fecha = {}
 
     return render(request, 'app/chat.html', {
-        'chats': chats_data,
-        'primer_chat': chats_data[0] if chats_data else None,
+        'chats': chat_data,
+        'solicitudes_chat_pendientes': solicitudes,
+        'primer_chat': primer_chat,
+        'mensajes_por_fecha': mensajes_por_fecha
+    })
+
+def ChatMobileView(request, chat_id):
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+
+    try:
+        chat = Chat.objects.using('conectati').get(id=chat_id)
+    except Chat.DoesNotExist:
+        return redirect('chat')
+
+    usuario_id = request.session['usuario_id']
+    otro_usuario = chat.usuario2 if chat.usuario1_id == usuario_id else chat.usuario1
+
+    mensajes = Mensaje.objects.using('conectati').filter(chat=chat).order_by('fecha')
+    hoy = date.today()
+    ayer = hoy - timedelta(days=1)
+    mensajes_por_fecha = defaultdict(list)
+
+    for m in mensajes:
+        fecha_local = localtime(m.fecha).date()
+        hora_local = localtime(m.fecha).strftime('%H:%M')
+
+        if fecha_local == hoy:
+            etiqueta = _("Hoy")
+        elif fecha_local == ayer:
+            etiqueta = _("Ayer")
+        else:
+            etiqueta = fecha_local.strftime(_("%d de %B")).capitalize()
+
+        mensajes_por_fecha[etiqueta].append({
+            'texto': m.texto,
+            'hora': hora_local,
+            'propio': m.emisor_id == usuario_id
+        })
+
+    return render(request, 'app/chat_mobile.html', {
+        'usuario': otro_usuario,
         'mensajes_por_fecha': mensajes_por_fecha,
-        'solicitudes_chat_pendientes': solicitudes_chat_pendientes,
+        'area_info': True
     })
 
 

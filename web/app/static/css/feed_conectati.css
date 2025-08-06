@@ -492,6 +492,9 @@
   .contenedor-info {
     flex-direction: column;
   }
+  .post-container .acciones i{
+    font-size: 1.1rem;
+  }
 
 
 }

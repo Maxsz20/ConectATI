@@ -42,18 +42,26 @@
     <section class="chat-list">
       {% if chats %}
         {% for chat in chats %}
-        <div class="chat-user" data-chat-id="{{ chat.id }}" data-usuario-id="{{ chat.usuario_id }}">
-          <div class="chat-user-info">
-            <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
-            <span>
-              @{{ chat.username }}<br />
-              <small>{{ chat.nombre }}</small>
-            </span>
-          </div>
-          <div class="acciones-chat">
-            <i class="fas fa-trash eliminar-chat" title="{% trans 'Eliminar chat' %}"></i>
-          </div>
-        </div>
+          {% if request.user_agent.is_mobile %}
+            <a class="chat-user" href="{% url 'chat_mobile' chat.id %}">
+          {% else %}
+            <div class="chat-user" data-chat-id="{{ chat.id }}" data-usuario-id="{{ chat.usuario_id }}">
+          {% endif %}
+              <div class="chat-user-info">
+                <img src="{{ chat.foto|default:'/static/images/default_user.avif' }}" alt="{{ chat.nombre }}" />
+                <span>
+                  @{{ chat.username }}<br />
+                  <small>{{ chat.nombre }}</small>
+                </span>
+              </div>
+              <div class="acciones-chat">
+                <i class="fas fa-trash eliminar-chat" title="{% trans 'Eliminar chat' %}"></i>
+              </div>
+          {% if request.user_agent.is_mobile %}
+            </a>
+          {% else %}
+            </div>
+          {% endif %}
         {% endfor %}
       {% else %}
         <div class="mensaje-vacio-chat">{% trans "No hay mensajes." %}</div>
@@ -113,17 +121,6 @@
     </div>
 </div>
 
-<!-- Encabezado alternativo mobile -->
-<div class="encabezado-chat-mobile">
-  <i class="fas fa-arrow-left btn-volver-chat"></i>
-  <a href="#" class="link-perfil-chat" id="link-perfil-chat-mobile">
-    <img id="chat-avatar" src="" alt="{% trans 'Avatar usuario' %}" />
-    <div class="nombre-chat-info">
-      <strong id="chat-nombre">{% trans "Nombre" %}</strong>
-      <small id="chat-usuario">@usuario</small>
-    </div>
-  </a>
-</div>
 {% endblock %}
 
 {% block extra_js %}

@@ -275,6 +275,13 @@
     height: auto;
     padding: 1rem;
   }
+
+  .item-amigo .contenido strong{
+    font-size: 0.9rem;
+  }
+  .item-amigo .contenido p{
+    font-size: 0.9rem;
+  }
 }
 
 .item-amigo:hover {
