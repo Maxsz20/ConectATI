@@ -14,23 +14,28 @@ from pathlib import Path
 import os
 import sys
 import io
+from dotenv import load_dotenv
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
+# Cargar variables de entorno desde el archivo .env
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-o76^a6f3gapu@vvl=2*6pw2-cz%3!4c#$gds+a*l=r509m81ww'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = [ 'localhost', 'operator-distant-transparent-beauty.trycloudflare.com', '192.168.68.121', 'under-delegation-dominant-invitation.trycloudflare.com']
+ALLOWED_HOSTS = [ 'localhost', '192.168.68.121', 'under-delegation-dominant-invitation.trycloudflare.com']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://192.168.68.121:8000', 'https://under-delegation-dominant-invitation.trycloudflare.com'] 
+
 
 # Application definition
 
@@ -148,6 +153,7 @@ LOCALE_PATHS = [
 ]
 
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
@@ -164,7 +170,6 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'web', 'media')
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://192.168.68.121:8000', 'https://under-delegation-dominant-invitation.trycloudflare.com']  # Ajusta según el dominio si estás en otro entorno
 
 DEFAULT_CHARSET = 'utf-8'
 
@@ -176,8 +181,8 @@ DEFAULT_CHARSET = 'utf-8'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'conectatiUCV@gmail.com'
-EMAIL_HOST_PASSWORD = 'itjb jqpd ibfp pfkw'  # ← Contraseña de aplicación (NO la normal)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # ← Contraseña de aplicación (NO la normal)
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_TIMEOUT = 60
@@ -186,7 +191,7 @@ EMAIL_TIMEOUT = 60
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Configuración para tests: usar base de datos en memoria y desactivar router
-""" if 'test' in sys.argv:
+if 'test' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -198,4 +203,4 @@ EMAIL_TIMEOUT = 60
         }
     }
 
-    DATABASE_ROUTERS = []  # desactiva el router durante tests """
+    DATABASE_ROUTERS = []  # desactiva el router durante tests
