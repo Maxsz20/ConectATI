@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-05 14:03-0400\n"
+"POT-Creation-Date: 2025-08-05 23:21-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,58 +22,102 @@ msgstr ""
 msgid "Usuario"
 msgstr "User"
 
+#: .\app\templates\app\_item_notificacion.html:23
+msgid "comentó tu publicación"
+msgstr "commented on your post"
+
 #: .\app\templates\app\_item_notificacion.html:25
+msgid "respondió tu comentario"
+msgstr "replied to your comment"
+
+#: .\app\templates\app\_item_notificacion.html:27
+#, fuzzy
+#| msgid " te envió una solicitud de amistad"
+msgid "te envió una solicitud de amistad"
+msgstr "sent you a friend request."
+
+#: .\app\templates\app\_item_notificacion.html:29
+#, fuzzy
+#| msgid " te envió una solicitud de chat"
+msgid "te envió una solicitud de chat"
+msgstr "sent you a chat request."
+
+#: .\app\templates\app\_item_notificacion.html:31
+#, fuzzy
+#| msgid " dio estrella a tu publicación"
+msgid "dio estrella a tu publicación"
+msgstr "gave a star to your post"
+
+#: .\app\templates\app\_item_notificacion.html:37
 #, fuzzy, python-format
 #| msgid "%(tiempo)s ago"
 msgid "%(tiempo)s"
 msgstr "%(tiempo)s ago"
 
-#: .\app\templates\app\_item_notificacion.html:29
+#: .\app\templates\app\_item_notificacion.html:41
 msgid "También se te envió esta notificación por correo."
 msgstr "This notification was also sent to you by email."
 
 #: .\app\templates\app\_modal_respuesta.html:5
 #: .\app\templates\app\editar_perfil.html:76
+#: .\app\templates\app\hilo_comentario.html:228
+#: .\app\templates\app\publicacion.html:160
 #: .\app\templates\app\publicar_mobile.html:22
 #: .\app\templates\app\responder_mobile.html:20
 msgid "Cancelar"
 msgstr "Cancel"
 
 #: .\app\templates\app\_modal_respuesta.html:6
+#: .\app\templates\app\hilo_comentario.html:229
+#: .\app\templates\app\publicacion.html:161
 #: .\app\templates\app\publicar_mobile.html:49
 #: .\app\templates\app\responder_mobile.html:21
 msgid "Subir"
 msgstr "Upload"
 
 #: .\app\templates\app\_modal_respuesta.html:10
+#: .\app\templates\app\hilo_comentario.html:233
+#: .\app\templates\app\publicacion.html:165
 msgid "Avatar del autor"
 msgstr "Author avatar"
 
 #: .\app\templates\app\_modal_respuesta.html:12
+#: .\app\templates\app\hilo_comentario.html:235
+#: .\app\templates\app\publicacion.html:167
 msgid "Nombre del autor"
 msgstr "Author name"
 
 #: .\app\templates\app\_modal_respuesta.html:13
+#: .\app\templates\app\hilo_comentario.html:236
+#: .\app\templates\app\publicacion.html:168
 msgid "Texto original de la publicación o comentario"
 msgstr "Original post text or comment"
 
 #: .\app\templates\app\_modal_respuesta.html:14
+#: .\app\templates\app\hilo_comentario.html:237
+#: .\app\templates\app\publicacion.html:169
 msgid "Imagen adjunta"
 msgstr "Attached image"
 
 #: .\app\templates\app\_modal_respuesta.html:19
 #: .\app\templates\app\hilo_comentario.html:127
+#: .\app\templates\app\hilo_comentario.html:242
 #: .\app\templates\app\publicacion.html:60
+#: .\app\templates\app\publicacion.html:174
 #: .\app\templates\app\publicar_mobile.html:53
 msgid "Mi perfil"
 msgstr "My profile"
 
 #: .\app\templates\app\_modal_respuesta.html:21
+#: .\app\templates\app\hilo_comentario.html:244
+#: .\app\templates\app\publicacion.html:176
 #: .\app\templates\app\responder_mobile.html:52
 msgid "Respondiendo a"
 msgstr "Replying to"
 
 #: .\app\templates\app\_modal_respuesta.html:22
+#: .\app\templates\app\hilo_comentario.html:245
+#: .\app\templates\app\publicacion.html:177
 #: .\app\templates\app\responder_mobile.html:53
 msgid "Escribe tu respuesta"
 msgstr "Write your response"
@@ -202,7 +246,7 @@ msgstr "Notifications"
 msgid "Configuración"
 msgstr "Configuration"
 
-#: .\app\templates\app\base.html:65
+#: .\app\templates\app\base.html:65 .\app\templates\app\configuracion.html:160
 msgid "Cerrar Sesión"
 msgstr "Logout"
 
@@ -541,7 +585,7 @@ msgid "Marcar todas como leídas"
 msgstr "Mark all as read"
 
 #: .\app\templates\app\notificaciones.html:24 .\app\utils.py:348
-#: .\app\utils.py:695 .\app\views.py:476
+#: .\app\utils.py:695 .\app\views.py:494
 msgid "Hoy"
 msgstr "Today"
 
@@ -550,7 +594,7 @@ msgid "Sin notificaciones recientes."
 msgstr "No recent notifications."
 
 #: .\app\templates\app\notificaciones.html:33 .\app\utils.py:350
-#: .\app\utils.py:697 .\app\views.py:478
+#: .\app\utils.py:697 .\app\views.py:496
 msgid "Ayer"
 msgstr "Yesterday"
 
@@ -674,27 +718,7 @@ msgstr "Register"
 msgid "Las contraseñas no coinciden"
 msgstr "Passwords do not match."
 
-#: .\app\utils.py:187
-msgid "respondió tu comentario"
-msgstr "replied to your comment"
-
-#: .\app\utils.py:198
-msgid "comentó tu publicación"
-msgstr "commented on your post"
-
-#: .\app\utils.py:250
-msgid " dio estrella a tu publicación"
-msgstr "gave a star to your post"
-
-#: .\app\utils.py:399
-msgid " te envió una solicitud de chat"
-msgstr "sent you a chat request."
-
-#: .\app\utils.py:505
-msgid " te envió una solicitud de amistad"
-msgstr "sent you a friend request."
-
-#: .\app\utils.py:699 .\app\views.py:480
+#: .\app\utils.py:699 .\app\views.py:498
 msgid "%d de %B"
 msgstr "%d of %B"
 
